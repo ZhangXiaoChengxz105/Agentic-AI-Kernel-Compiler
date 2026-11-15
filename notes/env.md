@@ -78,3 +78,25 @@ Timeline: harness 0.1.3rc0 uploaded 2026-11-12 (pins rc2); tvm-tirx 0.1.0 upload
 
 Takeaway: TIRx works as an A100 kernel-authoring/compile frontend, and it pipes into VOLTA.
 Its own analyses are blocked until upstream republishes matching packages (or we build tvm-tirx from source, which is heavy, needs LLVM).
+
+### Update (2026-11-15, later): TIRx-harness analyses now WORK on sm_80
+Fix 1: found the deleted `apache-tvm-tirx==0.1.0rc2` wheel. Its original files.pythonhosted.org URL and sha256 are in
+`third_party/tirx-harness/uv.lock`, and the file is still served. Downloaded to `tools/wheels/`, sha256 verified
+(`62273d1c…989d2c`), installed into `envs/tirx`. `pip check` → no broken requirements.
+Fix 2: NumSim builds its Rust engine on first use. With cargo 1.100 the rlibs land in `release/build/*/out/`
+(new Cargo build-dir layout) but harness looks in `release/deps/` → "Cargo produced 0 'numsim_engine' rlib candidates".
+Fixed by using **Rust 1.95.0** (the documented minimum) for TIRx only: `export RUSTUP_TOOLCHAIN=1.95.0`
+(installed via rustup in `tools/rustup`; VOLTA keeps using the default 1.100).
+First NumSim run compiles the engine (~5 min, cached in `.cache/tirx-numsim`), later runs take seconds.
+
+racecheck results (arch=sm_80, 1 CTA × 64 threads):
+| Kernel | Verdict |
+|---|---|
+| each thread writes own smem slot | `clean` ✅ |
+| warp 0 and warp 1 both write smem[0..31], no barrier | `error`: `data_race`, `write_write`, `missing_inter_actor_sync`, points at the exact source line ✅ |
+| 32 threads of ONE warp write smem[0] in one instruction | `clean`. Same-instruction intra-warp writes aren't treated as a race (same as compute-sanitizer) |
+
+How to use TIRx env:
+```bash
+source env.sh && source envs/tirx/bin/activate && export RUSTUP_TOOLCHAIN=1.95.0
+```
