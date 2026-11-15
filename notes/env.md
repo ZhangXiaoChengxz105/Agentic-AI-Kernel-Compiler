@@ -48,3 +48,24 @@ The GPU driver version has to be checked on a compute node with `nvidia-smi` (ne
   | `qhy991/open-cake-ir` | Unofficial re-implementation | Now 404 / private |
 - → Team decision needed. Options: use TIRx-harness as the "CAKE-style" baseline (if it supports sm_80),
   use `cake-ir`, build our own minimal IR, or email the authors.
+
+### TIRx-harness hands-on trial (2026-11-15)
+Env: `envs/tirx` (Python 3.13.5 from module `python/3.13.5-gcc13.3.1`, venv in workspace, 1.3 GB).
+Sources also cloned: `third_party/tirx-harness` (`99522bf`), `third_party/tirx-kernels`.
+
+Install notes (upstream packaging is currently broken):
+- PyPI default `tirx-harness 0.1.2.post2` lacks `tvm_tirx` → unusable.
+- `tirx-harness 0.1.3rc0` / `tirx-kernels 0.1.3rc1` pin `apache-tvm-tirx==0.1.0rc2`, **which was removed from PyPI**.
+  Workaround used: install both with `--no-deps`, plus `apache-tvm-tirx[cuda]==0.1.0` and the other deps by hand.
+  `import tvm_tirx, tvm_ffi, tirx_kernels.tirx_lite, tirx_harness` → OK.
+
+Results:
+| Check | Result |
+|---|---|
+| Compile a TIRx-lite kernel with `arch=sm_80` | ✅ OK (generates CUDA C++, NVRTC-compiled). `nvidia/nvidia-a100 → sm_80` tag exists |
+| Generated CUDA → `nvcc -arch=sm_80 -ptx` → `volta parse` | ✅ OK: full TIRx → PTX(sm_80) → VOLTA path works on a toy kernel |
+| Bundled kernels (gemm/norm/attention…) on sm_80 | ❌ All target sm_90+/sm_100a; e.g. `norm/rmsnorm.py` uses `mul.rz.ftz.f32x2` (Blackwell-only). We would write our own GEMM/softmax/LayerNorm |
+| `numsim.racecheck` (CPU race checker) | ❌ Fails for sm_80 *and* sm_100a: `target PTX operation "tirx.ptx.add_int_sm107f" has no reviewed registry row` → version mismatch from the rc2→0.1.0 substitution, not an arch problem |
+
+Takeaway: TIRx works as an A100 kernel-authoring/compile frontend, and it pipes into VOLTA.
+Its own analyses are blocked until upstream republishes matching packages (or we build tvm-tirx from source, which is heavy, needs LLVM).
