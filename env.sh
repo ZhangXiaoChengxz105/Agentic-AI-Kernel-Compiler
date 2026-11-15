@@ -18,3 +18,12 @@ export GIT_CONFIG_GLOBAL="$CS521/.gitconfig"          # replaces ~/.gitconfig as
 if [ -f "$CS521/.secrets/ssh/id_ed25519" ]; then
   export GIT_SSH_COMMAND="ssh -i $CS521/.secrets/ssh/id_ed25519 -o IdentitiesOnly=yes -o UserKnownHostsFile=$CS521/.secrets/ssh/known_hosts"
 fi
+
+# --- Rust toolchain (installed into workspace; built VOLTA with it) ---
+export RUSTUP_HOME="$CS521/tools/rustup"
+export CARGO_HOME="$CS521/tools/cargo"
+export PATH="$CARGO_HOME/bin:$PATH"
+
+# --- Z3 shared library (from pip z3-solver in tools/z3), needed to link/run VOLTA ---
+export LIBRARY_PATH="$CS521/tools/z3/z3/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
+export LD_LIBRARY_PATH="$CS521/tools/z3/z3/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
