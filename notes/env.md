@@ -65,7 +65,16 @@ Results:
 | Compile a TIRx-lite kernel with `arch=sm_80` | ✅ OK (generates CUDA C++, NVRTC-compiled). `nvidia/nvidia-a100 → sm_80` tag exists |
 | Generated CUDA → `nvcc -arch=sm_80 -ptx` → `volta parse` | ✅ OK: full TIRx → PTX(sm_80) → VOLTA path works on a toy kernel |
 | Bundled kernels (gemm/norm/attention…) on sm_80 | ❌ All target sm_90+/sm_100a; e.g. `norm/rmsnorm.py` uses `mul.rz.ftz.f32x2` (Blackwell-only). We would write our own GEMM/softmax/LayerNorm |
-| `numsim.racecheck` (CPU race checker) | ❌ Fails for sm_80 *and* sm_100a: `target PTX operation "tirx.ptx.add_int_sm107f" has no reviewed registry row` → version mismatch from the rc2→0.1.0 substitution, not an arch problem |
+| `numsim.racecheck` (CPU race checker) | ❌ Fails for sm_80 *and* sm_100a: `target PTX operation "tirx.ptx.add_int_sm107f" has no reviewed registry row` → version mismatch from the rc2→0.1.0 substitution, not an arch problem (verified below) |
+
+Root cause (verified): at startup NumSim sends the compiler's *entire* PTX op table
+(`tvm_tirx/backend/cuda/ptx/table.py`, 545 entries in 0.1.0) to its Rust frontend, which requires a registry row
+for every entry (`transpiler/native_frontend.py`: "Every target PTX operation requires an explicit Rust registry row").
+harness 0.1.3rc0 has 507 rows (written against rc2). 39 entries added in tvm-tirx 0.1.0 have no row
+(`add_int_sm107f`, `sub_int_sm107f`, `neg_int_sm107f`, `max/min_int8x4`, `fabric_*_tensor*`, `tcgen05_shift`, …).
+`add_int_sm107f` is just the alphabetically first one. The check runs before looking at the kernel, so *every* kernel fails.
+Timeline: harness 0.1.3rc0 uploaded 2026-11-12 (pins rc2); tvm-tirx 0.1.0 uploaded 2026-11-13 and rc2 removed.
+→ Expect a matching harness release soon; re-check PyPI before building anything from source.
 
 Takeaway: TIRx works as an A100 kernel-authoring/compile frontend, and it pipes into VOLTA.
 Its own analyses are blocked until upstream republishes matching packages (or we build tvm-tirx from source, which is heavy, needs LLVM).
