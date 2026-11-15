@@ -35,9 +35,16 @@ The GPU driver version has to be checked on a compute node with `nvidia-smi` (ne
   Sync: `bar.sync`/`syncwarp`/tensor-core implicit barriers only. **No async (`cp.async` pipelines, `arrive`, TMA, `wgmma`).**
 - Check is over the **reals** (not IEEE floats), one CTA (CTA-0) at a time.
 
-### CAKE availability (big risk)
-- No official CAKE repo found (searched arXiv page, GitHub, author pages). A third-party blog post
-  (gangliao.me, Oct 2026) also says no release exists.
-- An unofficial re-implementation `qhy991/open-cake-ir` showed up in search but is now 404 / private.
-- → We need a team decision: (a) email the authors, (b) build a minimal "CAKE-like" IR + lowering ourselves,
-  or (c) swap the baseline (e.g. Triton/CUDA source written by the agent).
+### CAKE availability (big risk), rechecked 2026-11-15
+- **No official CAKE code.** The paper never promises a release; only the *generated CUDA kernels* were
+  upstreamed (FlashInfer PRs #4262, #4274, #4279, #4287). Checked: arXiv HTML, GitHub search API,
+  authors' accounts (yzh119, tqchen), flashinfer-ai, mlc-ai.
+- Candidates for a substitute:
+  | Repo | What it is | Notes |
+  |---|---|---|
+  | `huangzhilin-hzl/cake-ir` | Independent re-implementation (Python): typed schedule IR, verifier gates with stable error codes, CUDA lowering (SIMT/WMMA GEMM, elementwise), sm_80 target | 1 commit (2026-08-17), license "Other" → check before use. No softmax/LayerNorm |
+  | `mlc-ai/TIRx-harness` | Open "compiler harness for agentic GPU programming" from the MLC/TVM group (Tianqi Chen is a CAKE co-author). Has sync/race/numerical analyses. Apache-2.0, pip `tirx-harness`, actively maintained | Blog calls CAKE a *concurrent* effort, not the same code. Experiments only on Blackwell; sm_80 support unknown |
+  | `QiGS/cake-ascend` | Re-implementation targeting Huawei Ascend | Not usable on A100 |
+  | `qhy991/open-cake-ir` | Unofficial re-implementation | Now 404 / private |
+- → Team decision needed. Options: use TIRx-harness as the "CAKE-style" baseline (if it supports sm_80),
+  use `cake-ir`, build our own minimal IR, or email the authors.
