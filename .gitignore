@@ -1,0 +1,27 @@
+# secrets / personal config — never commit
+.secrets/
+.gitconfig
+.git-credentials
+.env
+*.key
+
+# Claude Code config dir (contains auth + session data)
+.claude/
+
+# local tooling, envs, caches
+tools/
+npm-global/
+.npm-cache/
+.cache/
+.venv/
+envs/
+__pycache__/
+*.pyc
+
+# third-party sources (fetched separately; see notes/env.md)
+third_party/
+
+# job outputs / logs
+logs/
+*.out
+*.err
