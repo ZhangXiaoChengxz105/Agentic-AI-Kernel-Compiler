@@ -1,0 +1,122 @@
+{
+  "op": "gemm",
+  "description": "C = A @ B, row-major float32; A [M,K], B [K,N], C [M,N]; one 16x16 output tile per CTA.",
+  "signature": "extern \"C\" __global__ void <name>(const float* A, const float* B, float* C, int M, int N, int K)",
+  "reference": "gemm_ref",
+  "volta_shapes": [
+    {
+      "M": 32,
+      "N": 32,
+      "K": 48
+    },
+    {
+      "M": 32,
+      "N": 32,
+      "K": 40
+    },
+    {
+      "M": 12,
+      "N": 12,
+      "K": 40
+    }
+  ],
+  "variants": [
+    {
+      "name": "gemm_ref",
+      "file": "gemm_ref.cu",
+      "role": "reference",
+      "block": [
+        16,
+        16
+      ],
+      "notes": "one thread per output element, no shared memory"
+    },
+    {
+      "name": "gemm_opt",
+      "file": "gemm_opt.cu",
+      "role": "candidate",
+      "block": [
+        16,
+        16
+      ],
+      "bug": null,
+      "notes": "shared-memory tiling, zero-padded tiles",
+      "expect_volta": "EQUIV",
+      "expect_note": "correct optimization"
+    },
+    {
+      "name": "gemm_bug_nosync",
+      "file": "bugs/gemm_bug_nosync.cu",
+      "role": "candidate",
+      "block": [
+        16,
+        16
+      ],
+      "bug": {
+        "category": "sync",
+        "change": "removed the __syncthreads() after the inner-product loop"
+      },
+      "expect_volta": [
+        {
+          "if": "K > 16",
+          "then": "RACE"
+        },
+        {
+          "then": "EQUIV"
+        }
+      ],
+      "expect_note": "WAR race on As/Bs needs >= 2 K-tiles"
+    },
+    {
+      "name": "gemm_bug_ktail",
+      "file": "bugs/gemm_bug_ktail.cu",
+      "role": "candidate",
+      "block": [
+        16,
+        16
+      ],
+      "bug": {
+        "category": "tiling",
+        "change": "ntiles = K / TILE instead of ceil(K / TILE)"
+      },
+      "expect_volta": [
+        {
+          "if": "K % 16 == 0",
+          "then": "EQUIV"
+        },
+        {
+          "then": "NOT_EQUIV"
+        }
+      ],
+      "expect_note": "only exists when K % 16 != 0"
+    },
+    {
+      "name": "gemm_bug_guard",
+      "file": "bugs/gemm_bug_guard.cu",
+      "role": "candidate",
+      "block": [
+        16,
+        16
+      ],
+      "bug": {
+        "category": "indexing",
+        "change": "output guard row <= M && col <= N (off-by-one)"
+      },
+      "expect_volta": [
+        {
+          "if": "M < 16 or N < 16",
+          "then": [
+            "RACE",
+            "OUT_OF_BOUNDS",
+            "FOOTPRINT",
+            "NOT_EQUIV"
+          ]
+        },
+        {
+          "then": "EQUIV"
+        }
+      ],
+      "expect_note": "VOLTA runs only CTA 0, so the edge must lie inside CTA 0 (M or N < 16)"
+    }
+  ]
+}

@@ -14,7 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from verify import WORKSPACE  # noqa: E402
-from verify.cases import SOFTMAX_DIR, load_manifest, softmax_case  # noqa: E402
+from verify.cases import expected_statuses, load_manifest, make_case, place_arrays  # noqa: E402
 from verify.ptx import CompileError, compile_to_ptx  # noqa: E402
 from verify.volta import VOLTA_BIN, ArraySpec, VoltaCase, build_command, parse_output, run_compare  # noqa: E402
 
@@ -73,6 +73,21 @@ class ParseTests(unittest.TestCase):
         self.assertEqual(parse_output("t", 1, "", "something new\n").status, "ERROR")
 
 
+class ExpectationTests(unittest.TestCase):
+    def test_rule_formats(self):
+        rules = [{"if": "K % 16 == 0", "then": "EQUIV"}, {"then": "NOT_EQUIV"}]
+        self.assertEqual(expected_statuses(rules, {"K": 48}), ("EQUIV",))
+        self.assertEqual(expected_statuses(rules, {"K": 40}), ("NOT_EQUIV",))
+        self.assertEqual(expected_statuses("RACE", {}), ("RACE",))
+        self.assertEqual(expected_statuses(["RACE", "OUT_OF_BOUNDS"], {}), ("RACE", "OUT_OF_BOUNDS"))
+        self.assertIsNone(expected_statuses(None, {}))
+
+    def test_arrays_never_overlap(self):
+        arrs = place_arrays([("a", 4, 1000, "in"), ("b", 4, 70000, "in"), ("c", 4, 1, "out")])
+        for x, y in zip(arrs, arrs[1:]):
+            self.assertLess(x.end, y.base)
+
+
 class CaseTests(unittest.TestCase):
     def _case(self, **kw):
         base = dict(label="t", ref_ptx=Path("a.ptx"), ref_kernel="a", cand_ptx=Path("b.ptx"), cand_kernel="b",
@@ -112,17 +127,21 @@ class IntegrationTests(unittest.TestCase):
         (WORKSPACE / "build").mkdir(exist_ok=True)
         cls.tmp = tempfile.TemporaryDirectory(dir=WORKSPACE / "build")
         cls.out = Path(cls.tmp.name)
-        cls.meta, cls.variants = load_manifest(SOFTMAX_DIR)
-        cls.v = {v.name: v for v in cls.variants}
-        cls.ptx = {n: compile_to_ptx(v.file, cls.out, mode="volta").ptx for n, v in cls.v.items()}
+        cls.v, cls.ptx = {}, {}
+        for op in ("softmax", "gemm", "layernorm"):
+            _, variants = load_manifest(op)
+            for v in variants:
+                cls.v[v.name] = (op, v)
+                cls.ptx[v.name] = compile_to_ptx(v.file, cls.out / op, mode="volta").ptx
 
     @classmethod
     def tearDownClass(cls):
         cls.tmp.cleanup()
 
-    def _run(self, cand: str, n: int):
-        ref = self.v["softmax_ref"]
-        return run_compare(softmax_case(self.ptx[ref.name], ref, self.ptx[cand], self.v[cand], n))
+    def _run(self, cand: str, shape: dict, timeout_s: float = 600.0):
+        op, c = self.v[cand]
+        ref = self.v[f"{op}_ref"][1]
+        return run_compare(make_case(op, self.ptx[ref.name], ref, self.ptx[cand], c, shape, timeout_s))
 
     def test_volta_ptx_has_symexp_and_no_loc(self):
         text = self.ptx["softmax_ref"].read_text()
@@ -130,15 +149,15 @@ class IntegrationTests(unittest.TestCase):
         self.assertNotIn(".loc", text)
 
     def test_opt_equiv(self):
-        self.assertEqual(self._run("softmax_opt", 200).status, "EQUIV")
+        self.assertEqual(self._run("softmax_opt", {"N": 200}).status, "EQUIV")
 
     def test_nosync_race(self):
-        r = self._run("softmax_bug_nosync", 200)
+        r = self._run("softmax_bug_nosync", {"N": 200})
         self.assertEqual((r.status, r.which), ("RACE", "candidate"))
 
     def test_tail_bug_depends_on_shape(self):
-        self.assertEqual(self._run("softmax_bug_tail", 256).status, "EQUIV")      # hidden
-        self.assertEqual(self._run("softmax_bug_tail", 200).status, "NOT_EQUIV")  # exposed
+        self.assertEqual(self._run("softmax_bug_tail", {"N": 256}).status, "EQUIV")      # hidden
+        self.assertEqual(self._run("softmax_bug_tail", {"N": 200}).status, "NOT_EQUIV")  # exposed
 
     def test_compile_error_is_reported(self):
         bad = self.out / "bad.cu"
@@ -161,10 +180,18 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(r.status, "UNSUPPORTED", msg=r.stderr + r.stdout)
 
     def test_timeout(self):
-        ref = self.v["softmax_ref"]
-        case = softmax_case(self.ptx[ref.name], ref, self.ptx["softmax_bug_nomax"], self.v["softmax_bug_nomax"],
-                            256, timeout_s=0.01)
-        self.assertEqual(run_compare(case).status, "TIMEOUT")
+        self.assertEqual(self._run("softmax_bug_nomax", {"N": 256}, timeout_s=0.01).status, "TIMEOUT")
+
+    def test_gemm_guard_bug_needs_edge_in_cta0(self):
+        self.assertEqual(self._run("gemm_bug_guard", {"M": 32, "N": 32, "K": 40}).status, "EQUIV")  # hidden
+        self.assertIn(self._run("gemm_bug_guard", {"M": 12, "N": 12, "K": 40}).status,
+                      ("RACE", "OUT_OF_BOUNDS", "FOOTPRINT", "NOT_EQUIV"))
+
+    def test_gemm_ktail_and_layernorm(self):
+        self.assertEqual(self._run("gemm_bug_ktail", {"M": 12, "N": 12, "K": 40}).status, "NOT_EQUIV")
+        self.assertEqual(self._run("layernorm_opt", {"N": 100}).status, "EQUIV")
+        self.assertEqual(self._run("layernorm_bug_onepass", {"N": 100}).status, "EQUIV")   # blind spot
+        self.assertEqual(self._run("layernorm_bug_nosync", {"N": 100}).status, "RACE")
 
 
 if __name__ == "__main__":
