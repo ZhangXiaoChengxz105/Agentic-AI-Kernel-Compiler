@@ -29,4 +29,12 @@ export LIBRARY_PATH="$CS521/tools/z3/z3/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
 export LD_LIBRARY_PATH="$CS521/tools/z3/z3/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 
 # --- Lumen API key (kept in git-ignored .secrets/, never commit it) ---
-[ -f "$CS521/.secrets/lumen.env" ] && source "$CS521/.secrets/lumen.env"
+if [ -f "$CS521/.secrets/lumen.env" ]; then source "$CS521/.secrets/lumen.env"; fi
+
+# --- Python environment built by setup_env.sh (activated automatically when present) ---
+export AKC_ENV="${AKC_ENV:-$CS521/envs/akc}"
+if [ -x "$AKC_ENV/bin/python" ]; then
+  export VIRTUAL_ENV="$AKC_ENV"
+  export PATH="$AKC_ENV/bin:$PATH"
+fi
+export RUSTUP_TOOLCHAIN_NUMSIM=1.95.0    # TIRx NumSim needs cargo 1.95 (akc sets it per subprocess)

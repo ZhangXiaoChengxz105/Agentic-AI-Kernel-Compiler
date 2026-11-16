@@ -1,0 +1,143 @@
+{
+  "op": "layernorm",
+  "description": "LayerNorm over the last dim of a row-major [rows, N] float32 matrix with gamma/beta [N]; one CTA per row; eps = 1e-5.",
+  "shape_keys": [
+    "rows",
+    "N"
+  ],
+  "launch": {
+    "kind": "row",
+    "block": [
+      128
+    ]
+  },
+  "tiles": [
+    128
+  ],
+  "fixed_suite": [
+    {
+      "rows": 64,
+      "N": 256
+    },
+    {
+      "rows": 64,
+      "N": 1024
+    },
+    {
+      "rows": 64,
+      "N": 4096
+    }
+  ],
+  "numerical_dists": [
+    "offset",
+    "constant",
+    "tiny",
+    "large"
+  ],
+  "volta": {
+    "default": {
+      "N": 128
+    },
+    "deep": null,
+    "max_N": 200
+  },
+  "references": {
+    "cuda": "layernorm_ref"
+  },
+  "signature": {
+    "cuda": "extern \"C\" __global__ void <name>(const float* x, const float* w, const float* b, float* y, int N, float eps)"
+  },
+  "variants": [
+    {
+      "name": "layernorm_ref",
+      "lang": "cuda",
+      "file": "cuda/layernorm_ref.cu",
+      "role": "reference",
+      "block": [
+        1
+      ],
+      "notes": "one thread per row, two-pass mean/variance"
+    },
+    {
+      "name": "layernorm_opt",
+      "lang": "cuda",
+      "file": "cuda/layernorm_opt.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": null,
+      "expect_volta": "EQUIV",
+      "expect_note": "correct optimization",
+      "notes": "two-pass with shared-memory tree reductions"
+    },
+    {
+      "name": "layernorm_bug_nosync",
+      "lang": "cuda",
+      "file": "cuda/bugs/layernorm_bug_nosync.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "sync",
+        "change": "removed the barrier between reading the mean from red[0] and reusing red"
+      },
+      "expect_volta": "RACE",
+      "expect_note": "WAR race on red[0]"
+    },
+    {
+      "name": "layernorm_bug_tail",
+      "lang": "cuda",
+      "file": "cuda/bugs/layernorm_bug_tail.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "tiling",
+        "change": "reduction loops stop at (N/BLOCK)*BLOCK, dropping the tail"
+      },
+      "expect_volta": [
+        {
+          "if": "N % 128 == 0",
+          "then": "EQUIV"
+        },
+        {
+          "then": "NOT_EQUIV"
+        }
+      ],
+      "expect_note": "only exists when N % 128 != 0"
+    },
+    {
+      "name": "layernorm_bug_offbyone",
+      "lang": "cuda",
+      "file": "cuda/bugs/layernorm_bug_offbyone.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "indexing",
+        "change": "variance loop uses i <= N (reads one element of the next row)"
+      },
+      "expect_volta": "NOT_EQUIV",
+      "expect_note": "variance includes one element of the next row"
+    },
+    {
+      "name": "layernorm_bug_onepass",
+      "lang": "cuda",
+      "file": "cuda/bugs/layernorm_bug_onepass.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "numerical",
+        "change": "one-pass variance E[x^2] - mean^2 (catastrophic cancellation)"
+      },
+      "expect_volta": "EQUIV",
+      "expect_note": "BLIND SPOT: equal over the reals; float cancellation not modeled"
+    }
+  ]
+}

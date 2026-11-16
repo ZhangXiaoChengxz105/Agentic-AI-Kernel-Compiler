@@ -160,3 +160,26 @@ it must be re-measured on agent-written revisions and bugs written by someone el
    benchmarks. Then the change-aware GPU tests for the 11 bugs (`results/change_aware/tests/*.json`).
 2. **Lumen**: acknowledge `glm-5.3` in the web UI, then one tiny chat call (< 0.01 coins) to verify end to end.
 3. **git push** of the local commits.
+
+## 6. Restructure into the akc project + validator interface (2026-11-16)
+Why: organize the code as one engineering project around the agent's parts (task, llm, agent, backend,
+validation, feedback, evaluation) instead of by task; give all validators one input/output contract so the
+loop, the feedback and the evaluation understand a single format. Old→new paths: `notes/README.md`.
+What changed:
+- `akc/validation/interface.py`: Candidate, ValidationContext, Finding (17 kinds, 3 severities), ValidationReport
+  (`passed`, `decided` → coverage, `seconds` → overhead), Validator protocol; parent = last ACCEPTED candidate.
+- Validators: FixedTestsValidator (baseline), VoltaValidator (mechanism 1), ChangeAwareValidator (mechanism 2);
+  shared executors in `validation/runners/` (GPU for CUDA and tirx, NumSim for tirx on CPU, capped).
+- `validation/pipeline.py`: configurations A/B/C; in C the change-aware VOLTA shapes are handed to VOLTA.
+- `feedback/render.py`: findings → concise text (errors with example/related change/hint, then "not verified").
+- Change-aware is now a qualified validator: manifest-driven (no per-op constants in code), tile sizes read from
+  the candidate (`#define TILE 32`, `BLOCK = 256`, `LaunchConfig(block=…)`), misaligned-pointer tests (memory),
+  grid sweeps (sync), deep VOLTA shape, `akc hottest` one-shot report.
+- Workloads: `workloads/<op>/manifest.json` holds shape keys, launch, tiles, fixed suite, numerical dists, VOLTA
+  default/deep/cap, tirx contract, references; softmax manifest includes the tirx variants.
+- `akc` CLI (validate, hottest, check, bench, volta, eval-bugs, tirx-gpu, pilot, lumen); `pyproject.toml`
+  (`pip install -e .`); `setup_env.sh` + `setup/requirements-akc.lock` (exact versions); docs/architecture.md, docs/setup.md.
+Checks: 86 tests (71 migrated + 15 new) pass on the login node (3 GPU + 1 slow NumSim test skipped by default; the
+NumSim test passes with AKC_SLOW=1). `akc hottest` on GLM's accepted-but-buggy kernel (A_r3 vs last accepted A_r1)
+reports VOLTA NOT_EQUIV at the deep shape N=584 on the CPU alone. `akc eval-bugs --device cpu`: B 5/11, C 9/11
+(VOLTA parts; dynamic tests need a GPU).

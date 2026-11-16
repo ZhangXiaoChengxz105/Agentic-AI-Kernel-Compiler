@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "akc"
+version = "0.1.0"
+description = "Agentic AI Kernel Compiler (CS 521): LLM-written GPU kernels validated by VOLTA and change-aware tests"
+requires-python = ">=3.12"
+
+[project.scripts]
+akc = "akc.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["akc*"]

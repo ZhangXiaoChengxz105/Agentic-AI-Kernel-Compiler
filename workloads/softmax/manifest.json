@@ -1,0 +1,219 @@
+{
+  "op": "softmax",
+  "description": "Row-wise softmax over a row-major [rows, N] float32 matrix; one CTA per row.",
+  "shape_keys": [
+    "rows",
+    "N"
+  ],
+  "launch": {
+    "kind": "row",
+    "block": [
+      128
+    ]
+  },
+  "tiles": [
+    128
+  ],
+  "fixed_suite": [
+    {
+      "rows": 64,
+      "N": 256
+    },
+    {
+      "rows": 64,
+      "N": 1024
+    },
+    {
+      "rows": 64,
+      "N": 4096
+    }
+  ],
+  "numerical_dists": [
+    "large",
+    "neg_large",
+    "mixed",
+    "constant"
+  ],
+  "volta": {
+    "default": {
+      "N": 256
+    },
+    "deep": {
+      "N": 584
+    },
+    "max_N": null
+  },
+  "tirx": {
+    "factory_args": [
+      "rows",
+      "N"
+    ],
+    "tensors": [
+      "x",
+      "y"
+    ]
+  },
+  "references": {
+    "cuda": "softmax_ref",
+    "tirx": "softmax_txl_ref"
+  },
+  "signature": {
+    "cuda": "extern \"C\" __global__ void <name>(const float* x, float* y, int N)",
+    "tirx": "make_kernel(rows, n) -> @txl.kernel (x: [rows, n] f32, y: [rows, n] f32)"
+  },
+  "variants": [
+    {
+      "name": "softmax_ref",
+      "lang": "cuda",
+      "file": "cuda/softmax_ref.cu",
+      "role": "reference",
+      "block": [
+        1
+      ],
+      "notes": "one thread per row, serial loops; obviously correct"
+    },
+    {
+      "name": "softmax_opt",
+      "lang": "cuda",
+      "file": "cuda/softmax_opt.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": null,
+      "expect_volta": "EQUIV",
+      "expect_note": "correct optimization",
+      "notes": "shared-memory tree reductions for max and sum, multiply by reciprocal"
+    },
+    {
+      "name": "softmax_bug_nosync",
+      "lang": "cuda",
+      "file": "cuda/bugs/softmax_bug_nosync.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "sync",
+        "change": "removed __syncthreads() inside the max reduction loop"
+      },
+      "expect_volta": "RACE",
+      "expect_note": "missing barrier -> race on shared memory"
+    },
+    {
+      "name": "softmax_bug_tail",
+      "lang": "cuda",
+      "file": "cuda/bugs/softmax_bug_tail.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "tiling",
+        "change": "reduction loops stop at (N/BLOCK)*BLOCK, dropping the tail"
+      },
+      "expect_volta": [
+        {
+          "if": "N % 128 == 0",
+          "then": "EQUIV"
+        },
+        {
+          "then": "NOT_EQUIV"
+        }
+      ],
+      "expect_note": "bug only exists when N % block != 0, so VOLTA must be run with such an N"
+    },
+    {
+      "name": "softmax_bug_offbyone",
+      "lang": "cuda",
+      "file": "cuda/bugs/softmax_bug_offbyone.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "indexing",
+        "change": "sum loop uses i <= N (reads one element of the next row)"
+      },
+      "expect_volta": "NOT_EQUIV",
+      "expect_note": "denominator includes one element of the next row"
+    },
+    {
+      "name": "softmax_bug_nomax",
+      "lang": "cuda",
+      "file": "cuda/bugs/softmax_bug_nomax.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "numerical",
+        "change": "no max subtraction before exp (overflows for large x)"
+      },
+      "expect_volta": "EQUIV",
+      "expect_note": "BLIND SPOT: equal over the reals; only float overflow differs"
+    },
+    {
+      "name": "softmax_txl_ref",
+      "lang": "tirx",
+      "file": "tirx/softmax_txl_ref.py",
+      "role": "reference",
+      "block": [
+        128
+      ],
+      "bug": null
+    },
+    {
+      "name": "softmax_txl_bug_nosync",
+      "lang": "tirx",
+      "file": "tirx/bugs/softmax_txl_bug_nosync.py",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "sync",
+        "change": "removed the CTA barrier after each tree-reduction step"
+      }
+    },
+    {
+      "name": "softmax_txl_bug_tail",
+      "lang": "tirx",
+      "file": "tirx/bugs/softmax_txl_bug_tail.py",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "tiling",
+        "change": "partial max/sum loops run n // 128 tiles (tail dropped)"
+      }
+    },
+    {
+      "name": "softmax_txl_bug_offbyone",
+      "lang": "tirx",
+      "file": "tirx/bugs/softmax_txl_bug_offbyone.py",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "indexing",
+        "change": "sum loop guard col <= n"
+      }
+    },
+    {
+      "name": "softmax_txl_bug_nomax",
+      "lang": "tirx",
+      "file": "tirx/bugs/softmax_txl_bug_nomax.py",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "numerical",
+        "change": "no max subtraction before exp"
+      }
+    }
+  ]
+}

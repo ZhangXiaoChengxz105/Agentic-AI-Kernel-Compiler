@@ -1,7 +1,7 @@
 #!/bin/bash
 # Generic 1x A100 batch job: runs whatever command you pass after the script name.
-#   sbatch scripts/slurm/gpu_job.sbatch python -m harness.cli check --op softmax
-#   sbatch --time=00:10:00 scripts/slurm/gpu_job.sbatch python -m harness.cli bench --op gemm
+#   sbatch scripts/slurm/gpu_job.sbatch akc check --workload softmax
+#   sbatch --time=00:10:00 scripts/slurm/gpu_job.sbatch akc bench --workload gemm
 # ASK BEFORE SUBMITTING (CLAUDE.md rule 3): this uses the shared bidr-delta-gpu allocation.
 #SBATCH --job-name=cs521
 #SBATCH --account=bidr-delta-gpu
@@ -19,8 +19,7 @@ set -euo pipefail
 CS521="${SLURM_SUBMIT_DIR:-$(cd "$(dirname "$0")/../.." && pwd)}"
 cd "$CS521"
 module load cudatoolkit/26.5_13.2 2>/dev/null || true
-source env.sh
-source envs/tirx/bin/activate
+source env.sh                      # activates envs/akc
 
 echo "== job $SLURM_JOB_ID on $(hostname) at $(date -Is)"
 nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv
