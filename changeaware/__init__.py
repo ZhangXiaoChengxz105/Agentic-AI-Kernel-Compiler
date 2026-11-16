@@ -1,6 +1,6 @@
 """Task 2: change-aware test generation.
 
-plan(op, old_src, new_src, block) -> ChangePlan
+plan(op, old_src, new_src, block, lang=None) -> ChangePlan     (lang: "cuda" | "tirx", auto-detected)
   hunks  : what changed (diff.py, 2.1)
   labels : why it matters, with evidence (classify.py, 2.2)
   cats   : distinct categories, most evidence first
@@ -12,7 +12,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .classify import Label, categories, classify
-from .diff import Hunk, diff_sources
+from .diff import Hunk, detect_lang, diff_sources
 from .generate import generate_tests, volta_shapes
 
 
@@ -25,9 +25,11 @@ class ChangePlan:
     volta: list[dict]
 
 
-def plan(op: str, old_src: str, new_src: str, block: tuple[int, ...], budget: int = 16) -> ChangePlan:
-    hunks = diff_sources(old_src, new_src)
-    labels = classify(hunks)
+def plan(op: str, old_src: str, new_src: str, block: tuple[int, ...], budget: int = 16,
+         lang: str | None = None) -> ChangePlan:
+    lang = lang or detect_lang(old_src + "\n" + new_src)
+    hunks = diff_sources(old_src, new_src, lang)
+    labels = classify(hunks, lang)
     cats = categories(labels)
     return ChangePlan(hunks, labels, cats, generate_tests(op, cats, block, budget), volta_shapes(op, cats, block))
 

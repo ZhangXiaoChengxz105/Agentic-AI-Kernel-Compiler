@@ -1,0 +1,32 @@
+{
+ "stage": "volta",
+ "volta": [
+  {
+   "N": 256,
+   "status": "UNSUPPORTED",
+   "detail": "equivalence check failed: rational coefficient overflowed i128",
+   "hint": "This is a verifier limitation, not necessarily a bug: VOLTA represents float constants as exact rationals with 128-bit integers, so constants with magnitude above ~1.7e38 (e.g. FLT_MAX, 3.4e38) overflow it. Use -INFINITY as the identity of max, or initialize the running max from a data element.",
+   "mismatches": null,
+   "examples": [],
+   "wall_s": 0.03
+  },
+  {
+   "N": 200,
+   "status": "UNSUPPORTED",
+   "detail": "equivalence check failed: rational coefficient overflowed i128",
+   "hint": "This is a verifier limitation, not necessarily a bug: VOLTA represents float constants as exact rationals with 128-bit integers, so constants with magnitude above ~1.7e38 (e.g. FLT_MAX, 3.4e38) overflow it. Use -INFINITY as the identity of max, or initialize the running max from a data element.",
+   "mismatches": null,
+   "examples": [],
+   "wall_s": 0.02
+  },
+  {
+   "N": 100,
+   "status": "UNSUPPORTED",
+   "detail": "equivalence check failed: rational coefficient overflowed i128",
+   "hint": "This is a verifier limitation, not necessarily a bug: VOLTA represents float constants as exact rationals with 128-bit integers, so constants with magnitude above ~1.7e38 (e.g. FLT_MAX, 3.4e38) overflow it. Use -INFINITY as the identity of max, or initialize the running max from a data element.",
+   "mismatches": null,
+   "examples": [],
+   "wall_s": 0.02
+  }
+ ]
+}

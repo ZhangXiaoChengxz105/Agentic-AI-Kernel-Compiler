@@ -121,3 +121,59 @@ class VoltaIntegration(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+# ---- tirx-lite (Python) support ------------------------------------------------------------------
+TXL = Path(__file__).resolve().parents[1] / "kernels_txl" / "softmax"
+RMSNORM = Path(__file__).resolve().parents[1] / "third_party" / "tirx-kernels" / "tirx_kernels" / "norm" / "rmsnorm.py"
+
+
+class TirxTests(unittest.TestCase):
+    def test_language_detection(self):
+        from changeaware.diff import detect_lang
+        self.assertEqual(detect_lang((TXL / "softmax_txl_ref.py").read_text()), "tirx")
+        self.assertEqual(detect_lang(OPT.read_text()), "cuda")
+
+    def test_txl_bug_variants_get_their_category_first(self):
+        import json
+        m = json.loads((TXL / "manifest.json").read_text())
+        ref = (TXL / "softmax_txl_ref.py").read_text()
+        for v in m["variants"]:
+            if v["bug"]:
+                with self.subTest(bug=v["name"]):
+                    cats = categories(classify(diff_sources(ref, (TXL / v["file"]).read_text()), "tirx"))
+                    self.assertEqual(cats[:1], [v["bug"]["category"]], cats)
+
+    def test_shape_list_is_not_an_index_expression(self):
+        old = 'red = smem.alloc([NWARP], "float32")'
+        new = 'red = smem.alloc([NWARP * 2], "float32")'
+        cats = categories(classify(diff_sources(f"import tirx_kernels\n{old}\n", f"import tirx_kernels\n{new}\n"), "tirx"))
+        self.assertIn("memory", cats)
+        self.assertNotIn("indexing", cats)          # [NWARP] is a shape list, not a subscript
+
+    def test_cosmetic_python_changes_ignored(self):
+        src = (TXL / "softmax_txl_ref.py").read_text()
+        cosmetic = src.replace("        r = txl.cta_id()\n", "        # which row this CTA owns\n        r   =   txl.cta_id( )\n")
+        self.assertEqual(diff_sources(src, cosmetic), [])
+
+    @unittest.skipUnless(RMSNORM.exists(), "needs third_party/tirx-kernels")
+    def test_official_rmsnorm_mutations(self):
+        src = RMSNORM.read_text()
+        cases = [
+            ("            cta_sync(0)\n            with txl.if_(warp == 0):", "            with txl.if_(warp == 0):", "sync"),
+            ("txl.if_(st < hidden_size)", "txl.if_(st <= hidden_size)", "indexing"),
+            ("block = min(256, hidden_size // vec)", "block = min(128, hidden_size // vec)", "tiling"),
+            (" + txl.float32(eps)))", "))", "numerical"),
+            ('sum_sq_smem = smem.alloc([bdy], "float32")', 'sum_sq_smem = smem.alloc([bdy * 2], "float32")', "memory"),
+        ]
+        for old, new, want in cases:
+            with self.subTest(want=want):
+                self.assertIn(old, src)
+                cats = categories(classify(diff_sources(src, src.replace(old, new, 1)), "tirx"))
+                self.assertEqual(cats[:1], [want], cats)
+
+    def test_plan_autodetects_tirx(self):
+        ref = (TXL / "softmax_txl_ref.py").read_text()
+        p = plan("softmax", ref, (TXL / "bugs" / "softmax_txl_bug_tail.py").read_text(), (128,))
+        self.assertEqual(p.cats[0], "tiling")
+        self.assertTrue(any(t.shape["N"] % 128 for t in p.tests))

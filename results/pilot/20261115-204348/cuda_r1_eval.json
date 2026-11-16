@@ -1,0 +1,32 @@
+{
+ "stage": "ok",
+ "volta": [
+  {
+   "N": 256,
+   "status": "EQUIV",
+   "detail": "",
+   "hint": null,
+   "mismatches": null,
+   "examples": [],
+   "wall_s": 0.08
+  },
+  {
+   "N": 200,
+   "status": "EQUIV",
+   "detail": "",
+   "hint": null,
+   "mismatches": null,
+   "examples": [],
+   "wall_s": 0.05
+  },
+  {
+   "N": 100,
+   "status": "EQUIV",
+   "detail": "",
+   "hint": null,
+   "mismatches": null,
+   "examples": [],
+   "wall_s": 0.03
+  }
+ ]
+}

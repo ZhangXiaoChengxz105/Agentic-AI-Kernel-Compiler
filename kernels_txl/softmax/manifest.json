@@ -1,0 +1,17 @@
+{
+  "op": "softmax",
+  "lang": "tirx",
+  "description": "Row-wise softmax in tirx-lite: make_kernel(rows, n) with x, y float32 [rows, n]; one 128-thread CTA per row.",
+  "reference": "softmax_txl_ref",
+  "variants": [
+    {"name": "softmax_txl_ref", "file": "softmax_txl_ref.py", "role": "reference", "block": [128], "bug": null},
+    {"name": "softmax_txl_bug_nosync", "file": "bugs/softmax_txl_bug_nosync.py", "role": "candidate", "block": [128],
+     "bug": {"category": "sync", "change": "removed the CTA barrier after each tree-reduction step"}},
+    {"name": "softmax_txl_bug_tail", "file": "bugs/softmax_txl_bug_tail.py", "role": "candidate", "block": [128],
+     "bug": {"category": "tiling", "change": "partial max/sum loops run n // 128 tiles (tail dropped)"}},
+    {"name": "softmax_txl_bug_offbyone", "file": "bugs/softmax_txl_bug_offbyone.py", "role": "candidate", "block": [128],
+     "bug": {"category": "indexing", "change": "sum loop guard col <= n"}},
+    {"name": "softmax_txl_bug_nomax", "file": "bugs/softmax_txl_bug_nomax.py", "role": "candidate", "block": [128],
+     "bug": {"category": "numerical", "change": "no max subtraction before exp"}}
+  ]
+}

@@ -97,7 +97,7 @@ def evaluate(path: str, cases: list[dict]) -> dict:
             k, compiled = kernels[key]
             rec["stage"] = "numsim"
             x = _inputs(*key, c["dist"])
-            res = numsim.Engine().run(compiled, inputs={"x": x, "y": np.zeros_like(x)})
+            res = numsim.Engine(max_workers=2).run(compiled, inputs={"x": x, "y": np.zeros_like(x)})
             y = np.asarray(res.outputs["y"], dtype=np.float64)
             want = _softmax64(x)
             finite = np.isfinite(y)
@@ -129,7 +129,7 @@ def evaluate_isolated(path: str | Path, cases: list[dict], timeout_s: float = 18
         return {"stage": "safety", "error": "; ".join(problems), "cases": []}
     with tempfile.TemporaryDirectory(dir=WORKSPACE / "build") as tmp:
         res_file = Path(tmp) / "res.json"
-        env = {**os.environ, "RUSTUP_TOOLCHAIN": "1.95.0"}
+        env = {**os.environ, "RUSTUP_TOOLCHAIN": "1.95.0", "CARGO_BUILD_JOBS": "4"}  # be gentle on the login node
         cmd = [sys.executable, "-m", "agent.tirx_eval", str(path), json.dumps(cases), str(res_file)]
         try:
             p = subprocess.run(cmd, cwd=WORKSPACE, env=env, capture_output=True, text=True, timeout=timeout_s)

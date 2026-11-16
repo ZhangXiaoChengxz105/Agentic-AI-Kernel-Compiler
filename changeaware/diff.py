@@ -1,13 +1,15 @@
 """Task 2.1: what changed between two kernel revisions?
 
-diff_sources(old_src, new_src) -> list[Hunk]
+diff_sources(old_src, new_src, lang=None) -> list[Hunk]      lang: "cuda" | "tirx" (auto-detected)
 
-Input : the two CUDA source texts (agent revision k and k+1, or a correct kernel and its bug-injected copy).
+Input : the two kernel source texts (CUDA C++ or tirx-lite Python) (agent revision k and k+1, or a correct kernel and its bug-injected copy).
 Output: Hunks, each a group of consecutive changed lines: kind "add" | "del" | "mod", with
         (line number, normalized text) for the old and the new side.
-Normalization before diffing (so cosmetic edits do not count as changes):
+Normalization before diffing (so cosmetic edits do not count as changes). CUDA:
   * // and /* */ comments removed, whitespace collapsed, blank lines dropped
   * the name of each `__global__` function replaced by KERNEL (renaming is not a semantic change)
+tirx-lite: the Python parser does it (normalize_python): one entry per statement, headers of compound
+statements, comments/docstrings/formatting gone, @txl.kernel functions renamed KERNEL.
 """
 from __future__ import annotations
 
@@ -33,8 +35,46 @@ class Hunk:
         return "\n".join(t for _, t in self.new)
 
 
-def normalize(src: str) -> list[tuple[int, str]]:
+def detect_lang(src: str) -> str:
+    """'tirx' for tirx-lite Python modules, else 'cuda'."""
+    return "tirx" if re.search(r"^\s*(import|from)\s+tirx_kernels", src, re.M) else "cuda"
+
+
+def normalize_python(src: str) -> list[tuple[int, str]]:
+    """tirx-lite (Python) normalization via the Python parser: one entry per statement, compound
+    statements contribute only their header (`with txl.if_(col < n), txl.then_():`), comments,
+    docstrings and formatting disappear, and functions decorated with txl.kernel are renamed KERNEL."""
+    import ast
+    import copy
+    out = []
+    for node in ast.walk(ast.parse(src)):
+        if not isinstance(node, ast.stmt):
+            continue
+        if isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
+            continue                                                     # docstring
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and any(
+                "kernel" in ast.unparse(d) for d in node.decorator_list):
+            node = copy.copy(node)
+            node.name = "KERNEL"
+        if isinstance(getattr(node, "body", None), list):
+            head = copy.copy(node)
+            head.body = [ast.Pass()]
+            for attr in ("orelse", "finalbody", "handlers"):
+                if hasattr(head, attr):
+                    setattr(head, attr, [])
+            if hasattr(head, "decorator_list"):
+                head.decorator_list = []
+            text = ast.unparse(head).splitlines()[0]
+        else:
+            text = ast.unparse(node)
+        out.append((node.lineno, " ".join(text.split())))
+    return sorted(out)
+
+
+def normalize(src: str, lang: str = "cuda") -> list[tuple[int, str]]:
     """Return [(original 1-based line number, normalized text)] for every non-empty code line."""
+    if lang == "tirx":
+        return normalize_python(src)
     # blank out comments but keep newlines so line numbers survive
     src = _BLOCK_COMMENT.sub(lambda m: "\n" * m.group(0).count("\n"), src)
     src = _LINE_COMMENT.sub("", src)
@@ -47,8 +87,9 @@ def normalize(src: str) -> list[tuple[int, str]]:
     return out
 
 
-def diff_sources(old_src: str, new_src: str) -> list[Hunk]:
-    a, b = normalize(old_src), normalize(new_src)
+def diff_sources(old_src: str, new_src: str, lang: str | None = None) -> list[Hunk]:
+    lang = lang or detect_lang(old_src + "\n" + new_src)
+    a, b = normalize(old_src, lang), normalize(new_src, lang)
     sm = difflib.SequenceMatcher(a=[t for _, t in a], b=[t for _, t in b], autojunk=False)
     hunks = []
     for tag, i1, i2, j1, j2 in sm.get_opcodes():

@@ -1,0 +1,22 @@
+{
+  "model": "glm-5.3",
+  "rounds": 3,
+  "langs": {
+    "cuda": {
+      "history": [
+        {
+          "round": 1,
+          "stage": "ok",
+          "cost": 0.015707633184,
+          "in": 342,
+          "out": 3591,
+          "latency_s": 21.6
+        }
+      ],
+      "passed": true
+    }
+  },
+  "spent_coins": 0.015707633184,
+  "reasoning_effort": "high",
+  "max_tokens": 100000
+}

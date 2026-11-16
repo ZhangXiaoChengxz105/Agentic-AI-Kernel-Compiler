@@ -1,0 +1,32 @@
+{
+ "stage": "volta",
+ "volta": [
+  {
+   "N": 256,
+   "status": "RACE",
+   "detail": "data race on Shared[0x0]: write by t0 at pc:348 conflicts with read by t32 at pc:192",
+   "hint": "Two threads access the same address between barriers and at least one writes: add the missing __syncthreads() (or make each thread touch only its own element).",
+   "mismatches": null,
+   "examples": [],
+   "wall_s": 0.03
+  },
+  {
+   "N": 200,
+   "status": "RACE",
+   "detail": "data race on Shared[0x0]: write by t0 at pc:348 conflicts with read by t32 at pc:192",
+   "hint": "Two threads access the same address between barriers and at least one writes: add the missing __syncthreads() (or make each thread touch only its own element).",
+   "mismatches": null,
+   "examples": [],
+   "wall_s": 0.02
+  },
+  {
+   "N": 100,
+   "status": "RACE",
+   "detail": "data race on Shared[0x0]: write by t0 at pc:348 conflicts with read by t32 at pc:192",
+   "hint": "Two threads access the same address between barriers and at least one writes: add the missing __syncthreads() (or make each thread touch only its own element).",
+   "mismatches": null,
+   "examples": [],
+   "wall_s": 0.02
+  }
+ ]
+}
