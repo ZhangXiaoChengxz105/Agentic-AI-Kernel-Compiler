@@ -1,0 +1,887 @@
+{
+ "config": "C",
+ "passed": true,
+ "seconds": 7.5582478700671345,
+ "reports": [
+  {
+   "validator": "fixed_tests",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.1975908069871366,
+   "artifacts": {
+    "outcomes": [
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 128,
+       "N": 128,
+       "K": 128
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.1542762468129695e-05,
+      "max_rel_err": 0.0006510959154668694,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+      "kernel_ms": 0.23449002765119076
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 256,
+       "N": 256,
+       "K": 256
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.072619566386493e-05,
+      "max_rel_err": 0.10590636721095462,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+      "kernel_ms": 0.13643503189086914
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 512,
+       "N": 512,
+       "K": 512
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.83508713656056e-05,
+      "max_rel_err": 0.008491038751917352,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 8.84e-05)",
+      "kernel_ms": 0.14233705587685108
+     }
+    ],
+    "n_tests": 3
+   }
+  },
+  {
+   "validator": "changeaware",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.1808540399651974,
+   "artifacts": {
+    "parent": "reference gemm_ref",
+    "categories": [
+     "tiling",
+     "memory",
+     "sync",
+     "indexing"
+    ],
+    "labels": [
+     {
+      "category": "memory",
+      "rule": "shared-decl",
+      "line": 16,
+      "evidence": "__shared__ float As[TILE][TILE];"
+     },
+     {
+      "category": "memory",
+      "rule": "shared-decl",
+      "line": 17,
+      "evidence": "__shared__ float Bs[TILE][TILE];"
+     },
+     {
+      "category": "indexing",
+      "rule": "loop-bound",
+      "line": 18,
+      "evidence": "for (int k = 0; k < K; ++k) acc += A[row * K + k] * B[k * N + col];  ->  for (int k = 0; k < TILE; ++k) acc += As[ty][k] * Bs[k][tx];"
+     },
+     {
+      "category": "tiling",
+      "rule": "tile-count",
+      "line": 23,
+      "evidence": "const int ntiles = (K + TILE - 1) / TILE;"
+     },
+     {
+      "category": "tiling",
+      "rule": "tile-count",
+      "line": 24,
+      "evidence": "for (int t = 0; t < ntiles; ++t) {"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 29,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 31,
+      "evidence": "__syncthreads();"
+     }
+    ],
+    "tiles": [
+     16
+    ],
+    "tests": [
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "normal",
+      "seed": 1070135401,
+      "repeat": 1,
+      "tag": "tiling: {'M': 12, 'N': 12, 'K': 40} vs tile 16",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 33,
+       "N": 63,
+       "K": 31
+      },
+      "dist": "normal",
+      "seed": 120074243,
+      "repeat": 1,
+      "tag": "memory: odd sizes",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 512,
+       "N": 512,
+       "K": 512
+      },
+      "dist": "normal",
+      "seed": 1016713205,
+      "repeat": 5,
+      "tag": "sync: many K-tiles, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "normal",
+      "seed": 820202327,
+      "repeat": 1,
+      "tag": "indexing: {'M': 12, 'N': 12, 'K': 40} vs tile 16",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 100,
+       "N": 100,
+       "K": 40
+      },
+      "dist": "normal",
+      "seed": 410170585,
+      "repeat": 1,
+      "tag": "tiling: {'M': 100, 'N': 100, 'K': 40} vs tile 16",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 64,
+       "N": 64,
+       "K": 64
+      },
+      "dist": "normal",
+      "seed": 1805835080,
+      "repeat": 1,
+      "tag": "memory: pointers misaligned by 1 element",
+      "misalign": 1
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 257,
+       "N": 263,
+       "K": 1031
+      },
+      "dist": "normal",
+      "seed": 1676276096,
+      "repeat": 5,
+      "tag": "sync: ragged + many K-tiles, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 100,
+       "N": 100,
+       "K": 40
+      },
+      "dist": "normal",
+      "seed": 199180985,
+      "repeat": 1,
+      "tag": "indexing: {'M': 100, 'N': 100, 'K': 40} vs tile 16",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 33,
+       "N": 47,
+       "K": 61
+      },
+      "dist": "normal",
+      "seed": 415457878,
+      "repeat": 1,
+      "tag": "tiling: {'M': 33, 'N': 47, 'K': 61} vs tile 16",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 16,
+       "N": 16,
+       "K": 2048
+      },
+      "dist": "normal",
+      "seed": 1836306429,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, 128 K-tiles, x10",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 33,
+       "N": 47,
+       "K": 61
+      },
+      "dist": "normal",
+      "seed": 401133928,
+      "repeat": 1,
+      "tag": "indexing: {'M': 33, 'N': 47, 'K': 61} vs tile 16",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 17,
+       "N": 15,
+       "K": 16
+      },
+      "dist": "normal",
+      "seed": 1282865279,
+      "repeat": 1,
+      "tag": "tiling: {'M': 17, 'N': 15, 'K': 16} vs tile 16",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 17,
+       "N": 15,
+       "K": 16
+      },
+      "dist": "normal",
+      "seed": 1130187585,
+      "repeat": 1,
+      "tag": "indexing: {'M': 17, 'N': 15, 'K': 16} vs tile 16",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 1,
+       "N": 1,
+       "K": 1
+      },
+      "dist": "normal",
+      "seed": 229709003,
+      "repeat": 1,
+      "tag": "tiling: 1x1x1",
+      "misalign": 0
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 1,
+       "N": 1,
+       "K": 1
+      },
+      "dist": "normal",
+      "seed": 158455891,
+      "repeat": 1,
+      "tag": "indexing: 1x1x1",
+      "misalign": 0
+     }
+    ],
+    "suggested_volta_shapes": [
+     {
+      "M": 32,
+      "N": 32,
+      "K": 48
+     },
+     {
+      "M": 32,
+      "N": 32,
+      "K": 72
+     },
+     {
+      "M": 32,
+      "N": 32,
+      "K": 40
+     },
+     {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     {
+      "M": 16,
+      "N": 16,
+      "K": 64
+     }
+    ],
+    "outcomes": [
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "normal",
+      "seed": 1070135401,
+      "repeat": 1,
+      "tag": "tiling: {'M': 12, 'N': 12, 'K': 40} vs tile 16",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.523685323221116e-06,
+      "max_rel_err": 7.805241937080503e-06,
+      "examples": [],
+      "message": "all 144 outputs within tolerance (max abs err 4.52e-06)",
+      "kernel_ms": 0.24692201986908913
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 33,
+       "N": 63,
+       "K": 31
+      },
+      "dist": "normal",
+      "seed": 120074243,
+      "repeat": 1,
+      "tag": "memory: odd sizes",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 2079,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.977269711048393e-06,
+      "max_rel_err": 0.0004397373019316424,
+      "examples": [],
+      "message": "all 2079 outputs within tolerance (max abs err 4.98e-06)",
+      "kernel_ms": 0.09695207700133324
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 512,
+       "N": 512,
+       "K": 512
+      },
+      "dist": "normal",
+      "seed": 1016713205,
+      "repeat": 5,
+      "tag": "sync: many K-tiles, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.00010023781536006027,
+      "max_rel_err": 0.08186615888091024,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 0.0001)",
+      "kernel_ms": 0.14874804764986038
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "normal",
+      "seed": 820202327,
+      "repeat": 1,
+      "tag": "indexing: {'M': 12, 'N': 12, 'K': 40} vs tile 16",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.1496154651856614e-06,
+      "max_rel_err": 1.3937192661968472e-05,
+      "examples": [],
+      "message": "all 144 outputs within tolerance (max abs err 2.15e-06)",
+      "kernel_ms": 0.11711986735463142
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 100,
+       "N": 100,
+       "K": 40
+      },
+      "dist": "normal",
+      "seed": 410170585,
+      "repeat": 1,
+      "tag": "tiling: {'M': 100, 'N': 100, 'K': 40} vs tile 16",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 10000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.6175132243652115e-06,
+      "max_rel_err": 0.001587548506897361,
+      "examples": [],
+      "message": "all 10000 outputs within tolerance (max abs err 5.62e-06)",
+      "kernel_ms": 0.0768839381635189
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 64,
+       "N": 64,
+       "K": 64
+      },
+      "dist": "normal",
+      "seed": 1805835080,
+      "repeat": 1,
+      "tag": "memory: pointers misaligned by 1 element",
+      "misalign": 1,
+      "passed": true,
+      "reason": "ok",
+      "n": 4096,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0464992225678316e-05,
+      "max_rel_err": 0.0009560520004399045,
+      "examples": [],
+      "message": "all 4096 outputs within tolerance (max abs err 1.05e-05)",
+      "kernel_ms": 0.07420917972922325
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 257,
+       "N": 263,
+       "K": 1031
+      },
+      "dist": "normal",
+      "seed": 1676276096,
+      "repeat": 5,
+      "tag": "sync: ragged + many K-tiles, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 67591,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.00018451353759019185,
+      "max_rel_err": 0.00681641443396042,
+      "examples": [],
+      "message": "all 67591 outputs within tolerance (max abs err 0.000185)",
+      "kernel_ms": 0.22454094141721725
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 100,
+       "N": 100,
+       "K": 40
+      },
+      "dist": "normal",
+      "seed": 199180985,
+      "repeat": 1,
+      "tag": "indexing: {'M': 100, 'N': 100, 'K': 40} vs tile 16",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 10000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.027441476457284e-06,
+      "max_rel_err": 0.0012731741455869936,
+      "examples": [],
+      "message": "all 10000 outputs within tolerance (max abs err 5.03e-06)",
+      "kernel_ms": 0.07310602813959122
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 33,
+       "N": 47,
+       "K": 61
+      },
+      "dist": "normal",
+      "seed": 415457878,
+      "repeat": 1,
+      "tag": "tiling: {'M': 33, 'N': 47, 'K': 61} vs tile 16",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1551,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.265189847061038e-06,
+      "max_rel_err": 0.00011956487750385251,
+      "examples": [],
+      "message": "all 1551 outputs within tolerance (max abs err 7.27e-06)",
+      "kernel_ms": 0.07039192132651806
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 16,
+       "N": 16,
+       "K": 2048
+      },
+      "dist": "normal",
+      "seed": 1836306429,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, 128 K-tiles, x10",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 256,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.00020438662986066447,
+      "max_rel_err": 2.3719809668697083e-05,
+      "examples": [],
+      "message": "all 256 outputs within tolerance (max abs err 0.000204)",
+      "kernel_ms": 0.14472100883722305
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 33,
+       "N": 47,
+       "K": 61
+      },
+      "dist": "normal",
+      "seed": 401133928,
+      "repeat": 1,
+      "tag": "indexing: {'M': 33, 'N': 47, 'K': 61} vs tile 16",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1551,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.334537054897282e-06,
+      "max_rel_err": 9.436713505270284e-05,
+      "examples": [],
+      "message": "all 1551 outputs within tolerance (max abs err 6.33e-06)",
+      "kernel_ms": 0.06981100887060165
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 17,
+       "N": 15,
+       "K": 16
+      },
+      "dist": "normal",
+      "seed": 1282865279,
+      "repeat": 1,
+      "tag": "tiling: {'M': 17, 'N': 15, 'K': 16} vs tile 16",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 255,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 9.725346750144581e-07,
+      "max_rel_err": 5.3449174658794536e-06,
+      "examples": [],
+      "message": "all 255 outputs within tolerance (max abs err 9.73e-07)",
+      "kernel_ms": 0.06939005106687546
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 17,
+       "N": 15,
+       "K": 16
+      },
+      "dist": "normal",
+      "seed": 1130187585,
+      "repeat": 1,
+      "tag": "indexing: {'M': 17, 'N': 15, 'K': 16} vs tile 16",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 255,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.1564655242324307e-06,
+      "max_rel_err": 4.726717851201857e-05,
+      "examples": [],
+      "message": "all 255 outputs within tolerance (max abs err 1.16e-06)",
+      "kernel_ms": 0.0662039965391159
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 1,
+       "N": 1,
+       "K": 1
+      },
+      "dist": "normal",
+      "seed": 229709003,
+      "repeat": 1,
+      "tag": "tiling: 1x1x1",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.5364332856270266e-10,
+      "max_rel_err": 1.1596285845276411e-08,
+      "examples": [],
+      "message": "all 1 outputs within tolerance (max abs err 2.54e-10)",
+      "kernel_ms": 0.07377797737717628
+     },
+     {
+      "op": "gemm",
+      "shape": {
+       "M": 1,
+       "N": 1,
+       "K": 1
+      },
+      "dist": "normal",
+      "seed": 158455891,
+      "repeat": 1,
+      "tag": "indexing: 1x1x1",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.734537844581666e-12,
+      "max_rel_err": 1.706121927464516e-08,
+      "examples": [],
+      "message": "all 1 outputs within tolerance (max abs err 5.73e-12)",
+      "kernel_ms": 0.06878911517560482
+     }
+    ]
+   }
+  },
+  {
+   "validator": "volta",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 1.179714776109904,
+   "artifacts": {
+    "runs": [
+     {
+      "shape": {
+       "M": 32,
+       "N": 32,
+       "K": 48
+      },
+      "status": "EQUIV",
+      "wall_s": 0.0828189889434725,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "M": 32,
+       "N": 32,
+       "K": 72
+      },
+      "status": "EQUIV",
+      "wall_s": 0.1279335820581764,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "M": 32,
+       "N": 32,
+       "K": 40
+      },
+      "status": "EQUIV",
+      "wall_s": 0.07370910188183188,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "status": "EQUIV",
+      "wall_s": 0.056585801066830754,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "M": 16,
+       "N": 16,
+       "K": 64
+      },
+      "status": "EQUIV",
+      "wall_s": 0.11064544087275863,
+      "detail": ""
+     }
+    ],
+    "shapes": [
+     {
+      "M": 32,
+      "N": 32,
+      "K": 48
+     },
+     {
+      "M": 32,
+      "N": 32,
+      "K": 72
+     },
+     {
+      "M": 32,
+      "N": 32,
+      "K": 40
+     },
+     {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     {
+      "M": 16,
+      "N": 16,
+      "K": 64
+     }
+    ]
+   }
+  }
+ ],
+ "perf": {
+  "workload": "gemm",
+  "label": "gemm_opt",
+  "lang": "cuda",
+  "shape": {
+   "M": 1024,
+   "N": 1024,
+   "K": 1024
+  },
+  "measured": true,
+  "reason": "",
+  "gpu": "A100-SXM4-40GB",
+  "time_ms": 0.6060479879379272,
+  "p10_ms": 0.6053760051727295,
+  "p90_ms": 0.60726398229599,
+  "iters": 50,
+  "torch_ms": 0.17084799706935883,
+  "copy_ms": null,
+  "flops": 2147483648.0,
+  "bytes": 12582912.0,
+  "intensity": 170.66666666666666,
+  "bound": "compute",
+  "achieved_gbps": 20.762237067749773,
+  "achieved_tflops": 3.543421792895961,
+  "pct_peak_bw": 1.335192094389053,
+  "pct_peak_flops": 18.171393809722876,
+  "roofline_ms": 0.11012736656410257,
+  "floor_ms": 0.11012736656410257,
+  "seconds": 3.262964343186468,
+  "spec": {
+   "name": "A100-SXM4-40GB",
+   "dram_gbps": 1555.0,
+   "fp32_tflops": 19.5,
+   "sms": 108,
+   "l2_mb": 40.0,
+   "known": true,
+   "ridge_flop_per_byte": 12.54
+  },
+  "speedup_vs_torch": 0.2819050644003746,
+  "headroom": 5.503155181552088
+ }
+}

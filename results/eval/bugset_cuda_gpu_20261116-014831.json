@@ -1,0 +1,1376 @@
+{
+  "device": "gpu",
+  "lang": "cuda",
+  "totals": {
+    "A": 4,
+    "B": 5,
+    "C": 11
+  },
+  "n": 11,
+  "rows": [
+    {
+      "workload": "gemm",
+      "bug": "gemm_bug_nosync",
+      "truth": "sync",
+      "fixed": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.262,
+        "errors": 1,
+        "kinds": [
+          "mismatch"
+        ],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": false,
+        "decided": true,
+        "seconds": 0.775,
+        "errors": 1,
+        "kinds": [
+          "race"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 48
+              },
+              "status": "RACE",
+              "wall_s": 0.04493502504192293,
+              "detail": "data race on Shared[0x0]: read by t1 at pc:59 conflicts with write by t0 at pc:47"
+            }
+          ],
+          "shapes": [
+            {
+              "M": 32,
+              "N": 32,
+              "K": 48
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.282,
+        "errors": 2,
+        "kinds": [
+          "mismatch",
+          "nondeterministic"
+        ],
+        "artifacts": {
+          "categories": [
+            "sync"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "M": 32,
+              "N": 32,
+              "K": 48
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 72
+            },
+            {
+              "M": 16,
+              "N": 16,
+              "K": 64
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": false,
+        "decided": true,
+        "seconds": 0.889,
+        "errors": 3,
+        "kinds": [
+          "race"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 48
+              },
+              "status": "RACE",
+              "wall_s": 0.04272364405915141,
+              "detail": "data race on Shared[0x0]: read by t1 at pc:59 conflicts with write by t0 at pc:47"
+            },
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 72
+              },
+              "status": "RACE",
+              "wall_s": 0.06256743799895048,
+              "detail": "data race on Shared[0x0]: read by t1 at pc:59 conflicts with write by t0 at pc:47"
+            },
+            {
+              "shape": {
+                "M": 16,
+                "N": 16,
+                "K": 64
+              },
+              "status": "RACE",
+              "wall_s": 0.05895412294194102,
+              "detail": "data race on Shared[0x0]: read by t1 at pc:59 conflicts with write by t0 at pc:47"
+            }
+          ],
+          "shapes": [
+            {
+              "M": 32,
+              "N": 32,
+              "K": 48
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 72
+            },
+            {
+              "M": 16,
+              "N": 16,
+              "K": 64
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": true,
+        "B": true,
+        "C": true
+      }
+    },
+    {
+      "workload": "gemm",
+      "bug": "gemm_bug_ktail",
+      "truth": "tiling",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 3.265,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": true,
+        "seconds": 0.815,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 48
+              },
+              "status": "EQUIV",
+              "wall_s": 0.08830225700512528,
+              "detail": ""
+            }
+          ],
+          "shapes": [
+            {
+              "M": 32,
+              "N": 32,
+              "K": 48
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.336,
+        "errors": 8,
+        "kinds": [
+          "mismatch"
+        ],
+        "artifacts": {
+          "categories": [
+            "tiling",
+            "indexing"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "M": 32,
+              "N": 32,
+              "K": 48
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 72
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 40
+            },
+            {
+              "M": 12,
+              "N": 12,
+              "K": 40
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": false,
+        "decided": true,
+        "seconds": 1.057,
+        "errors": 3,
+        "kinds": [
+          "not_equivalent"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 48
+              },
+              "status": "EQUIV",
+              "wall_s": 0.0860211350955069,
+              "detail": ""
+            },
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 72
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.12514456803910434,
+              "detail": "NOT EQUIVALENT: 256 mismatched element"
+            },
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 40
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.07217960199341178,
+              "detail": "NOT EQUIVALENT: 256 mismatched element"
+            },
+            {
+              "shape": {
+                "M": 12,
+                "N": 12,
+                "K": 40
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.0496218039188534,
+              "detail": "NOT EQUIVALENT: 144 mismatched element"
+            }
+          ],
+          "shapes": [
+            {
+              "M": 32,
+              "N": 32,
+              "K": 48
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 72
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 40
+            },
+            {
+              "M": 12,
+              "N": 12,
+              "K": 40
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": false,
+        "B": false,
+        "C": true
+      }
+    },
+    {
+      "workload": "gemm",
+      "bug": "gemm_bug_guard",
+      "truth": "indexing",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 3.292,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": true,
+        "seconds": 0.808,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 48
+              },
+              "status": "EQUIV",
+              "wall_s": 0.08544569811783731,
+              "detail": ""
+            }
+          ],
+          "shapes": [
+            {
+              "M": 32,
+              "N": 32,
+              "K": 48
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.147,
+        "errors": 5,
+        "kinds": [
+          "out_of_bounds"
+        ],
+        "artifacts": {
+          "categories": [
+            "indexing"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "M": 32,
+              "N": 32,
+              "K": 48
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 72
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 40
+            },
+            {
+              "M": 12,
+              "N": 12,
+              "K": 40
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": false,
+        "decided": true,
+        "seconds": 1.061,
+        "errors": 1,
+        "kinds": [
+          "race"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 48
+              },
+              "status": "EQUIV",
+              "wall_s": 0.08577889087609947,
+              "detail": ""
+            },
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 72
+              },
+              "status": "EQUIV",
+              "wall_s": 0.1289323610253632,
+              "detail": ""
+            },
+            {
+              "shape": {
+                "M": 32,
+                "N": 32,
+                "K": 40
+              },
+              "status": "EQUIV",
+              "wall_s": 0.0742173979524523,
+              "detail": ""
+            },
+            {
+              "shape": {
+                "M": 12,
+                "N": 12,
+                "K": 40
+              },
+              "status": "RACE",
+              "wall_s": 0.0472859691362828,
+              "detail": "data race on Global[0x140030]: write by t16 at pc:123 conflicts with write by t12 at pc:123"
+            }
+          ],
+          "shapes": [
+            {
+              "M": 32,
+              "N": 32,
+              "K": 48
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 72
+            },
+            {
+              "M": 32,
+              "N": 32,
+              "K": 40
+            },
+            {
+              "M": 12,
+              "N": 12,
+              "K": 40
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": false,
+        "B": false,
+        "C": true
+      }
+    },
+    {
+      "workload": "layernorm",
+      "bug": "layernorm_bug_nosync",
+      "truth": "sync",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 3.283,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": false,
+        "decided": true,
+        "seconds": 0.766,
+        "errors": 1,
+        "kinds": [
+          "race"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 128
+              },
+              "status": "RACE",
+              "wall_s": 0.012788581196218729,
+              "detail": "data race on Shared[0x0]: read by t1 at pc:114 conflicts with write by t0 at pc:165"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 128
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": true,
+        "decided": true,
+        "seconds": 3.188,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {
+          "categories": [
+            "sync"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "N": 128
+            },
+            {
+              "N": 200
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": false,
+        "decided": true,
+        "seconds": 0.768,
+        "errors": 2,
+        "kinds": [
+          "race"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 128
+              },
+              "status": "RACE",
+              "wall_s": 0.012388542061671615,
+              "detail": "data race on Shared[0x0]: read by t1 at pc:114 conflicts with write by t0 at pc:165"
+            },
+            {
+              "shape": {
+                "N": 200
+              },
+              "status": "RACE",
+              "wall_s": 0.01369252405129373,
+              "detail": "data race on Shared[0x0]: read by t1 at pc:114 conflicts with write by t0 at pc:165"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 128
+            },
+            {
+              "N": 200
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": false,
+        "B": true,
+        "C": true
+      }
+    },
+    {
+      "workload": "layernorm",
+      "bug": "layernorm_bug_tail",
+      "truth": "tiling",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 3.235,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": true,
+        "seconds": 2.054,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 128
+              },
+              "status": "EQUIV",
+              "wall_s": 1.3069135369732976,
+              "detail": ""
+            }
+          ],
+          "shapes": [
+            {
+              "N": 128
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.344,
+        "errors": 12,
+        "kinds": [
+          "mismatch"
+        ],
+        "artifacts": {
+          "categories": [
+            "tiling",
+            "indexing"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "N": 128
+            },
+            {
+              "N": 200
+            },
+            {
+              "N": 100
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": false,
+        "decided": true,
+        "seconds": 5.324,
+        "errors": 2,
+        "kinds": [
+          "not_equivalent"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 128
+              },
+              "status": "EQUIV",
+              "wall_s": 1.2990946131758392,
+              "detail": ""
+            },
+            {
+              "shape": {
+                "N": 200
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 3.0063909601885825,
+              "detail": "NOT EQUIVALENT: 200 mismatched element"
+            },
+            {
+              "shape": {
+                "N": 100
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.2738746569957584,
+              "detail": "NOT EQUIVALENT: 100 mismatched element"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 128
+            },
+            {
+              "N": 200
+            },
+            {
+              "N": 100
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": false,
+        "B": false,
+        "C": true
+      }
+    },
+    {
+      "workload": "layernorm",
+      "bug": "layernorm_bug_offbyone",
+      "truth": "indexing",
+      "fixed": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.43,
+        "errors": 3,
+        "kinds": [
+          "mismatch"
+        ],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": false,
+        "decided": true,
+        "seconds": 2.128,
+        "errors": 1,
+        "kinds": [
+          "not_equivalent"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 128
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 1.3814494819380343,
+              "detail": "NOT EQUIVALENT: 128 mismatched element"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 128
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.167,
+        "errors": 4,
+        "kinds": [
+          "mismatch",
+          "nonfinite"
+        ],
+        "artifacts": {
+          "categories": [
+            "indexing"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "N": 128
+            },
+            {
+              "N": 200
+            },
+            {
+              "N": 100
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": false,
+        "decided": true,
+        "seconds": 7.642,
+        "errors": 3,
+        "kinds": [
+          "not_equivalent"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 128
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 1.387384173925966,
+              "detail": "NOT EQUIVALENT: 128 mismatched element"
+            },
+            {
+              "shape": {
+                "N": 200
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 4.855165390996262,
+              "detail": "NOT EQUIVALENT: 200 mismatched element"
+            },
+            {
+              "shape": {
+                "N": 100
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.6540230519603938,
+              "detail": "NOT EQUIVALENT: 100 mismatched element"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 128
+            },
+            {
+              "N": 200
+            },
+            {
+              "N": 100
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": true,
+        "B": true,
+        "C": true
+      }
+    },
+    {
+      "workload": "layernorm",
+      "bug": "layernorm_bug_onepass",
+      "truth": "numerical",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 3.364,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": true,
+        "seconds": 1.842,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 128
+              },
+              "status": "EQUIV",
+              "wall_s": 1.0959864018950611,
+              "detail": ""
+            }
+          ],
+          "shapes": [
+            {
+              "N": 128
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.145,
+        "errors": 1,
+        "kinds": [
+          "nonfinite"
+        ],
+        "artifacts": {
+          "categories": [
+            "numerical"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "N": 128
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": true,
+        "decided": true,
+        "seconds": 1.835,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 128
+              },
+              "status": "EQUIV",
+              "wall_s": 1.0907734520733356,
+              "detail": ""
+            }
+          ],
+          "shapes": [
+            {
+              "N": 128
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": false,
+        "B": false,
+        "C": true
+      }
+    },
+    {
+      "workload": "softmax",
+      "bug": "softmax_bug_nosync",
+      "truth": "sync",
+      "fixed": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.251,
+        "errors": 3,
+        "kinds": [
+          "mismatch"
+        ],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": false,
+        "decided": true,
+        "seconds": 0.762,
+        "errors": 1,
+        "kinds": [
+          "race"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 256
+              },
+              "status": "RACE",
+              "wall_s": 0.01423710584640503,
+              "detail": "data race on Shared[0x4]: write by t1 at pc:64 conflicts with read by t0 at pc:98"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 256
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.219,
+        "errors": 3,
+        "kinds": [
+          "mismatch"
+        ],
+        "artifacts": {
+          "categories": [
+            "sync"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "N": 256
+            },
+            {
+              "N": 584
+            },
+            {
+              "N": 264
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": false,
+        "decided": true,
+        "seconds": 0.779,
+        "errors": 3,
+        "kinds": [
+          "race"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 256
+              },
+              "status": "RACE",
+              "wall_s": 0.012085166061297059,
+              "detail": "data race on Shared[0x4]: write by t1 at pc:64 conflicts with read by t0 at pc:98"
+            },
+            {
+              "shape": {
+                "N": 584
+              },
+              "status": "RACE",
+              "wall_s": 0.015578768914565444,
+              "detail": "data race on Shared[0x4]: write by t1 at pc:64 conflicts with read by t0 at pc:98"
+            },
+            {
+              "shape": {
+                "N": 264
+              },
+              "status": "RACE",
+              "wall_s": 0.011475073173642159,
+              "detail": "data race on Shared[0x4]: write by t1 at pc:64 conflicts with read by t0 at pc:98"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 256
+            },
+            {
+              "N": 584
+            },
+            {
+              "N": 264
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": true,
+        "B": true,
+        "C": true
+      }
+    },
+    {
+      "workload": "softmax",
+      "bug": "softmax_bug_tail",
+      "truth": "tiling",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 3.198,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": true,
+        "seconds": 0.781,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 256
+              },
+              "status": "EQUIV",
+              "wall_s": 0.040832259925082326,
+              "detail": ""
+            }
+          ],
+          "shapes": [
+            {
+              "N": 256
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.16,
+        "errors": 12,
+        "kinds": [
+          "mismatch",
+          "nonfinite"
+        ],
+        "artifacts": {
+          "categories": [
+            "tiling",
+            "indexing"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "N": 256
+            },
+            {
+              "N": 584
+            },
+            {
+              "N": 200
+            },
+            {
+              "N": 100
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": false,
+        "decided": true,
+        "seconds": 1.399,
+        "errors": 3,
+        "kinds": [
+          "div_by_zero",
+          "not_equivalent"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 256
+              },
+              "status": "EQUIV",
+              "wall_s": 0.04094356903806329,
+              "detail": ""
+            },
+            {
+              "shape": {
+                "N": 584
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.538389960071072,
+              "detail": "NOT EQUIVALENT: 584 mismatched element"
+            },
+            {
+              "shape": {
+                "N": 200
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.06792498589493334,
+              "detail": "NOT EQUIVALENT: 200 mismatched element"
+            },
+            {
+              "shape": {
+                "N": 100
+              },
+              "status": "DIV_BY_ZERO",
+              "wall_s": 0.012267688056454062,
+              "detail": "equivalence check failed: division by a symbolically zero value"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 256
+            },
+            {
+              "N": 584
+            },
+            {
+              "N": 200
+            },
+            {
+              "N": 100
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": false,
+        "B": false,
+        "C": true
+      }
+    },
+    {
+      "workload": "softmax",
+      "bug": "softmax_bug_offbyone",
+      "truth": "indexing",
+      "fixed": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.273,
+        "errors": 3,
+        "kinds": [
+          "mismatch",
+          "nonfinite"
+        ],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": false,
+        "decided": true,
+        "seconds": 0.849,
+        "errors": 1,
+        "kinds": [
+          "not_equivalent"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 256
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.1020380409900099,
+              "detail": "NOT EQUIVALENT: 256 mismatched element"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 256
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.149,
+        "errors": 6,
+        "kinds": [
+          "mismatch",
+          "nonfinite"
+        ],
+        "artifacts": {
+          "categories": [
+            "indexing"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "N": 256
+            },
+            {
+              "N": 584
+            },
+            {
+              "N": 200
+            },
+            {
+              "N": 100
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": false,
+        "decided": true,
+        "seconds": 1.4,
+        "errors": 4,
+        "kinds": [
+          "not_equivalent"
+        ],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 256
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.1033838598523289,
+              "detail": "NOT EQUIVALENT: 256 mismatched element"
+            },
+            {
+              "shape": {
+                "N": 584
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.46121591585688293,
+              "detail": "NOT EQUIVALENT: 584 mismatched element"
+            },
+            {
+              "shape": {
+                "N": 200
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.06749436305835843,
+              "detail": "NOT EQUIVALENT: 200 mismatched element"
+            },
+            {
+              "shape": {
+                "N": 100
+              },
+              "status": "NOT_EQUIV",
+              "wall_s": 0.025878703920170665,
+              "detail": "NOT EQUIVALENT: 100 mismatched element"
+            }
+          ],
+          "shapes": [
+            {
+              "N": 256
+            },
+            {
+              "N": 584
+            },
+            {
+              "N": 200
+            },
+            {
+              "N": 100
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": true,
+        "B": true,
+        "C": true
+      }
+    },
+    {
+      "workload": "softmax",
+      "bug": "softmax_bug_nomax",
+      "truth": "numerical",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 3.388,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": true,
+        "seconds": 3.037,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 256
+              },
+              "status": "EQUIV",
+              "wall_s": 2.294555045897141,
+              "detail": ""
+            }
+          ],
+          "shapes": [
+            {
+              "N": 256
+            }
+          ]
+        }
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 3.201,
+        "errors": 3,
+        "kinds": [
+          "nonfinite"
+        ],
+        "artifacts": {
+          "categories": [
+            "numerical"
+          ],
+          "suggested_volta_shapes": [
+            {
+              "N": 256
+            },
+            {
+              "N": 584
+            }
+          ]
+        }
+      },
+      "volta_C": {
+        "passed": true,
+        "decided": true,
+        "seconds": 27.305,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {
+          "runs": [
+            {
+              "shape": {
+                "N": 256
+              },
+              "status": "EQUIV",
+              "wall_s": 2.307472981978208,
+              "detail": ""
+            },
+            {
+              "shape": {
+                "N": 584
+              },
+              "status": "EQUIV",
+              "wall_s": 24.251678369939327,
+              "detail": ""
+            }
+          ],
+          "shapes": [
+            {
+              "N": 256
+            },
+            {
+              "N": 584
+            }
+          ]
+        }
+      },
+      "detected": {
+        "A": false,
+        "B": false,
+        "C": true
+      }
+    }
+  ]
+}
