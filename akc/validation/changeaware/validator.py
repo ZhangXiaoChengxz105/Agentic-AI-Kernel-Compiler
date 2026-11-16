@@ -48,7 +48,8 @@ class ChangeAwareValidator:
             if f is None:
                 continue
             cat = (o.get("tag") or "").split(":")[0]
-            related = [f"L{lab.line}: {lab.evidence[:120]}" for lab in p.labels if lab.category == cat][:3]
+            related = list(dict.fromkeys(f"L{lab.line}: {lab.evidence[:120]}"     # dedupe: several rules can
+                                         for lab in p.labels if lab.category == cat))[:3]  # label one line
             if related:
                 f.evidence["related_change"] = related
             findings.append(f)

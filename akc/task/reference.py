@@ -9,12 +9,18 @@ OpSpec fields
   kernel_args  : (device inputs, device output, shape) -> [(value, ctype)] in kernel-signature order
   launch       : (shape, block from manifest) -> (grid, block)
   flops/bytes  : for the benchmark (1.6)
-  tolerance    : float32 (atol, rtol); gemm's rtol is applied to |A|@|B| (magnitude-aware), so the
-                 bound grows with K the way float accumulation error does.
+  tolerance    : float32 (atol, rtol); `magnitude` (when set) replaces |golden| as the quantity rtol multiplies,
+                 so the bound follows the error any float32 implementation must make:
+                 gemm      |A|@|B|: grows with K the way float accumulation error does;
+                 layernorm |y| + (log2 N + 4) u |mean|/std |w| / rtol: rounding the row mean to float32
+                           (u = 2^-24) is amplified by |mean|/std. Without it, rows with a large offset
+                           (mean 1e4, std 1) fail even PyTorch's own float32 layer_norm (checked on the CPU:
+                           ~2000 of 8000 outputs), while the one-pass-variance bug is still caught (NaN / O(1)).
 """
 from __future__ import annotations
 
 import ctypes
+import math
 from dataclasses import dataclass
 from typing import Callable
 
@@ -24,6 +30,8 @@ import torch.nn.functional as F
 from .inputs import make_tensor
 
 LN_EPS = 1e-5
+LN_RTOL = 1e-3
+U32 = 2.0 ** -24          # float32 unit roundoff
 
 
 def _cdiv(a: int, b: int) -> int:
@@ -90,6 +98,16 @@ def _ln_inputs(s, dist, seed):
     return {"x": x, "w": w, "b": b}
 
 
+def _ln_magnitude(i):
+    x = i["x"].double()
+    n = x.shape[-1]
+    mean = x.mean(-1, keepdim=True)
+    std = torch.sqrt(x.var(-1, unbiased=False, keepdim=True) + LN_EPS)
+    y = F.layer_norm(x, (n,), i["w"].double(), i["b"].double(), LN_EPS)
+    unavoidable = (math.log2(max(n, 2)) + 4) * U32 * mean.abs() / std * i["w"].double().abs()
+    return y.abs() + unavoidable / LN_RTOL
+
+
 LAYERNORM = OpSpec(
     name="layernorm", shape_keys=("rows", "N"),
     make_inputs=_ln_inputs,
@@ -100,8 +118,9 @@ LAYERNORM = OpSpec(
     launch=lambda s, block: ((s["rows"], 1, 1), _dims3(block)),
     flops=lambda s: 8.0 * s["rows"] * s["N"],
     bytes=lambda s: 4.0 * (2 * s["rows"] * s["N"] + 2 * s["N"]),
-    atol=1e-4, rtol=1e-3,
+    atol=1e-4, rtol=LN_RTOL,
     torch_impl=lambda d: F.layer_norm(d["x"], (d["x"].shape[-1],), d["w"], d["b"], LN_EPS),
+    magnitude=_ln_magnitude,
 )
 
 

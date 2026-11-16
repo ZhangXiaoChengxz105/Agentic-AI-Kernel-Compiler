@@ -21,7 +21,7 @@ akc hottest --workload softmax --new workloads/softmax/cuda/bugs/softmax_bug_tai
 akc validate --workload gemm --kernel my_gemm.cu --config C --perf  # what the agent would see: checks, then speed (GPU)
 akc bench --workload softmax --feedback                           # speed: x PyTorch, % of peak bandwidth, floor (GPU)
 akc eval-bugs                                                     # A/B/C on the injected bugs
-python -m unittest discover -s tests                              # 101 tests (GPU tests skip on login nodes)
+python -m unittest discover -s tests                              # 105 tests (GPU tests skip on login nodes)
 sbatch scripts/slurm/smoke.sbatch                                 # full GPU run (uses the allocation: ask first)
 ```
 

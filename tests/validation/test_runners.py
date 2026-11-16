@@ -134,9 +134,27 @@ class NumericalBlindSpotEmulation(unittest.TestCase):
         mean = x.mean(-1, keepdim=True)
         var = (x * x).mean(-1, keepdim=True) - mean * mean       # bug_onepass, float32
         got = (x - mean) * torch.rsqrt(var + LN_EPS) * i["w"] + i["b"]
-        r = compare(*self._out(got), op.golden(i), atol=op.atol, rtol=op.rtol)
+        r = compare(*self._out(got), op.golden(i), atol=op.atol, rtol=op.rtol, scale=op.magnitude(i))
         self.assertFalse(r.passed)
         self.assertIn(r.reason, ("mismatch", "nonfinite"))
+
+    def test_layernorm_offset_is_not_a_false_alarm(self):
+        """GPU run 24036388: the change-aware 'offset' test (mean 1e4, std 1) failed our correct layernorm_opt.
+        Rounding the row mean to float32 alone costs ~5e-4 > atol, so PyTorch's own float32 layer_norm failed
+        the old tolerance too; the condition-aware magnitude accepts it and still rejects one-pass variance."""
+        op = OPS["layernorm"]
+        i = op.make_inputs({"rows": 8, "N": 1000}, "offset", 0)
+        got = torch.nn.functional.layer_norm(i["x"], (1000,), i["w"], i["b"], LN_EPS)   # float32, correct
+        old = compare(*self._out(got), op.golden(i), atol=op.atol, rtol=op.rtol)
+        self.assertFalse(old.passed)                                  # the false alarm, for the record
+        new = compare(*self._out(got), op.golden(i), atol=op.atol, rtol=op.rtol, scale=op.magnitude(i))
+        self.assertTrue(new.passed, new.message)
+
+    def test_layernorm_tolerance_unchanged_on_normal_data(self):
+        op = OPS["layernorm"]
+        i = op.make_inputs({"rows": 8, "N": 1000}, "normal", 0)
+        extra = (op.magnitude(i) - op.golden(i).abs()) * op.rtol
+        self.assertLess(float(extra.max()), 1e-6)                    # vs atol 1e-4: no visible change
 
     def _out(self, t):
         buf, out = alloc_output(t.numel(), device="cpu")

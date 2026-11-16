@@ -38,6 +38,12 @@ def _cell(s: dict) -> str:
     return "caught " + ",".join(s["kinds"])[:18] if not s["passed"] else "missed"
 
 
+def parent_variant(wl, lang: str):
+    """The correct version the injected bugs were made from: the bug-free candidate (CUDA: <op>_opt) or, when a
+    language has none (tirx: the bugs are single edits of the reference), the reference itself."""
+    return next((v for v in wl.candidates(lang) if not v.bug), None) or wl.reference(lang)
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="akc eval-bugs", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--workloads", default=",".join(list_workloads()))
@@ -55,7 +61,7 @@ def main(argv: list[str] | None = None) -> int:
         bugs = wl.bugs(a.lang)
         if not bugs:
             continue
-        good = next(v for v in wl.candidates(a.lang) if not v.bug)
+        good = parent_variant(wl, a.lang)
         parent = Candidate.from_file(op, good.file, entry=good.name if a.lang == "cuda" else None, label=good.name)
         for b in bugs:
             cand = Candidate.from_file(op, b.file, entry=b.name if a.lang == "cuda" else None, block=b.block,

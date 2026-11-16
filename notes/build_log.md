@@ -200,3 +200,7 @@ Refactors: `runners.build_for_gpu` (shared CUDA→PTX build), `runners.gpu.make_
 Checked on the CPU: the TF32-tensor-core hint is real: rounding GEMM inputs to TF32 gives a relative error of
 1.3e-4 vs |A||B| (tolerance 1e-5), so the feedback tells the model full fp32 accuracy is required.
 Tests: 101 (15 new in `tests/perf/`), all pass on the login node; 6 skipped (5 GPU, 1 slow NumSim).
+GPU run 24036388 (notes/gpu_results.md, second part) confirmed the perf path and found three problems, fixed:
+the LayerNorm "offset" false alarm (condition-aware tolerance `_ln_magnitude` in `task/reference.py`; CPU emulation
+in `tests/validation/test_runners.py`), the tirx `eval-bugs` crash (`bugset.parent_variant`, `tests/evaluation/`),
+and duplicate related-change lines. Tests: 105.

@@ -74,3 +74,41 @@ GEMM leaves the most room for an optimizing agent.
 - The 11 bugs, the classifier and the test generator were all written by the same person; the 11/11 for C is an
   upper bound. Re-measure with bugs written by someone else and with agent-produced revisions (Task 5).
 - One GPU run (no repetition across jobs); timings are medians of 50 launches on one node.
+
+---
+# Second A100 run (2026-11-16, Slurm job 24036388, 7 min 24 s): after the restructure + `akc/perf`
+Log: `logs/slurm/cs521-smoke-24036388.out`. Unit tests on the GPU node: 101 run, all pass (2 skipped: the slow
+NumSim test and one CPU-only test), including the two new GPU perf tests.
+
+## Unchanged after the restructure
+- CUDA injected bugs: **A 4/11, B 5/11, C 11/11** (identical to run 24032011).
+- GLM CUDA kernels on the 24 all-category tests: only glm_A_r3 (dropped term) fails, as before.
+- tirx-lite kernels (hand-written + 4 GLM): 8/8 tests each.
+
+## Speed with roofline numbers (rows=4096, N=1024; GEMM 1024³; median of 50, L2 flushed)
+| kernel | ms | × PyTorch | effective GB/s (% of 1555) | TFLOP/s (% of 19.5) | floor ratio |
+|---|---|---|---|---|---|
+| softmax_ref | 0.637 | 0.06 | 53 (3%) | | 20.0× |
+| softmax_opt | 0.0376 | 0.96 | 893 (57%) | | 1.18× |
+| softmax_txl_ref (tirx) | 0.0334 | 1.08 | 1006 (65%) | | 1.06× |
+| glm_A_r1 (CUDA) | 0.0339 | 1.07 | 991 (64%) | | 1.04× |
+| glm_B2_r1 / B3_r1 / B1_r3 | 0.0366 / 0.0392 / 0.0409 | 0.99 / 0.92 / 0.88 | 916 / 855 / 820 | | 1.15–1.28× |
+| layernorm_ref | 0.344 | 0.12 | 98 (6%) | | 10.5× |
+| layernorm_opt | 0.0377 | 1.12 | 889 (57%) | | 1.16× |
+| gemm_ref | 0.910 | 0.19 | | 2.36 (12%) | 8.3× (vs roofline) |
+| gemm_opt | 0.606 | 0.28 | | 3.54 (18%); PyTorch 12.57 (64%) | 5.5× (vs roofline) |
+A device copy of the same 33.6 MB takes 0.031–0.033 ms (≈1020–1050 GB/s, 66–68% of the datasheet peak): the
+practical floor for the memory-bound ops. The best softmax kernels are within 4–6% of it.
+tirx-lite GLM softmax kernels (akc tirx-gpu): 1.11–1.12× PyTorch (1.15× in run 24032011: run-to-run noise ~5%).
+
+## Problems this run found (fixed afterwards, see notes/build_log.md §7)
+1. **False alarm in the change-aware numerical test (Task 2).** `akc validate --config C` on our correct
+   layernorm_opt failed the "offset" test (mean 1e4, std 1): 2159/8000 outputs off by up to 1.4e-3 vs atol 1e-4.
+   CPU emulation: an ideal float32 LayerNorm (exact mean rounded to float32) fails ~1100/8000 and PyTorch's own
+   float32 layer_norm ~2200/8000: rounding the mean costs ~u·|mean|/std ≈ 6e-4, unavoidable. Fix: condition-aware
+   tolerance (`OpSpec.magnitude` for layernorm). Every correct agent kernel would otherwise have been rejected.
+2. **`akc eval-bugs --lang tirx` crashed** (StopIteration): it looked for a bug-free tirx "candidate" to compare the
+   bugs with; tirx bugs are edits of the reference. Not covered by any test before; fixed + test added.
+3. Duplicate "related change" lines in the feedback (two classifier rules labelled the same line). Deduplicated.
+4. The perf path itself worked as designed: glm_A_r3 was not timed ("incorrect at the benchmark shape"), and the
+   failing layernorm_opt observation contained no speed section (speed only for passing candidates).
