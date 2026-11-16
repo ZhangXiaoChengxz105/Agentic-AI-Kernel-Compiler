@@ -6,7 +6,7 @@ to `logs/setup_<timestamp>.log`.
 
 ```bash
 git clone git@github.com:ZhangXiaoChengxz105/Agentic-AI-Kernel-Compiler.git && cd Agentic-AI-Kernel-Compiler
-bash setup_env.sh --tests      # ~15 min first time (Rust ~600 MB, torch ~3 GB, VOLTA build ~3 min)
+bash setup_env.sh --tests      # ~9 min from scratch on Delta (verified 2026-11-16 in a fresh clone)
 source env.sh                  # in every new shell
 bash setup_env.sh --check      # verify later
 ```
