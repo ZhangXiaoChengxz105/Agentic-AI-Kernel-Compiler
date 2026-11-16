@@ -205,12 +205,17 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--langs", default="cuda,tirx")
     ap.add_argument("--rounds", type=int, default=3, help="GLM calls per language (1 = no repair)")
-    ap.add_argument("--max-tokens", type=int, default=24000)
+    ap.add_argument("--max-tokens", type=int, default=100000,
+                    help="output cap incl. reasoning; 24k was too small at full effort (reasoning alone used it all)")
+    ap.add_argument("--reasoning-effort", default="high", choices=["low", "medium", "high", "none"],
+                    help="forwarded to GLM via Lumen (default: maximum); 'none' = model default")
+    ap.add_argument("--per-call-limit", type=float, default=1.0, help="Lumen client guard per call (coins)")
+    ap.add_argument("--http-timeout", type=float, default=3600.0, help="seconds to wait for one reply")
     ap.add_argument("--max-coins", type=float, default=1.0, help="hard cap for the whole pilot")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
-    client = LumenClient(model="glm-5.3")
+    client = LumenClient(model="glm-5.3", per_call_limit=args.per_call_limit, timeout_s=args.http_timeout)
     p_in, p_out = client.price()
     out = WORKSPACE / "results" / "pilot" / datetime.now().strftime("%Y%m%d-%H%M%S")
     out.mkdir(parents=True, exist_ok=True)
@@ -227,11 +232,13 @@ def main() -> int:
             if spent + worst > args.max_coins:
                 print(f"[{lang}] stopping: pilot cap {args.max_coins} coins would be exceeded")
                 break
-            res = client.chat(msgs, max_tokens=args.max_tokens, dry_run=args.dry_run, tag=f"pilot-{lang}-r{rnd}")
+            extra = {} if args.reasoning_effort == "none" else {"reasoning_effort": args.reasoning_effort}
+            res = client.chat(msgs, max_tokens=args.max_tokens, dry_run=args.dry_run, tag=f"pilot-{lang}-r{rnd}", **extra)
             spent += res.cost
             (out / f"{lang}_r{rnd}_reply.md").write_text(
                 f"# {lang} round {rnd}\n\nmodel={res.model} in={res.input_tokens} out={res.output_tokens} "
-                f"cost={res.cost:.5f} latency={res.latency_s:.1f}s finish={res.finish_reason}\n\n"
+                f"cost={res.cost:.5f} latency={res.latency_s:.1f}s finish={res.finish_reason} "
+                f"effort={args.reasoning_effort} usage={json.dumps((res.raw or {}).get('usage'))}\n\n"
                 f"## reasoning\n{res.reasoning}\n\n## content\n{res.content}\n")
             print(f"[{lang} r{rnd}] reply: in={res.input_tokens} out={res.output_tokens} cost={res.cost:.4f} "
                   f"latency={res.latency_s:.0f}s finish={res.finish_reason}")
@@ -239,8 +246,11 @@ def main() -> int:
                 break
             code = extract_code(res.content, lang)
             if code is None:
-                ev = {"stage": "no_code", "error": "no fenced code block in the reply"}
-                fb = "Your answer did not contain a fenced code block. Return the complete file in one code block."
+                ev = {"stage": "no_code", "error": f"no fenced code block in the reply (finish={res.finish_reason})"}
+                fb = ("Your previous answer hit the output length limit before any code was written. "
+                      "Output the complete file in one code block now."
+                      if res.finish_reason == "length" else
+                      "Your answer did not contain a fenced code block. Return the complete file in one code block.")
             else:
                 path = out / f"{'softmax_glm' if lang == 'cuda' else 'softmax_txl'}_r{rnd}{L['ext']}"
                 path.write_text(code)
@@ -255,6 +265,8 @@ def main() -> int:
             msgs += [{"role": "assistant", "content": res.content}, {"role": "user", "content": fb}]
         summary["langs"][lang] = {"history": hist, "passed": bool(hist and hist[-1]["stage"] == "ok")}
     summary["spent_coins"] = spent
+    summary["reasoning_effort"] = args.reasoning_effort
+    summary["max_tokens"] = args.max_tokens
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
     print(f"\nspent {spent:.4f} coins; results in {out.relative_to(WORKSPACE)}")
     print(json.dumps(summary["langs"], indent=1))
