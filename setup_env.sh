@@ -12,7 +12,8 @@
 #   1. folders: tools/ envs/ third_party/ build/ results/ logs/ .secrets/ (mode 700)
 #   2. Rust (rustup) in tools/rustup + tools/cargo: stable (builds VOLTA) and 1.95.0 (TIRx NumSim; cargo 1.100's
 #      new build-dir layout breaks tirx-harness's artifact lookup)
-#   3. libz3 from pip `z3-solver` into tools/z3 (VOLTA links against it)
+#   3. libz3 from pip `z3-solver` into tools/z3 (VOLTA links against it); the Python venv is created here
+#      because the module's Python 3.13 has no pip of its own
 #   4. third_party sources at pinned commits: VOLTA, TIRx-harness, tirx-kernels, (Lumen docs)
 #   5. VOLTA release build (cargo build --release, 4 jobs)
 #   6. Python 3.13 venv ($AKC_ENV) with the exact package lock setup/requirements-akc.lock
@@ -104,8 +105,13 @@ ok "$("$CARGO_HOME/bin/rustc" --version); extra toolchain $RUST_EXTRA_TOOLCHAIN"
 
 # ---------------------------------------------------------------------------------------------------
 step 3 "libz3 (tools/z3, from pip z3-solver==$Z3_VERSION)"
+# The module's Python 3.13 has no pip; a venv bootstraps its own (ensurepip), so create the env first and use it.
+if [ ! -x "$AKC_ENV/bin/python" ]; then
+  "$PY313" -m venv "$AKC_ENV"
+  ok "venv $AKC_ENV created (needed for pip)"
+fi
 if [ ! -f tools/z3/z3/lib/libz3.so ]; then
-  "$PY313" -m pip install --no-cache-dir -q --target tools/z3 "z3-solver==$Z3_VERSION"
+  "$AKC_ENV/bin/python" -m pip install --no-cache-dir -q --target tools/z3 "z3-solver==$Z3_VERSION"
   ok "installed"
 else
   skip "tools/z3/z3/lib/libz3.so present"
