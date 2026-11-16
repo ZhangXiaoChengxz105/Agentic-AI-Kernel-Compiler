@@ -1,0 +1,38 @@
+{
+  "model": "glm-5.3",
+  "rounds": 3,
+  "langs": {
+    "cuda": {
+      "history": [
+        {
+          "round": 1,
+          "stage": "volta",
+          "cost": 0.049175882388000004,
+          "in": 342,
+          "out": 11469,
+          "latency_s": 70.9
+        },
+        {
+          "round": 2,
+          "stage": "volta",
+          "cost": 0.022545988952999998,
+          "in": 1733,
+          "out": 4768,
+          "latency_s": 31.7
+        },
+        {
+          "round": 3,
+          "stage": "ok",
+          "cost": 0.015750196581,
+          "in": 3033,
+          "out": 2764,
+          "latency_s": 14.8
+        }
+      ],
+      "passed": true
+    }
+  },
+  "spent_coins": 0.08747206792199999,
+  "reasoning_effort": "high",
+  "max_tokens": 100000
+}

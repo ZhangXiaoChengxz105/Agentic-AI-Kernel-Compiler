@@ -28,6 +28,7 @@ from agent.tirx_eval import evaluate_isolated  # noqa: E402
 from verify import WORKSPACE  # noqa: E402
 from verify.cases import Variant, load_manifest, make_case  # noqa: E402
 from verify.ptx import CompileError, compile_to_ptx  # noqa: E402
+from verify.hints import hint_for  # noqa: E402
 from verify.volta import run_compare  # noqa: E402
 
 TXL_DIR = WORKSPACE / "third_party" / "tirx-kernels" / "tirx_kernels"
@@ -143,7 +144,7 @@ def eval_cuda(path: Path) -> dict:
     runs = []
     for n in VOLTA_NS:
         r = run_compare(make_case("softmax", ref_ptx, ref, b.ptx, cand, {"N": n}, timeout_s=300))
-        runs.append({"N": n, "status": r.status, "detail": r.detail[:300], "mismatches": r.mismatches,
+        runs.append({"N": n, "status": r.status, "detail": r.detail[:300], "hint": hint_for(r), "mismatches": r.mismatches,
                      "examples": r.mismatch_examples[:3], "wall_s": round(r.wall_s or 0, 2)})
     bad = [x for x in runs if x["status"] != "EQUIV"]
     return {"stage": "ok" if not bad else "volta", "volta": runs}
@@ -166,6 +167,8 @@ def feedback_cuda(ev: dict) -> str:
                          "(control flow must not depend on data values).")
         else:
             lines.append(f"- N={x['N']}: verifier result {x['status']}: {x['detail']}")
+        if x.get("hint"):
+            lines.append(f"  hint: {x['hint']}")
     return ("Formal verification (VOLTA, one CTA, exact real arithmetic) of your kernel against a reference softmax "
             "failed:\n" + "\n".join(lines) + "\nFix the kernel and return the complete file.")
 

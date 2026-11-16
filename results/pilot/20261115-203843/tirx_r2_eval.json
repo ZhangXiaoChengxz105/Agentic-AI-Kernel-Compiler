@@ -1,0 +1,40 @@
+{
+ "stage": "ok",
+ "error": "",
+ "cases": [
+  {
+   "rows": 2,
+   "n": 200,
+   "dist": "normal",
+   "stage": "ok",
+   "numsim_verdict": "clean",
+   "nonfinite": 0,
+   "max_abs_err": 3.2833260728282188e-09,
+   "n_bad": 0,
+   "racecheck": "clean",
+   "race_findings": []
+  },
+  {
+   "rows": 2,
+   "n": 200,
+   "dist": "large",
+   "stage": "ok",
+   "numsim_verdict": "clean",
+   "nonfinite": 0,
+   "max_abs_err": 3.470682941042469e-08,
+   "n_bad": 0
+  },
+  {
+   "rows": 2,
+   "n": 256,
+   "dist": "normal",
+   "stage": "ok",
+   "numsim_verdict": "clean",
+   "nonfinite": 0,
+   "max_abs_err": 2.2165815884156448e-09,
+   "n_bad": 0,
+   "racecheck": "clean",
+   "race_findings": []
+  }
+ ]
+}

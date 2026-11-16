@@ -64,6 +64,8 @@ class ParseTests(unittest.TestCase):
             "error: optimized kernel: unsupported at pc:3: cp.async": "UNSUPPORTED",
             "error: optimized kernel: no kernel named 'foo' in module": "CONFIG_ERROR",
             "error: output element y[3] is undefined (uninitialized read)": "UNINIT",
+            # real output (GLM pilot, 2026-11-15): kernel used -FLT_MAX (3.4e38 > i128 max 1.7e38)
+            "error: equivalence check failed: rational coefficient overflowed i128": "UNSUPPORTED",
         }
         for err, want in cases.items():
             with self.subTest(err=err):
