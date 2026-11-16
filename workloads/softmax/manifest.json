@@ -53,6 +53,9 @@
       "y"
     ]
   },
+  "perf": {
+    "shape": {"rows": 4096, "N": 1024}
+  },
   "references": {
     "cuda": "softmax_ref",
     "tirx": "softmax_txl_ref"

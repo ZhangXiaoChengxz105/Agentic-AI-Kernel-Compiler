@@ -4,9 +4,11 @@
 #   2. torch sees the GPU
 #   3. full unit-test suite (GPU tests included)
 #   4. configurations A / B / C on the injected CUDA bugs and the tirx-lite bugs (akc eval-bugs)
-#   5. benchmark reference/optimized kernels vs PyTorch for every workload
-#   6. GLM-written CUDA softmax kernels (pilot): all-category tests + benchmark
+#   5. speed of reference/optimized kernels for every workload (akc bench: x PyTorch, roofline, practical floor,
+#      speed feedback text) + the tirx-lite reference
+#   6. GLM-written CUDA softmax kernels (pilot): all-category tests + speed
 #   7. tirx-lite softmax kernels (hand-written + GLM) on the GPU: correctness + speed
+#   8. the agent's full observation for one revision: validation (configuration C) then speed (akc validate --perf)
 #   sbatch scripts/slurm/smoke.sbatch          # ASK BEFORE SUBMITTING
 #SBATCH --job-name=cs521-smoke
 #SBATCH --account=bidr-delta-gpu
@@ -40,8 +42,9 @@ echo "== [4] configurations A/B/C on injected bugs"
 akc eval-bugs --device gpu
 akc eval-bugs --device gpu --lang tirx
 
-echo "== [5] benchmarks"
-for w in softmax gemm layernorm; do akc bench --workload "$w"; done
+echo "== [5] speed (perf): x PyTorch, roofline, practical floor, feedback text"
+for w in softmax gemm layernorm; do akc bench --workload "$w" --feedback; done
+akc bench --workload softmax --lang tirx
 
 echo "== [6] GLM CUDA kernels"
 P=results/pilot
@@ -53,4 +56,10 @@ akc bench --workload softmax --variants softmax_opt "${EXTRA[@]}"
 
 echo "== [7] tirx-lite kernels on the GPU"
 akc tirx-gpu
+
+echo "== [8] observation = validation (config C) + speed"
+for w in softmax layernorm gemm; do
+  akc validate --workload "$w" --kernel "workloads/$w/cuda/${w}_opt.cu" --config C --device gpu --perf \
+               --json "results/perf/observation_${w}_opt_${SLURM_JOB_ID:-local}.json"
+done
 echo "== done at $(date -Is)"

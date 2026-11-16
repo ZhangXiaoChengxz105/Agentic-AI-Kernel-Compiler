@@ -6,6 +6,7 @@ run(cand, tests, device) -> list[outcome dict]     picks the executor:
     tirx + cpu  -> runners.numsim (CPU simulation + Racecheck)
     cuda + cpu  -> nothing can execute: every test returns "skipped" (info)
 outcome_to_finding(outcome, validator) -> Finding | None   (None = test passed)
+build_for_gpu(cand) -> (kernel file, CUDA entry | None, block)   raises BuildError (also used by perf.measure)
 """
 from __future__ import annotations
 
@@ -32,33 +33,44 @@ def _skip_all(tests, why: str) -> list[dict]:
     return [{**t.to_dict(), **CheckResult(False, "skipped", message=why).to_dict()} for t in tests]
 
 
-def run(cand: Candidate, tests: list, device: str) -> list[dict]:
+class BuildError(Exception):
+    """The candidate cannot be turned into something the GPU executor loads (message = compiler output)."""
+
+
+def build_for_gpu(cand: Candidate) -> tuple:
+    """Candidate -> (file the GPU executor loads, CUDA entry name or None, launch block).
+    CUDA: compiled to PTX (backend.ptx, mode "gpu"); tirx: the module file itself (compiled per shape later)."""
     from ...task.workload import load_workload
-    if not tests:
-        return []
     wl = load_workload(cand.workload)
     block = cand.block or tuple(wl.launch["block"])
-    if cand.lang == "cuda":
-        if device != "gpu":
+    if cand.lang != "cuda":
+        return cand.materialize(), None, block
+    from ...backend.ptx import CompileError, compile_to_ptx
+    from ...paths import BUILD
+    try:
+        b = compile_to_ptx(cand.materialize(), BUILD / "ptx_gpu" / (cand.label or "cand"), mode="gpu")
+    except CompileError as e:
+        raise BuildError(e.stderr[-1500:]) from e
+    entry = cand.entry or (b.kernels[0] if len(b.kernels) == 1 else None)
+    if entry not in b.kernels:
+        raise BuildError(f"cannot find kernel entry {cand.entry}; entries: {b.kernels}")
+    return b.ptx, entry, block
+
+
+def run(cand: Candidate, tests: list, device: str) -> list[dict]:
+    if not tests:
+        return []
+    if device != "gpu":
+        if cand.lang == "cuda":
             return _skip_all(tests, "no GPU here: dynamic tests not executed (run on a GPU node)")
-        from ...backend.ptx import CompileError, compile_to_ptx
-        from ...paths import BUILD
-        try:
-            b = compile_to_ptx(cand.materialize(), BUILD / "ptx_gpu" / (cand.label or "cand"), mode="gpu")
-        except CompileError as e:
-            return [{**t.to_dict(), **CheckResult(False, "compile_error", message=e.stderr[-1500:]).to_dict()} for t in tests]
-        entry = cand.entry or (b.kernels[0] if len(b.kernels) == 1 else None)
-        if entry not in b.kernels:
-            return [{**t.to_dict(), **CheckResult(False, "compile_error",
-                                                   message=f"cannot find kernel entry {cand.entry}; entries: {b.kernels}").to_dict()}
-                    for t in tests]
-        from .gpu import run_tests_isolated
-        return run_tests_isolated(cand.workload, "cuda", b.ptx, entry, block, tests)
-    if device == "gpu":
-        from .gpu import run_tests_isolated
-        return run_tests_isolated(cand.workload, "tirx", cand.materialize(), None, block, tests)
-    from .numsim import run_tests_numsim_isolated
-    return run_tests_numsim_isolated(cand.workload, cand.materialize(), tests)
+        from .numsim import run_tests_numsim_isolated
+        return run_tests_numsim_isolated(cand.workload, cand.materialize(), tests)
+    try:
+        kernel_file, entry, block = build_for_gpu(cand)
+    except BuildError as e:
+        return [{**t.to_dict(), **CheckResult(False, "compile_error", message=str(e)).to_dict()} for t in tests]
+    from .gpu import run_tests_isolated
+    return run_tests_isolated(cand.workload, cand.lang, kernel_file, entry, block, tests)
 
 
 def outcome_to_finding(o: dict, validator: str) -> Finding | None:

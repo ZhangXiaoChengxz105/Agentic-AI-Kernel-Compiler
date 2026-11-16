@@ -1,9 +1,10 @@
 """akc command line.  Usage: akc <command> [options]   (or: python -m akc <command> ...)
 
   validate   run configuration A/B/C on one kernel file and print the feedback the agent would get
+             (--perf: if it passes, also measure its speed on the GPU and add the speed feedback)
   hottest    change-aware check of a kernel revision: what changed, targeted tests, problems found
   check      run tests (fixed suite or a JSON list) on workload variants and/or extra kernel files (GPU)
-  bench      time workload variants / extra kernels against PyTorch (GPU)
+  bench      speed of kernels on the GPU: time, x PyTorch, roofline (% of peak), practical floor
   volta      VOLTA on every CUDA variant of a workload, checked against manifest expectations (CPU)
   eval-bugs  configurations A/B/C on the injected bugs (detection, coverage, overhead)
   tirx-gpu   tirx-lite kernels on the GPU (correctness + speed)
@@ -43,17 +44,27 @@ def cmd_validate(argv):
     ap.add_argument("--parent", help="last accepted version (default: workload reference)")
     ap.add_argument("--config", default="C", choices=["A", "B", "C"])
     ap.add_argument("--device", default="auto", choices=["auto", "gpu", "cpu"])
+    ap.add_argument("--perf", action="store_true", help="if validation passes, measure speed too (GPU)")
     ap.add_argument("--json")
     a = ap.parse_args(argv)
-    from .feedback.render import render
+    from .feedback.render import render_observation
+    from .perf import measure
     from .validation import Candidate, ValidationContext, run_pipeline
     parent = Candidate.from_file(a.workload, a.parent, label="parent") if a.parent else None
-    res = run_pipeline(Candidate.from_file(a.workload, a.kernel, parent=parent), a.config, ValidationContext(device=a.device))
+    cand = Candidate.from_file(a.workload, a.kernel, parent=parent)
+    res = run_pipeline(cand, a.config, ValidationContext(device=a.device))
     for r in res.reports:
         print(f"{r.validator:12s} {'PASS' if r.passed else 'FAIL'} decided={r.decided} errors={len(r.errors)} {r.seconds:.1f}s")
-    print("\n" + render(res.reports))
+    perf = measure(cand, device=a.device) if a.perf and res.passed else None   # speed only for passing kernels
+    if perf is not None:
+        print(f"{'perf':12s} {'measured' if perf.measured else 'not measured'} {perf.seconds:.1f}s")
+    print("\n" + render_observation(res.reports, perf))
     if a.json:
-        Path(a.json).write_text(json.dumps(res.to_dict(), indent=1, default=str))
+        out = res.to_dict()
+        if perf is not None:
+            out["perf"] = perf.to_dict()
+        Path(a.json).parent.mkdir(parents=True, exist_ok=True)
+        Path(a.json).write_text(json.dumps(out, indent=1, default=str))
     return 0 if res.passed else 1
 
 
@@ -92,54 +103,50 @@ def cmd_check(argv):
 
 
 def cmd_bench(argv):
-    ap = argparse.ArgumentParser(prog="akc bench")
+    ap = argparse.ArgumentParser(prog="akc bench", description="Speed on the GPU (perf.measure): correctness at the "
+                                 "benchmark shape, then time vs PyTorch, roofline numbers and the practical floor.")
     ap.add_argument("--workload", required=True)
-    ap.add_argument("--variants")
-    ap.add_argument("--extra", action="append")
-    ap.add_argument("--shape", help='e.g. "rows=4096,N=1024" (default per workload)')
+    ap.add_argument("--lang", default="cuda", choices=["cuda", "tirx"], help="which manifest variants (default cuda)")
+    ap.add_argument("--variants", help="comma-separated manifest variants (default: the bug-free ones)")
+    ap.add_argument("--extra", action="append", help="extra kernel LABEL=PATH[:BLOCK] (repeatable)")
+    ap.add_argument("--shape", help='e.g. "rows=4096,N=1024" (default: manifest perf.shape)')
     ap.add_argument("--warmup", type=int, default=10)
     ap.add_argument("--iters", type=int, default=50)
+    ap.add_argument("--no-check", action="store_true", help="skip the correctness check at the benchmark shape")
+    ap.add_argument("--feedback", action="store_true", help="also print the speed feedback text the agent would get")
     a = ap.parse_args(argv)
-    import torch
-
-    from .backend.bench import bench
-    from .backend.launch import CudaModule
-    from .backend.ptx import compile_to_ptx
-    from .paths import BUILD, RESULTS
-    from .task.reference import OPS
-    from .task.testcase import TestCase
+    from .feedback.render import render_perf
+    from .paths import RESULTS
+    from .perf import measure
     from .task.workload import load_workload
-    from .validation.runners import run
-    from .validation.runners.check import alloc_output
-    defaults = {"softmax": {"rows": 4096, "N": 1024}, "layernorm": {"rows": 4096, "N": 1024}, "gemm": {"M": 1024, "N": 1024, "K": 1024}}
-    shape = {k: int(v) for k, v in (kv.split("=") for kv in a.shape.split(","))} if a.shape else defaults[a.workload]
-    op, wl = OPS[a.workload], load_workload(a.workload)
-    inputs = {k: v.cuda() for k, v in op.make_inputs(shape, "normal", 0).items()}
-    numel = int(torch.tensor(op.out_shape(shape)).prod())
-    met = lambda ms: {"ms": ms, "GB/s": op.bytes(shape) / ms / 1e6, "TFLOP/s": op.flops(shape) / ms / 1e9}  # noqa: E731
-    t = bench(lambda: op.torch_impl(inputs), a.warmup, a.iters)
-    rows = [{"impl": "torch", **t, **met(t["median_ms"])}]
-    for c in _candidates(a.workload, a.variants, a.extra):
-        ok = run(c, [TestCase(a.workload, shape, "normal", 0, 1, "bench")], "gpu")[0]
-        if not ok["passed"]:
-            rows.append({"impl": c.label, "skipped": f"incorrect on bench shape: {ok['reason']}"})
+    shape = {k: int(v) for k, v in (kv.split("=") for kv in a.shape.split(","))} if a.shape else None
+    variants = a.variants or ",".join(v.name for v in load_workload(a.workload).variants if v.lang == a.lang and not v.bug)
+    reports = [measure(c, shape, iters=a.iters, warmup=a.warmup, check=not a.no_check)
+               for c in _candidates(a.workload, variants, a.extra, a.lang)]
+    done = [r for r in reports if r.measured]
+    print(f"workload={a.workload} shape={reports[0].shape if reports else shape} gpu={done[0].gpu if done else '-'} "
+          f"(median of {a.iters}, L2 flushed before every launch)")
+    if done:
+        r0 = done[0]
+        copy = f", device copy of the same bytes {r0.copy_ms:.4f} ms" if r0.copy_ms else ""
+        print(f"  PyTorch {r0.torch_ms:.4f} ms{copy}; {r0.bound}-bound ({r0.intensity:.2f} FLOP/byte)")
+    print(f"  {'kernel':24s} {'ms':>9s} {'xTorch':>7s} {'GB/s':>7s} {'%bw':>5s} {'TFLOP/s':>8s} {'%fp32':>6s} {'floor':>6s}")
+    for r in reports:
+        if not r.measured:
+            print(f"  {r.label:24s} not measured: {r.reason[:150]}")
             continue
-        b = compile_to_ptx(c.materialize(), BUILD / "ptx_gpu" / c.label, mode="gpu")
-        fn = CudaModule(b.ptx).get(c.entry or b.kernels[0])
-        _, out = alloc_output(numel)
-        grid, blk = op.launch(shape, c.block or tuple(wl.launch["block"]))
-        args = op.kernel_args(inputs, out, shape)
-        t = bench(lambda: fn(grid, blk, args), a.warmup, a.iters)
-        rows.append({"impl": c.label, **t, **met(t["median_ms"])})
-    base = rows[0]["ms"]
-    print(f"workload={a.workload} shape={shape} (median of {a.iters}, L2 flushed)")
-    for r in rows:
-        print(f"  {r['impl']:26s} " + (f"skipped: {r['skipped']}" if "skipped" in r else
-              f"{r['ms']:9.4f} ms  {r['GB/s']:8.1f} GB/s  {r['TFLOP/s']:7.3f} TFLOP/s  x{base / r['ms']:.2f} vs torch"))
-    d = RESULTS / "harness"
+        print(f"  {r.label:24s} {r.time_ms:9.4f} {r.speedup_vs_torch:6.2f}x {r.achieved_gbps:7.0f} {r.pct_peak_bw:4.0f}% "
+              f"{r.achieved_tflops:8.3f} {r.pct_peak_flops:5.0f}% {r.headroom:5.2f}x")
+    if a.feedback:
+        for r in reports:
+            print(f"\n--- feedback for {r.label}\n{render_perf(r)}")
+    if not done:
+        print("nothing measured: no result file written")
+        return 1
+    d = RESULTS / "perf"
     d.mkdir(parents=True, exist_ok=True)
-    f = d / f"bench_{a.workload}_{datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
-    f.write_text(json.dumps({"workload": a.workload, "shape": shape, "gpu": torch.cuda.get_device_name(), "rows": rows}, indent=2))
+    f = d / f"bench_{a.workload}_{a.lang}_{datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
+    f.write_text(json.dumps({"workload": a.workload, "reports": [r.to_dict() for r in reports]}, indent=1, default=str))
     print(f"saved {f}")
     return 0
 

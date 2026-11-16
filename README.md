@@ -18,15 +18,16 @@ Details and troubleshooting: [`docs/setup.md`](docs/setup.md). The Lumen key goe
 ```bash
 akc hottest --workload softmax --new workloads/softmax/cuda/bugs/softmax_bug_tail.cu \
             --old workloads/softmax/cuda/softmax_opt.cu          # what changed + targeted checks + problems
-akc validate --workload gemm --kernel my_gemm.cu --config C       # the feedback the agent would receive
+akc validate --workload gemm --kernel my_gemm.cu --config C --perf  # what the agent would see: checks, then speed (GPU)
+akc bench --workload softmax --feedback                           # speed: x PyTorch, % of peak bandwidth, floor (GPU)
 akc eval-bugs                                                     # A/B/C on the injected bugs
-python -m unittest discover -s tests                              # 86 tests (GPU tests skip on login nodes)
+python -m unittest discover -s tests                              # 101 tests (GPU tests skip on login nodes)
 sbatch scripts/slurm/smoke.sbatch                                 # full GPU run (uses the allocation: ask first)
 ```
 
 ## Layout
 ```
-akc/            the system (task, llm, agent, backend, validation, feedback, evaluation)
+akc/            the system (task, llm, agent, backend, validation, perf, feedback, evaluation)
 workloads/      one folder per operator: manifest.json + cuda/ (tirx/) kernels and injected bugs
 scripts/slurm/  GPU jobs          tests/   unit + integration tests (mirrors akc/)
 docs/           architecture, setup          notes/   dated decisions and experiment logs

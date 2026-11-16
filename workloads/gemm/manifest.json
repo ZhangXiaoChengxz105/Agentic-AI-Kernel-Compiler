@@ -52,6 +52,9 @@
     },
     "max_N": null
   },
+  "perf": {
+    "shape": {"M": 1024, "N": 1024, "K": 1024}
+  },
   "references": {
     "cuda": "gemm_ref"
   },

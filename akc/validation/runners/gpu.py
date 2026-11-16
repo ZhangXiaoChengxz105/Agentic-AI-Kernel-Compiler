@@ -1,6 +1,7 @@
 """Run TestCases on the GPU and check every output (used by fixed tests and change-aware tests).
 
 run_tests_isolated(workload, lang, kernel_file, entry, block, tests) -> list[outcome dict]
+make_launcher(workload, lang, kernel_file, entry, block) -> bind(d_in, out, shape) -> launch()   (also used by perf)
   lang "cuda": kernel_file is a .ptx (built with backend.ptx mode="gpu"), launched through the driver API
   lang "tirx": kernel_file is a tirx-lite module (safety-scanned), compiled per shape for sm_80
 Each candidate runs in a child process (`python -m akc.validation.runners.gpu_worker`): an illegal memory
@@ -62,9 +63,10 @@ def _run_one(launch, op, tc, out_shape) -> dict:
     return {**tc.to_dict(), **res.to_dict(), "kernel_ms": first_ms}
 
 
-def run_tests(workload_name: str, lang: str, kernel_file: str, entry: str | None, block: tuple[int, ...],
-              tests: list) -> list[dict]:
-    """In-process (needs a GPU). Prefer run_tests_isolated."""
+def make_launcher(workload_name: str, lang: str, kernel_file: str, entry: str | None, block: tuple[int, ...]):
+    """-> bind(d_in, out, shape) -> zero-argument function that launches the kernel once on those tensors.
+    Binding (grid, arguments, TIRx compile per shape) happens outside the returned call, so timing it
+    (perf.measure) measures the launch only. Needs a GPU."""
     from ...task.reference import OPS
     from ...task.workload import load_workload
     op = OPS[workload_name]
@@ -74,20 +76,34 @@ def run_tests(workload_name: str, lang: str, kernel_file: str, entry: str | None
         from ...backend.launch import CudaModule
         fn = CudaModule(kernel_file).get(entry)
 
-        def launch(d_in, out, tc):
-            grid, blk = op.launch(tc.shape, block)
-            fn(grid, blk, op.kernel_args(d_in, out, tc.shape))
-    else:
-        from ...backend.tirx import compile_sm80, load_module, make_kernel
-        mod, cache = load_module(kernel_file), {}
+        def bind(d_in, out, shape):
+            grid, blk = op.launch(shape, block)
+            args = op.kernel_args(d_in, out, shape)
+            return lambda: fn(grid, blk, args)
+        return bind
 
-        def launch(d_in, out, tc):
-            key = tuple(sorted(tc.shape.items()))
-            if key not in cache:
-                cache[key] = compile_sm80(make_kernel(mod, wl.meta, tc.shape))
-            names = wl.meta["tirx"]["tensors"]
-            args = [d_in[n] if n in d_in else out.view(op.out_shape(tc.shape)) for n in names]
-            cache[key](*args)
+    from ...backend.tirx import compile_sm80, load_module, make_kernel
+    mod, cache, names = load_module(kernel_file), {}, wl.meta["tirx"]["tensors"]
+
+    def bind(d_in, out, shape):
+        key = tuple(sorted(shape.items()))
+        if key not in cache:
+            cache[key] = compile_sm80(make_kernel(mod, wl.meta, shape))
+        ex = cache[key]
+        args = [d_in[n] if n in d_in else out.view(op.out_shape(shape)) for n in names]
+        return lambda: ex(*args)
+    return bind
+
+
+def run_tests(workload_name: str, lang: str, kernel_file: str, entry: str | None, block: tuple[int, ...],
+              tests: list) -> list[dict]:
+    """In-process (needs a GPU). Prefer run_tests_isolated."""
+    from ...task.reference import OPS
+    op = OPS[workload_name]
+    bind = make_launcher(workload_name, lang, kernel_file, entry, block)
+
+    def launch(d_in, out, tc):
+        bind(d_in, out, tc.shape)()
 
     results, dead = [], None
     for tc in tests:

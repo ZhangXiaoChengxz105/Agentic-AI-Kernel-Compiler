@@ -183,3 +183,20 @@ Checks: 86 tests (71 migrated + 15 new) pass on the login node (3 GPU + 1 slow N
 NumSim test passes with AKC_SLOW=1). `akc hottest` on GLM's accepted-but-buggy kernel (A_r3 vs last accepted A_r1)
 reports VOLTA NOT_EQUIV at the deep shape N=584 on the CPU alone. `akc eval-bugs --device cpu`: B 5/11, C 9/11
 (VOLTA parts; dynamic tests need a GPU).
+
+## 7. Speed as the agent's objective: `akc/perf/` (2026-11-16)
+Why: VOLTA and the tests only decide correctness; the agent also needs to know how fast a passing kernel is and
+how far it is from what the A100 allows, otherwise "optimize" has no signal. Speed is not a validator: no
+pass/fail, measured only for candidates that passed, identical in configurations A/B/C.
+| block | input | output | conditions |
+|---|---|---|---|
+| `perf/hardware.py` | torch device name | `GpuSpec` (DRAM GB/s, FP32 TFLOP/s, ridge) | A100 datasheet values; unknown GPU → A100-40GB numbers, `known=False` |
+| `perf/measure.py` | Candidate, shape (default manifest `perf.shape`) | `PerfReport` | GPU only (else `measured=False`); child process; correctness at that shape first; kernel / PyTorch / device-copy timed with `backend/bench.py` |
+| `perf/report.py` `analyze` | timings, shape, GpuSpec | roofline numbers | effective bandwidth counts the minimum traffic (read inputs once, write output once) |
+| `feedback/render.py` `render_perf` | PerfReport (+ best so far) | text for the agent | memory-bound → % of peak bandwidth + copy floor; compute-bound → % of FP32 peak + PyTorch's TFLOP/s |
+Refactors: `runners.build_for_gpu` (shared CUDA→PTX build), `runners.gpu.make_launcher` (shared launch binding);
+`akc bench` now uses `perf.measure` (table + `--feedback`, `--lang tirx`, results in `results/perf/`);
+`akc validate --perf` prints the full observation (validation, then speed).
+Checked on the CPU: the TF32-tensor-core hint is real: rounding GEMM inputs to TF32 gives a relative error of
+1.3e-4 vs |A||B| (tolerance 1e-5), so the feedback tells the model full fp32 accuracy is required.
+Tests: 101 (15 new in `tests/perf/`), all pass on the login node; 6 skipped (5 GPU, 1 slow NumSim).

@@ -41,6 +41,9 @@
     "deep": null,
     "max_N": 200
   },
+  "perf": {
+    "shape": {"rows": 4096, "N": 1024}
+  },
   "references": {
     "cuda": "layernorm_ref"
   },

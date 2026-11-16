@@ -9,6 +9,7 @@ A manifest holds everything operator-specific that code should not hard-code:
   numerical_dists                      value distributions that stress this op's numerics
   volta                                {"default": shape, "deep": shape | null, "max_N": int | null}
   tirx                                 {"factory_args": [...], "tensors": [...]} contract of tirx-lite modules
+  perf                                 {"shape": shape} the size kernels are timed at (perf.measure, akc bench)
   references                           {"cuda": variant name, "tirx": variant name}
   variants                             [{name, lang, file (relative), role, block, bug, expect_volta}]
 """
@@ -50,6 +51,10 @@ class Workload:
     @property
     def tiles(self) -> list[int]:
         return list(self.meta.get("tiles", []))
+
+    @property
+    def perf_shape(self) -> dict:
+        return dict(self.meta["perf"]["shape"])
 
     def reference(self, lang: str = "cuda") -> Variant:
         name = self.meta["references"][lang]
