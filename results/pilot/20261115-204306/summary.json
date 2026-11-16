@@ -1,0 +1,30 @@
+{
+  "model": "glm-5.3",
+  "rounds": 3,
+  "langs": {
+    "tirx": {
+      "history": [
+        {
+          "round": 1,
+          "stage": "trace",
+          "cost": 0.111141245058,
+          "in": 7736,
+          "out": 23755,
+          "latency_s": 726.0
+        },
+        {
+          "round": 2,
+          "stage": "ok",
+          "cost": 0.061206987477,
+          "in": 10707,
+          "out": 11077,
+          "latency_s": 51.3
+        }
+      ],
+      "passed": true
+    }
+  },
+  "spent_coins": 0.17234823253499998,
+  "reasoning_effort": "high",
+  "max_tokens": 100000
+}

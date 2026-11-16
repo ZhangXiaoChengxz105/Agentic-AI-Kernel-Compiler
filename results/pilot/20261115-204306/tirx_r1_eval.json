@@ -1,0 +1,27 @@
+{
+ "stage": "trace",
+ "error": "",
+ "cases": [
+  {
+   "rows": 2,
+   "n": 200,
+   "dist": "normal",
+   "stage": "trace",
+   "error": "Traceback (most recent call last):\n  File \"/u/mfang/521/agent/tirx_eval.py\", line 92, in evaluate\n    k = make_kernel(*key)\n  File \"/u/mfang/521/results/pilot/20261115-204306/softmax_txl_r1.py\", line 104, in make_kernel\n    @txl.kernel()\n     ~~~~~~~~~~^^\n  File \"/u/mfang/521/envs/tirx/lib/python3.13/site-packages/tirx_kernels/tirx_lite/entry.py\", line 312, in decorator\n    fn(*args, **kwargs)\n    ~~^^^^^^^^^^^^^^^^^\n  File \"/u/mfang/521/results/pilot/20261115-204306/softmax_txl_r1.py\", line 149, in softmax_txl\n    mx = _block_reduce(m, red, _fmax, neg_inf)\nValueError: T.else_ must be called at the top of a T.if_().  While T.else_ did occur within the conditional based on (warp_id == 0), other frames (e.g. if/else/let) had been introduced since the If frame\n"
+  },
+  {
+   "rows": 2,
+   "n": 200,
+   "dist": "large",
+   "stage": "trace",
+   "error": "Traceback (most recent call last):\n  File \"/u/mfang/521/agent/tirx_eval.py\", line 92, in evaluate\n    k = make_kernel(*key)\n  File \"/u/mfang/521/results/pilot/20261115-204306/softmax_txl_r1.py\", line 104, in make_kernel\n    @txl.kernel()\n     ~~~~~~~~~~^^\n  File \"/u/mfang/521/envs/tirx/lib/python3.13/site-packages/tirx_kernels/tirx_lite/entry.py\", line 312, in decorator\n    fn(*args, **kwargs)\n    ~~^^^^^^^^^^^^^^^^^\n  File \"/u/mfang/521/results/pilot/20261115-204306/softmax_txl_r1.py\", line 149, in softmax_txl\n    mx = _block_reduce(m, red, _fmax, neg_inf)\nValueError: T.else_ must be called at the top of a T.if_().  While T.else_ did occur within the conditional based on (warp_id == 0), other frames (e.g. if/else/let) had been introduced since the If frame\n"
+  },
+  {
+   "rows": 2,
+   "n": 256,
+   "dist": "normal",
+   "stage": "trace",
+   "error": "Traceback (most recent call last):\n  File \"/u/mfang/521/agent/tirx_eval.py\", line 92, in evaluate\n    k = make_kernel(*key)\n  File \"/u/mfang/521/results/pilot/20261115-204306/softmax_txl_r1.py\", line 104, in make_kernel\n    @txl.kernel()\n     ~~~~~~~~~~^^\n  File \"/u/mfang/521/envs/tirx/lib/python3.13/site-packages/tirx_kernels/tirx_lite/entry.py\", line 312, in decorator\n    fn(*args, **kwargs)\n    ~~^^^^^^^^^^^^^^^^^\n  File \"/u/mfang/521/results/pilot/20261115-204306/softmax_txl_r1.py\", line 149, in softmax_txl\n    mx = _block_reduce(m, red, _fmax, neg_inf)\nValueError: T.else_ must be called at the top of a T.if_().  While T.else_ did occur within the conditional based on (warp_id == 0), other frames (e.g. if/else/let) had been introduced since the If frame\n"
+  }
+ ]
+}
