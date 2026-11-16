@@ -1,5 +1,10 @@
 # Lumen models (for the agent), checked 2026-11-15
 
+**Decision (2026-11-15, Xiaocheng): agent model = `glm-5.3`** (zai-org/GLM-5.3, flagship for long-horizon coding/agents,
+524k context, reasoning). Needs a one-time acknowledgment on the Lumen web UI before use.
+Cost implication: cached input has no discount for GLM (`cached_input_cost_per_million` = null → billed at 1.321),
+so the repair loop should send compact context (current code + latest diagnostics), not the full chat history.
+
 Source: `GET https://lumen.ncsa.illinois.edu/v1/models?include_unacknowledged=true` (free: verified from
 Lumen source `lumen/blueprints/api/routes.py`, which has no billing in `list_models`; `/v1/usage` showed 10.00 coins and 0 requests before and after).
 Lumen API = OpenAI-compatible, base URL `https://lumen.ncsa.illinois.edu/v1`, header `Authorization: Bearer $LUMEN_API_KEY`.
