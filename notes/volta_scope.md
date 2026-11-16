@@ -14,9 +14,9 @@ Note: equivalence checking is CPU-heavy (~2 min for a 64×64 matmul). Larger run
 ## Per-kernel outlook (from README + source; still to be confirmed with our own kernels)
 | Kernel | Outlook | Why |
 |---|---|---|
-| Tiled GEMM | **Supported** | Polynomial fragment; bundled MatMul/GEMM/TileLang benchmarks prove equivalence. Must avoid `cp.async`/TMA pipelines. |
+| Tiled GEMM | **Supported (verified 2026-11-15)** | Our naive ref vs shared-memory tiled opt (TILE=16) EQUIV at (32,32,48), (32,32,40), (12,12,40) in ≤0.15 s. Edge-of-matrix bugs are only visible if CTA 0 touches the edge (M or N < 16). Must avoid `cp.async`/TMA pipelines. |
 | Row-wise softmax | **Supported (verified 2026-11-15)** | Our ref (1 thread/row) vs opt (128-thread tree reduction, `*1/sum`) proved EQUIV at N=200/256/1000/1024 in ≤0.5 s. Requires `exp` as `__symexpf` and PTX without `-lineinfo`. See `notes/volta_loop_log.md` |
-| LayerNorm | **Race checks work; equivalence unclear** | `sqrt`/`rsqrt` get lowered (lowering.rs), but the paper's equivalence benchmarks contain no LayerNorm. Needs an experiment. |
+| LayerNorm | **Supported (verified 2026-11-15)** | Two-pass ref vs block-parallel opt (rsqrt) EQUIV at N=128 (1.8 s) and N=100 (0.6 s). Cost grows fast with N (variance expands to O(N²) terms): at N≥512 a run took >3.5 min and ~10 GB RAM (stopped). Keep VOLTA shapes ≤ 200. One-pass variance (E[x²]−mean²) is proved EQUIV: blind spot. |
 
 ## Key limits that matter for us
 - Real-number semantics: blind to FP overflow/rounding → this is the gap change-aware tests cover.

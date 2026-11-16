@@ -100,3 +100,19 @@ How to use TIRx env:
 ```bash
 source env.sh && source envs/tirx/bin/activate && export RUSTUP_TOOLCHAIN=1.95.0
 ```
+
+### Update (2026-11-15, evening): PyTorch, driver, quota, Slurm queue
+- **Driver**: login node has NVIDIA driver packages **595.71.05** (`/usr/lib64/libcuda.so.595.71.05`) → CUDA 13.2 level.
+  Compute-node driver still to be confirmed with `nvidia-smi` (scripts/slurm/smoke.sbatch records it).
+- **PyTorch**: `torch 2.14.1+cu132` installed into `envs/tirx` (`pip install --no-cache-dir torch==2.14.1 --index-url
+  https://download.pytorch.org/whl/cu132`), 2m55s; env now 6.2 GB. Chosen because cu132 matches driver 595 and 2.14.x is
+  the series TIRx's own deps use (2.15.0 was newer and skipped).
+  Known benign conflict: torch pins `nvidia-cuda-nvrtc 13.2.86` (via cuda-toolkit==13.2.2), tirx-harness pins `==13.2.78`.
+  Kept 13.2.86; re-verified TIRx sm_80 compile + racecheck still work.
+- **GPU kernel launching from Python**: `cuda-bindings 13.5` (already in env) driver API (`harness/launch.py`).
+- **Quota**: /u/mfang 72.8 GB used of 100 GB soft (103 GB hard), 415k of 750k files → ~27 GB headroom. Avoid pip caches.
+- **Slurm** (`sbatch --test-only`, nothing submitted): account `bidr-delta-gpu` valid (749 of 3000 h left).
+  Estimated start for a 30-min 1-GPU job: `gpuA100x4` ≈ 13 days (2,730 pending jobs), `gpuA100x4-preempt` ≈ 2 days,
+  `gpuA100x4-interactive` ≈ minutes (max 1 h) → scripts default to the interactive partition.
+- **Login-node limits**: a VOLTA LayerNorm run at N≥512 reached ~10 GB RSS after 3.5 min and was stopped; run VOLTA
+  scaling experiments on a compute node, keep login-node VOLTA runs small (layernorm N ≤ 200).

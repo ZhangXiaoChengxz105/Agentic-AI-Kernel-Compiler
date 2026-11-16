@@ -35,3 +35,17 @@ partitions `gpuA100x4` (≤2 days) and `gpuA100x4-interactive` (≤1 h). Lumen: 
 
 LLM spend in Tasks 1–2 is tiny (pilot only). The real spend is Tasks 4–5. Rough estimate: ~0.74 coins per 10-iteration GLM run
 (assumed token counts); e.g. 36 repair runs ≈ 27 coins ≈ 10+ days of refill → start early, keep prompts compact, or ask for a larger pool.
+
+## Status update (2026-11-15, end of day) — details in notes/build_log.md
+| # | Status |
+|---|---|
+| 1.1 | ✅ (GPU driver on compute node still to confirm: smoke job) |
+| 1.2 | ✅ VOLTA supports softmax, gemm, layernorm (32/32 expected verdicts) |
+| 1.3 | ✅ envs/tirx: Python 3.13, TIRx, torch 2.14.1+cu132 |
+| 1.4 | ✅ ref/ (golden fp64 refs, 8 input distributions) |
+| 1.5 | ✅ code + CPU tests; ⏳ GPU run (needs approval) |
+| 1.6 | ✅ code; ⏳ GPU run |
+| 1.7 | ✅ scripts, validated with --test-only; ⏳ first submission |
+| 1.8 | ✅ client + fake-server tests + real dry-run; ⏳ GLM ack + first real call |
+| 2.1–2.4 | ✅ diff / classifier / generator / VOLTA shapes, 15 tests; VOLTA detection 5/11 → 9/11 with change-aware shapes |
+Open: TIRx-vs-CUDA decision for what the agent writes (classifier currently has CUDA rules only).
