@@ -1,0 +1,26 @@
+[
+ {
+  "op": "gemm",
+  "shape": {
+   "M": 512,
+   "N": 512,
+   "K": 512
+  },
+  "dist": "normal",
+  "seed": 644256714,
+  "repeat": 5,
+  "tag": "sync: many K-tiles, repeated x5"
+ },
+ {
+  "op": "gemm",
+  "shape": {
+   "M": 257,
+   "N": 263,
+   "K": 1031
+  },
+  "dist": "normal",
+  "seed": 766141776,
+  "repeat": 5,
+  "tag": "sync: ragged + many K-tiles, repeated x5"
+ }
+]

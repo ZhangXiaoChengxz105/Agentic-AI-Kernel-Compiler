@@ -1,0 +1,62 @@
+[
+ {
+  "op": "gemm",
+  "shape": {
+   "M": 12,
+   "N": 12,
+   "K": 40
+  },
+  "dist": "normal",
+  "seed": 1654234662,
+  "repeat": 1,
+  "tag": "indexing: {'M': 12, 'N': 12, 'K': 40} vs tile 16"
+ },
+ {
+  "op": "gemm",
+  "shape": {
+   "M": 100,
+   "N": 100,
+   "K": 40
+  },
+  "dist": "normal",
+  "seed": 593332373,
+  "repeat": 1,
+  "tag": "indexing: {'M': 100, 'N': 100, 'K': 40} vs tile 16"
+ },
+ {
+  "op": "gemm",
+  "shape": {
+   "M": 33,
+   "N": 47,
+   "K": 61
+  },
+  "dist": "normal",
+  "seed": 1481807730,
+  "repeat": 1,
+  "tag": "indexing: {'M': 33, 'N': 47, 'K': 61} vs tile 16"
+ },
+ {
+  "op": "gemm",
+  "shape": {
+   "M": 1,
+   "N": 1,
+   "K": 1
+  },
+  "dist": "normal",
+  "seed": 640936552,
+  "repeat": 1,
+  "tag": "indexing: {'M': 1, 'N': 1, 'K': 1} vs tile 16"
+ },
+ {
+  "op": "gemm",
+  "shape": {
+   "M": 17,
+   "N": 15,
+   "K": 16
+  },
+  "dist": "normal",
+  "seed": 689030778,
+  "repeat": 1,
+  "tag": "indexing: {'M': 17, 'N': 15, 'K': 16} vs tile 16"
+ }
+]

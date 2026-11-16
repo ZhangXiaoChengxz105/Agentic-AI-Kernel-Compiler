@@ -1,0 +1,46 @@
+[
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 8,
+   "N": 1000
+  },
+  "dist": "offset",
+  "seed": 246001307,
+  "repeat": 1,
+  "tag": "numerical: value range 'offset'"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 8,
+   "N": 1000
+  },
+  "dist": "constant",
+  "seed": 305705460,
+  "repeat": 1,
+  "tag": "numerical: value range 'constant'"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 8,
+   "N": 1000
+  },
+  "dist": "tiny",
+  "seed": 1617260409,
+  "repeat": 1,
+  "tag": "numerical: value range 'tiny'"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 8,
+   "N": 1000
+  },
+  "dist": "large",
+  "seed": 314197962,
+  "repeat": 1,
+  "tag": "numerical: value range 'large'"
+ }
+]

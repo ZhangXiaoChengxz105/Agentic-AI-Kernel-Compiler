@@ -1,0 +1,46 @@
+[
+ {
+  "op": "softmax",
+  "shape": {
+   "rows": 8,
+   "N": 1000
+  },
+  "dist": "large",
+  "seed": 1654187883,
+  "repeat": 1,
+  "tag": "numerical: value range 'large'"
+ },
+ {
+  "op": "softmax",
+  "shape": {
+   "rows": 8,
+   "N": 1000
+  },
+  "dist": "neg_large",
+  "seed": 800775222,
+  "repeat": 1,
+  "tag": "numerical: value range 'neg_large'"
+ },
+ {
+  "op": "softmax",
+  "shape": {
+   "rows": 8,
+   "N": 1000
+  },
+  "dist": "mixed",
+  "seed": 1391079926,
+  "repeat": 1,
+  "tag": "numerical: value range 'mixed'"
+ },
+ {
+  "op": "softmax",
+  "shape": {
+   "rows": 8,
+   "N": 1000
+  },
+  "dist": "constant",
+  "seed": 837123038,
+  "repeat": 1,
+  "tag": "numerical: value range 'constant'"
+ }
+]

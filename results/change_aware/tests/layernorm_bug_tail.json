@@ -1,0 +1,134 @@
+[
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 2,
+   "N": 1
+  },
+  "dist": "normal",
+  "seed": 2050341269,
+  "repeat": 1,
+  "tag": "tiling: N=1 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 3,
+   "N": 1
+  },
+  "dist": "normal",
+  "seed": 677618335,
+  "repeat": 1,
+  "tag": "indexing: N=1 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 2,
+   "N": 127
+  },
+  "dist": "normal",
+  "seed": 938383477,
+  "repeat": 1,
+  "tag": "tiling: N=127 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 3,
+   "N": 127
+  },
+  "dist": "normal",
+  "seed": 855854100,
+  "repeat": 1,
+  "tag": "indexing: N=127 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 2,
+   "N": 129
+  },
+  "dist": "normal",
+  "seed": 1520281897,
+  "repeat": 1,
+  "tag": "tiling: N=129 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 3,
+   "N": 129
+  },
+  "dist": "normal",
+  "seed": 1584430408,
+  "repeat": 1,
+  "tag": "indexing: N=129 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 2,
+   "N": 255
+  },
+  "dist": "normal",
+  "seed": 1586350776,
+  "repeat": 1,
+  "tag": "tiling: N=255 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 3,
+   "N": 255
+  },
+  "dist": "normal",
+  "seed": 1516248793,
+  "repeat": 1,
+  "tag": "indexing: N=255 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 2,
+   "N": 257
+  },
+  "dist": "normal",
+  "seed": 857413969,
+  "repeat": 1,
+  "tag": "tiling: N=257 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 3,
+   "N": 257
+  },
+  "dist": "normal",
+  "seed": 938921264,
+  "repeat": 1,
+  "tag": "indexing: N=257 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 2,
+   "N": 1000
+  },
+  "dist": "normal",
+  "seed": 1068307011,
+  "repeat": 1,
+  "tag": "tiling: N=1000 vs block 128"
+ },
+ {
+  "op": "layernorm",
+  "shape": {
+   "rows": 3,
+   "N": 1000
+  },
+  "dist": "normal",
+  "seed": 726669991,
+  "repeat": 1,
+  "tag": "indexing: N=1000 vs block 128"
+ }
+]

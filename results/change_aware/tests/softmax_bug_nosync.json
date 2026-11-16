@@ -1,0 +1,24 @@
+[
+ {
+  "op": "softmax",
+  "shape": {
+   "rows": 256,
+   "N": 4096
+  },
+  "dist": "normal",
+  "seed": 1538214856,
+  "repeat": 5,
+  "tag": "sync: N=4096, many iterations, repeated x5"
+ },
+ {
+  "op": "softmax",
+  "shape": {
+   "rows": 256,
+   "N": 4099
+  },
+  "dist": "normal",
+  "seed": 972301527,
+  "repeat": 5,
+  "tag": "sync: N=4099, many iterations, repeated x5"
+ }
+]
