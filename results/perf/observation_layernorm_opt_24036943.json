@@ -1,0 +1,855 @@
+{
+ "config": "C",
+ "passed": true,
+ "seconds": 14.504644843982533,
+ "reports": [
+  {
+   "validator": "fixed_tests",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.472455167910084,
+   "artifacts": {
+    "outcomes": [
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 64,
+       "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.329980107797837e-07,
+      "max_rel_err": 0.00010854680782996235,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 4.33e-07)",
+      "kernel_ms": 0.2594569232314825
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 64,
+       "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.066731191329723e-07,
+      "max_rel_err": 0.00019795863844930642,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 7.07e-07)",
+      "kernel_ms": 0.18641911447048187
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 64,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.878168004043062e-07,
+      "max_rel_err": 0.000944117734709806,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 6.88e-07)",
+      "kernel_ms": 0.07522106170654297
+     }
+    ],
+    "n_tests": 3
+   }
+  },
+  {
+   "validator": "changeaware",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.568999814800918,
+   "artifacts": {
+    "parent": "reference layernorm_ref",
+    "categories": [
+     "sync",
+     "numerical",
+     "tiling",
+     "memory"
+    ],
+    "labels": [
+     {
+      "category": "tiling",
+      "rule": "tile-constant",
+      "line": 8,
+      "evidence": "#define BLOCK 128"
+     },
+     {
+      "category": "memory",
+      "rule": "shared-decl",
+      "line": 14,
+      "evidence": "__shared__ float red[BLOCK];"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 23,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 26,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 29,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "numerical",
+      "rule": "special-value",
+      "line": 23,
+      "evidence": "const float rstd = rsqrtf(v / N + eps);"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 23,
+      "evidence": "const float rstd = rsqrtf(v / N + eps);"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 38,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 41,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "numerical",
+      "rule": "special-value",
+      "line": 43,
+      "evidence": "const float rstd = rsqrtf(red[0] / N + eps);"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 43,
+      "evidence": "const float rstd = rsqrtf(red[0] / N + eps);"
+     }
+    ],
+    "tiles": [
+     128
+    ],
+    "tests": [
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 256,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 1988438777,
+      "repeat": 5,
+      "tag": "sync: many iterations, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "offset",
+      "seed": 1196541758,
+      "repeat": 1,
+      "tag": "numerical: value range 'offset'",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 1510022123,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 997099501,
+      "repeat": 1,
+      "tag": "memory: N=127 (N % 4 = 3)",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 256,
+       "N": 4099
+      },
+      "dist": "normal",
+      "seed": 1725086453,
+      "repeat": 5,
+      "tag": "sync: ragged, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "constant",
+      "seed": 675029298,
+      "repeat": 1,
+      "tag": "numerical: value range 'constant'",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 1209447810,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1001
+      },
+      "dist": "normal",
+      "seed": 1914783637,
+      "repeat": 1,
+      "tag": "memory: N=1001 (N % 4 = 1)",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 1,
+       "N": 8192
+      },
+      "dist": "normal",
+      "seed": 1815189443,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, many iterations, x10",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "tiny",
+      "seed": 1199196858,
+      "repeat": 1,
+      "tag": "numerical: value range 'tiny'",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 264653459,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1023
+      },
+      "dist": "normal",
+      "seed": 1997351591,
+      "repeat": 1,
+      "tag": "memory: N=1023 (N % 4 = 3)",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2048,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1712024635,
+      "repeat": 5,
+      "tag": "sync: grid sweep: many CTAs, 2 iterations, x5",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "large",
+      "seed": 1025994212,
+      "repeat": 1,
+      "tag": "numerical: value range 'large'",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 255
+      },
+      "dist": "normal",
+      "seed": 858244410,
+      "repeat": 1,
+      "tag": "tiling: N=255 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1314580121,
+      "repeat": 1,
+      "tag": "memory: N=1024, pointers misaligned by 1 element",
+      "misalign": 1
+     }
+    ],
+    "suggested_volta_shapes": [
+     {
+      "N": 128
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     }
+    ],
+    "outcomes": [
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 256,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 1988438777,
+      "repeat": 5,
+      "tag": "sync: many iterations, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1048576,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.412563987647559e-07,
+      "max_rel_err": 0.005918230254905141,
+      "examples": [],
+      "message": "all 1048576 outputs within tolerance (max abs err 8.41e-07)",
+      "kernel_ms": 0.4603639245033264
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "offset",
+      "seed": 1196541758,
+      "repeat": 1,
+      "tag": "numerical: value range 'offset'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.001409114276653023,
+      "max_rel_err": 1.723875328682325,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0.00141)",
+      "kernel_ms": 0.12098695151507854
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 1510022123,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 2,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 2 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.07259589619934559
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 997099501,
+      "repeat": 1,
+      "tag": "memory: N=127 (N % 4 = 3)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 381,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.4713038460077996e-07,
+      "max_rel_err": 1.1665136054303848e-05,
+      "examples": [],
+      "message": "all 381 outputs within tolerance (max abs err 2.47e-07)",
+      "kernel_ms": 0.0695099588483572
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 256,
+       "N": 4099
+      },
+      "dist": "normal",
+      "seed": 1725086453,
+      "repeat": 5,
+      "tag": "sync: ragged, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.585740133819741e-07,
+      "max_rel_err": 0.0041805768497982345,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 7.59e-07)",
+      "kernel_ms": 0.0776450615376234
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "constant",
+      "seed": 675029298,
+      "repeat": 1,
+      "tag": "numerical: value range 'constant'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.12119696475565434
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 1209447810,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 254,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.16977916803296e-07,
+      "max_rel_err": 7.964368436769601e-07,
+      "examples": [],
+      "message": "all 254 outputs within tolerance (max abs err 3.17e-07)",
+      "kernel_ms": 0.07339799776673317
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1001
+      },
+      "dist": "normal",
+      "seed": 1914783637,
+      "repeat": 1,
+      "tag": "memory: N=1001 (N % 4 = 1)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3003,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.8255345558013687e-07,
+      "max_rel_err": 6.037616322052195e-06,
+      "examples": [],
+      "message": "all 3003 outputs within tolerance (max abs err 3.83e-07)",
+      "kernel_ms": 0.06737606599926949
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 1,
+       "N": 8192
+      },
+      "dist": "normal",
+      "seed": 1815189443,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, many iterations, x10",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8192,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.9572048187986866e-07,
+      "max_rel_err": 7.929094486414107e-06,
+      "examples": [],
+      "message": "all 8192 outputs within tolerance (max abs err 2.96e-07)",
+      "kernel_ms": 0.068980036303401
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "tiny",
+      "seed": 1199196858,
+      "repeat": 1,
+      "tag": "numerical: value range 'tiny'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.06990204565227032
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 264653459,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 258,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.3831077822222824e-07,
+      "max_rel_err": 5.335852667241889e-06,
+      "examples": [],
+      "message": "all 258 outputs within tolerance (max abs err 2.38e-07)",
+      "kernel_ms": 0.06832904182374477
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1023
+      },
+      "dist": "normal",
+      "seed": 1997351591,
+      "repeat": 1,
+      "tag": "memory: N=1023 (N % 4 = 3)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3069,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.144873617661915e-07,
+      "max_rel_err": 1.4512328840793587e-05,
+      "examples": [],
+      "message": "all 3069 outputs within tolerance (max abs err 4.14e-07)",
+      "kernel_ms": 0.06784684956073761
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2048,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1712024635,
+      "repeat": 5,
+      "tag": "sync: grid sweep: many CTAs, 2 iterations, x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 264192,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.777701007682936e-07,
+      "max_rel_err": 0.009668354254311461,
+      "examples": [],
+      "message": "all 264192 outputs within tolerance (max abs err 7.78e-07)",
+      "kernel_ms": 0.06829807534813881
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "large",
+      "seed": 1025994212,
+      "repeat": 1,
+      "tag": "numerical: value range 'large'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.822481929345201e-07,
+      "max_rel_err": 8.232046452083029e-05,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 4.82e-07)",
+      "kernel_ms": 0.07671513594686985
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 255
+      },
+      "dist": "normal",
+      "seed": 858244410,
+      "repeat": 1,
+      "tag": "tiling: N=255 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 510,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.631240549888503e-07,
+      "max_rel_err": 2.3107053530079668e-06,
+      "examples": [],
+      "message": "all 510 outputs within tolerance (max abs err 2.63e-07)",
+      "kernel_ms": 0.06803800351917744
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1314580121,
+      "repeat": 1,
+      "tag": "memory: N=1024, pointers misaligned by 1 element",
+      "misalign": 1,
+      "passed": true,
+      "reason": "ok",
+      "n": 3072,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.411573210598817e-07,
+      "max_rel_err": 5.8240231573998954e-05,
+      "examples": [],
+      "message": "all 3072 outputs within tolerance (max abs err 3.41e-07)",
+      "kernel_ms": 0.06753695197403431
+     }
+    ]
+   }
+  },
+  {
+   "validator": "volta",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 7.463105652015656,
+   "artifacts": {
+    "runs": [
+     {
+      "shape": {
+       "N": 128
+      },
+      "status": "EQUIV",
+      "wall_s": 1.32467613206245,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 200
+      },
+      "status": "EQUIV",
+      "wall_s": 4.749789347173646,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 100
+      },
+      "status": "EQUIV",
+      "wall_s": 0.6235516970045865,
+      "detail": ""
+     }
+    ],
+    "shapes": [
+     {
+      "N": 128
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     }
+    ]
+   }
+  }
+ ],
+ "perf": {
+  "workload": "layernorm",
+  "label": "layernorm_opt",
+  "lang": "cuda",
+  "shape": {
+   "rows": 4096,
+   "N": 1024
+  },
+  "measured": true,
+  "reason": "",
+  "gpu": "A100-SXM4-40GB",
+  "time_ms": 0.03776000067591667,
+  "p10_ms": 0.03702399879693985,
+  "p90_ms": 0.0387520007789135,
+  "iters": 50,
+  "torch_ms": 0.042527999728918076,
+  "copy_ms": 0.0323840007185936,
+  "flops": 33554432.0,
+  "bytes": 33562624.0,
+  "intensity": 0.9997559189650964,
+  "bound": "memory",
+  "achieved_gbps": 888.8406620555555,
+  "achieved_tflops": 0.8886237129068967,
+  "pct_peak_bw": 57.16017119328332,
+  "pct_peak_flops": 4.557044681573829,
+  "roofline_ms": 0.021583681028938907,
+  "floor_ms": 0.0323840007185936,
+  "seconds": 3.5770656769163907,
+  "spec": {
+   "name": "A100-SXM4-40GB",
+   "dram_gbps": 1555.0,
+   "fp32_tflops": 19.5,
+   "sms": 108,
+   "l2_mb": 40.0,
+   "known": true,
+   "ridge_flop_per_byte": 12.54
+  },
+  "speedup_vs_torch": 1.12627115910097,
+  "headroom": 1.1660079001368224
+ }
+}

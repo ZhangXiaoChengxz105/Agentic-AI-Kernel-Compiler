@@ -1,0 +1,45 @@
+{
+ "workload": "softmax",
+ "reports": [
+  {
+   "workload": "softmax",
+   "label": "softmax_txl_ref",
+   "lang": "tirx",
+   "shape": {
+    "rows": 4096,
+    "N": 1024
+   },
+   "measured": true,
+   "reason": "",
+   "gpu": "A100-SXM4-40GB",
+   "time_ms": 0.033296000212430954,
+   "p10_ms": 0.03299200162291527,
+   "p90_ms": 0.03404799848794937,
+   "iters": 50,
+   "torch_ms": 0.03604799881577492,
+   "copy_ms": 0.03139200061559677,
+   "flops": 20971520.0,
+   "bytes": 33554432.0,
+   "intensity": 0.625,
+   "bound": "memory",
+   "achieved_gbps": 1007.7616466218235,
+   "achieved_tflops": 0.6298510291386397,
+   "pct_peak_bw": 64.80782293387932,
+   "pct_peak_flops": 3.2300052776340498,
+   "roofline_ms": 0.021578412861736333,
+   "floor_ms": 0.03139200061559677,
+   "seconds": 6.25676730601117,
+   "spec": {
+    "name": "A100-SXM4-40GB",
+    "dram_gbps": 1555.0,
+    "fp32_tflops": 19.5,
+    "sms": 108,
+    "l2_mb": 40.0,
+    "known": true,
+    "ridge_flop_per_byte": 12.54
+   },
+   "speedup_vs_torch": 1.0826525284053943,
+   "headroom": 1.0606523814824405
+  }
+ ]
+}

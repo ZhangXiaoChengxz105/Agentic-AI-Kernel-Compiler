@@ -112,3 +112,12 @@ tirx-lite GLM softmax kernels (akc tirx-gpu): 1.11–1.12× PyTorch (1.15× in r
 3. Duplicate "related change" lines in the feedback (two classifier rules labelled the same line). Deduplicated.
 4. The perf path itself worked as designed: glm_A_r3 was not timed ("incorrect at the benchmark shape"), and the
    failing layernorm_opt observation contained no speed section (speed only for passing candidates).
+
+# Third A100 run (2026-11-16, Slurm job 24036943, 9 min 12 s): the fixes, verified
+- Unit tests on the GPU node: 105 run, all pass (2 skipped, as before).
+- CUDA injected bugs: A 4/11, B 5/11, C 11/11 (unchanged; layernorm_bug_onepass is still caught: nonfinite).
+- **tirx injected bugs now run** (`akc eval-bugs --lang tirx`): A 1/4, B 1/4, C 4/4. VOLTA is n/a for tirx (its
+  PTX is outside VOLTA's supported subset, Task 3), so B = A; the change-aware tests catch tail / off-by-one / nomax.
+- **layernorm_opt passes configuration C** (fixed tests, change-aware incl. the offset test, VOLTA) and the
+  observation now ends with its speed section (1.13x PyTorch, 57% of peak bandwidth, floor 1.17x).
+- Speeds within ~2% of run 24036388 (e.g. softmax_opt 0.0377 ms, layernorm_opt 0.0381 ms, gemm_opt 0.6085 ms).

@@ -1,0 +1,889 @@
+{
+ "config": "C",
+ "passed": true,
+ "seconds": 7.799027992878109,
+ "reports": [
+  {
+   "validator": "fixed_tests",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.357290712883696,
+   "artifacts": {
+    "outcomes": [
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 64,
+       "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.728170346721353e-09,
+      "max_rel_err": 4.2808202167243937e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 7.73e-09)",
+      "kernel_ms": 0.24190382100641727
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 64,
+       "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.996493553813039e-09,
+      "max_rel_err": 4.25040799731312e-07,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 2e-09)",
+      "kernel_ms": 0.11839298531413078
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 64,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.542094505013196e-10,
+      "max_rel_err": 4.792877498765618e-07,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 6.54e-10)",
+      "kernel_ms": 0.13858010061085224
+     }
+    ],
+    "n_tests": 3
+   }
+  },
+  {
+   "validator": "changeaware",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.41333668702282,
+   "artifacts": {
+    "parent": "reference softmax_ref",
+    "categories": [
+     "sync",
+     "numerical",
+     "tiling",
+     "memory"
+    ],
+    "labels": [
+     {
+      "category": "tiling",
+      "rule": "tile-constant",
+      "line": 9,
+      "evidence": "#define BLOCK 128"
+     },
+     {
+      "category": "memory",
+      "rule": "shared-decl",
+      "line": 13,
+      "evidence": "__shared__ float red[BLOCK];"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 16,
+      "evidence": "for (int i = 0; i < N; ++i) s += EXP(xr[i] - m);"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 18,
+      "evidence": "for (int i = 0; i < N; ++i) yr[i] = EXP(xr[i] - m) / s;"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 22,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 24,
+      "evidence": "if (tid < s) red[tid] = fmaxf(red[tid], red[tid + s]);"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 25,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 28,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 32,
+      "evidence": "for (int i = tid; i < N; i += BLOCK) sum += EXP(xr[i] - m);"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 34,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 37,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 42,
+      "evidence": "for (int i = tid; i < N; i += BLOCK) yr[i] = EXP(xr[i] - m) * inv;"
+     }
+    ],
+    "tiles": [
+     128
+    ],
+    "tests": [
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 256,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 111643224,
+      "repeat": 5,
+      "tag": "sync: many iterations, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "large",
+      "seed": 1559049094,
+      "repeat": 1,
+      "tag": "numerical: value range 'large'",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 554941860,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 1933224424,
+      "repeat": 1,
+      "tag": "memory: N=127 (N % 4 = 3)",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 256,
+       "N": 4099
+      },
+      "dist": "normal",
+      "seed": 384834132,
+      "repeat": 5,
+      "tag": "sync: ragged, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "neg_large",
+      "seed": 1660105881,
+      "repeat": 1,
+      "tag": "numerical: value range 'neg_large'",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 4365191,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1001
+      },
+      "dist": "normal",
+      "seed": 33810228,
+      "repeat": 1,
+      "tag": "memory: N=1001 (N % 4 = 1)",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 1,
+       "N": 8192
+      },
+      "dist": "normal",
+      "seed": 170514788,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, many iterations, x10",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "mixed",
+      "seed": 2008154178,
+      "repeat": 1,
+      "tag": "numerical: value range 'mixed'",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1200776342,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1023
+      },
+      "dist": "normal",
+      "seed": 120556038,
+      "repeat": 1,
+      "tag": "memory: N=1023 (N % 4 = 3)",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2048,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 371838106,
+      "repeat": 5,
+      "tag": "sync: grid sweep: many CTAs, 2 iterations, x5",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "constant",
+      "seed": 1021732201,
+      "repeat": 1,
+      "tag": "numerical: value range 'constant'",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 255
+      },
+      "dist": "normal",
+      "seed": 2071194431,
+      "repeat": 1,
+      "tag": "tiling: N=255 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1048069688,
+      "repeat": 1,
+      "tag": "memory: N=1024, pointers misaligned by 1 element",
+      "misalign": 1
+     }
+    ],
+    "suggested_volta_shapes": [
+     {
+      "N": 256
+     },
+     {
+      "N": 584
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     },
+     {
+      "N": 264
+     }
+    ],
+    "outcomes": [
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 256,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 111643224,
+      "repeat": 5,
+      "tag": "sync: many iterations, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1048576,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.2480526299929462e-09,
+      "max_rel_err": 5.647359968237103e-07,
+      "examples": [],
+      "message": "all 1048576 outputs within tolerance (max abs err 1.25e-09)",
+      "kernel_ms": 0.2393790055066347
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "large",
+      "seed": 1559049094,
+      "repeat": 1,
+      "tag": "numerical: value range 'large'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.996200091480276e-09,
+      "max_rel_err": 8.829891051874446e-08,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 7e-09)",
+      "kernel_ms": 0.11655804701149464
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 554941860,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 2,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 2 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.06856885738670826
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 1933224424,
+      "repeat": 1,
+      "tag": "memory: N=127 (N % 4 = 3)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 381,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.625667265363177e-09,
+      "max_rel_err": 2.919776051855676e-07,
+      "examples": [],
+      "message": "all 381 outputs within tolerance (max abs err 5.63e-09)",
+      "kernel_ms": 0.06529293023049831
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 256,
+       "N": 4099
+      },
+      "dist": "normal",
+      "seed": 384834132,
+      "repeat": 5,
+      "tag": "sync: ragged, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.1847986584878623e-09,
+      "max_rel_err": 5.750900027970191e-07,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.18e-09)",
+      "kernel_ms": 0.1395109575241804
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "neg_large",
+      "seed": 1660105881,
+      "repeat": 1,
+      "tag": "numerical: value range 'neg_large'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.9044570845626616e-09,
+      "max_rel_err": 2.2481446386848925e-07,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 2.9e-09)",
+      "kernel_ms": 0.11960510164499283
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 4365191,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 254,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.189066869583982e-09,
+      "max_rel_err": 3.6557054262425816e-07,
+      "examples": [],
+      "message": "all 254 outputs within tolerance (max abs err 7.19e-09)",
+      "kernel_ms": 0.0645010732114315
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1001
+      },
+      "dist": "normal",
+      "seed": 33810228,
+      "repeat": 1,
+      "tag": "memory: N=1001 (N % 4 = 1)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3003,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.4458358711666452e-09,
+      "max_rel_err": 3.9847792993318965e-07,
+      "examples": [],
+      "message": "all 3003 outputs within tolerance (max abs err 1.45e-09)",
+      "kernel_ms": 0.06330781616270542
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 1,
+       "N": 8192
+      },
+      "dist": "normal",
+      "seed": 170514788,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, many iterations, x10",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8192,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.2407937636491349e-10,
+      "max_rel_err": 3.940178338709506e-07,
+      "examples": [],
+      "message": "all 8192 outputs within tolerance (max abs err 2.24e-10)",
+      "kernel_ms": 0.06675487384200096
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "mixed",
+      "seed": 2008154178,
+      "repeat": 1,
+      "tag": "numerical: value range 'mixed'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.07665390148758888
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1200776342,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 258,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.1900407811960001e-08,
+      "max_rel_err": 4.0172196002634467e-07,
+      "examples": [],
+      "message": "all 258 outputs within tolerance (max abs err 1.19e-08)",
+      "kernel_ms": 0.06561307236552238
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1023
+      },
+      "dist": "normal",
+      "seed": 120556038,
+      "repeat": 1,
+      "tag": "memory: N=1023 (N % 4 = 3)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3069,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.6617347480679667e-09,
+      "max_rel_err": 4.01871378005738e-07,
+      "examples": [],
+      "message": "all 3069 outputs within tolerance (max abs err 1.66e-09)",
+      "kernel_ms": 0.0635890755802393
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2048,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 371838106,
+      "repeat": 5,
+      "tag": "sync: grid sweep: many CTAs, 2 iterations, x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 264192,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.3102232127314437e-08,
+      "max_rel_err": 4.964074298119772e-07,
+      "examples": [],
+      "message": "all 264192 outputs within tolerance (max abs err 2.31e-08)",
+      "kernel_ms": 0.0635290052741766
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "constant",
+      "seed": 1021732201,
+      "repeat": 1,
+      "tag": "numerical: value range 'constant'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.749745128457272e-11,
+      "max_rel_err": 4.749745128457272e-08,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)",
+      "kernel_ms": 0.0680179800838232
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 255
+      },
+      "dist": "normal",
+      "seed": 2071194431,
+      "repeat": 1,
+      "tag": "tiling: N=255 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 510,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.784515853477721e-09,
+      "max_rel_err": 3.4129570926352436e-07,
+      "examples": [],
+      "message": "all 510 outputs within tolerance (max abs err 3.78e-09)",
+      "kernel_ms": 0.063357874751091
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1048069688,
+      "repeat": 1,
+      "tag": "memory: N=1024, pointers misaligned by 1 element",
+      "misalign": 1,
+      "passed": true,
+      "reason": "ok",
+      "n": 3072,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.838597404532627e-09,
+      "max_rel_err": 4.316923056639607e-07,
+      "examples": [],
+      "message": "all 3072 outputs within tolerance (max abs err 1.84e-09)",
+      "kernel_ms": 0.06473110988736153
+     }
+    ]
+   }
+  },
+  {
+   "validator": "volta",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 1.0283058159984648,
+   "artifacts": {
+    "runs": [
+     {
+      "shape": {
+       "N": 256
+      },
+      "status": "EQUIV",
+      "wall_s": 0.04501745500601828,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 584
+      },
+      "status": "EQUIV",
+      "wall_s": 0.1400656329933554,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 200
+      },
+      "status": "EQUIV",
+      "wall_s": 0.03063737414777279,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 100
+      },
+      "status": "EQUIV",
+      "wall_s": 0.017290472984313965,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 264
+      },
+      "status": "EQUIV",
+      "wall_s": 0.04204878211021423,
+      "detail": ""
+     }
+    ],
+    "shapes": [
+     {
+      "N": 256
+     },
+     {
+      "N": 584
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     },
+     {
+      "N": 264
+     }
+    ]
+   }
+  }
+ ],
+ "perf": {
+  "workload": "softmax",
+  "label": "softmax_opt",
+  "lang": "cuda",
+  "shape": {
+   "rows": 4096,
+   "N": 1024
+  },
+  "measured": true,
+  "reason": "",
+  "gpu": "A100-SXM4-40GB",
+  "time_ms": 0.03758399933576584,
+  "p10_ms": 0.03702399879693985,
+  "p90_ms": 0.0382080003619194,
+  "iters": 50,
+  "torch_ms": 0.03606399893760681,
+  "copy_ms": 0.03254400007426739,
+  "flops": 20971520.0,
+  "bytes": 33554432.0,
+  "intensity": 0.625,
+  "bound": "memory",
+  "achieved_gbps": 892.7850306784353,
+  "achieved_tflops": 0.5579906441740221,
+  "pct_peak_bw": 57.41382833944922,
+  "pct_peak_flops": 2.861490482943703,
+  "roofline_ms": 0.021578412861736333,
+  "floor_ms": 0.03254400007426739,
+  "seconds": 3.5509416109416634,
+  "spec": {
+   "name": "A100-SXM4-40GB",
+   "dram_gbps": 1555.0,
+   "fp32_tflops": 19.5,
+   "sms": 108,
+   "l2_mb": 40.0,
+   "known": true,
+   "ridge_flop_per_byte": 12.54
+  },
+  "speedup_vs_torch": 0.9595572470992314,
+  "headroom": 1.1548672335913492
+ }
+}

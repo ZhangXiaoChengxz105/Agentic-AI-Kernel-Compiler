@@ -1,0 +1,1062 @@
+{
+  "txl_ref": {
+    "outcomes": [
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 256
+        },
+        "dist": "normal",
+        "seed": 0,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 16384,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 8.220202490916151e-09,
+        "max_rel_err": 6.487876589829523e-07,
+        "examples": [],
+        "message": "all 16384 outputs within tolerance (max abs err 8.22e-09)",
+        "kernel_ms": 1606.711459113285
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 1000
+        },
+        "dist": "normal",
+        "seed": 1,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 64000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 3.1632136944514944e-09,
+        "max_rel_err": 6.459888321504253e-07,
+        "examples": [],
+        "message": "all 64000 outputs within tolerance (max abs err 3.16e-09)",
+        "kernel_ms": 1452.3346540518105
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 4096
+        },
+        "dist": "normal",
+        "seed": 2,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 262144,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.2788970975979863e-09,
+        "max_rel_err": 7.409578286150019e-07,
+        "examples": [],
+        "message": "all 262144 outputs within tolerance (max abs err 1.28e-09)",
+        "kernel_ms": 1438.4897989220917
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 3,
+          "N": 129
+        },
+        "dist": "normal",
+        "seed": 3,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 387,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 5.686326090548199e-09,
+        "max_rel_err": 3.676521178237785e-07,
+        "examples": [],
+        "message": "all 387 outputs within tolerance (max abs err 5.69e-09)",
+        "kernel_ms": 1433.638383867219
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 2,
+          "N": 1
+        },
+        "dist": "normal",
+        "seed": 4,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 2,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 0.0,
+        "max_rel_err": 0.0,
+        "examples": [],
+        "message": "all 2 outputs within tolerance (max abs err 0)",
+        "kernel_ms": 1430.6430527940392
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "large",
+        "seed": 5,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.0623744706173e-07,
+        "max_rel_err": 3.3303114669243946e-06,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 1.06e-07)",
+        "kernel_ms": 1497.8040948044509
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "neg_large",
+        "seed": 6,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 2.3588434139992787e-09,
+        "max_rel_err": 4.202706926750012e-07,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 2.36e-09)",
+        "kernel_ms": 0.08864700794219971
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "constant",
+        "seed": 7,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 4.749745128457272e-11,
+        "max_rel_err": 4.749745128457272e-08,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)",
+        "kernel_ms": 0.07479987107217312
+      }
+    ],
+    "bench": {
+      "kernel": {
+        "median_ms": 0.03524800017476082,
+        "p10_ms": 0.03411199897527695,
+        "p90_ms": 0.03622400015592575,
+        "min_ms": 0.033952001482248306,
+        "iters": 50
+      },
+      "torch": {
+        "median_ms": 0.03667199984192848,
+        "p10_ms": 0.035711999982595444,
+        "p90_ms": 0.03763199970126152,
+        "min_ms": 0.035360001027584076,
+        "iters": 50
+      }
+    }
+  },
+  "glm_C (r2)": {
+    "outcomes": [
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 256
+        },
+        "dist": "normal",
+        "seed": 0,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 16384,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 8.220202490916151e-09,
+        "max_rel_err": 6.487876589829523e-07,
+        "examples": [],
+        "message": "all 16384 outputs within tolerance (max abs err 8.22e-09)",
+        "kernel_ms": 1609.3584969639778
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 1000
+        },
+        "dist": "normal",
+        "seed": 1,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 64000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 2.0180515834800072e-09,
+        "max_rel_err": 6.459888321504253e-07,
+        "examples": [],
+        "message": "all 64000 outputs within tolerance (max abs err 2.02e-09)",
+        "kernel_ms": 1552.85907513462
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 4096
+        },
+        "dist": "normal",
+        "seed": 2,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 262144,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.2788970975979863e-09,
+        "max_rel_err": 7.409578286150019e-07,
+        "examples": [],
+        "message": "all 262144 outputs within tolerance (max abs err 1.28e-09)",
+        "kernel_ms": 1567.348609911278
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 3,
+          "N": 129
+        },
+        "dist": "normal",
+        "seed": 3,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 387,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 5.686326090548199e-09,
+        "max_rel_err": 3.676521178237785e-07,
+        "examples": [],
+        "message": "all 387 outputs within tolerance (max abs err 5.69e-09)",
+        "kernel_ms": 1526.0010361671448
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 2,
+          "N": 1
+        },
+        "dist": "normal",
+        "seed": 4,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 2,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 0.0,
+        "max_rel_err": 0.0,
+        "examples": [],
+        "message": "all 2 outputs within tolerance (max abs err 0)",
+        "kernel_ms": 1528.4705010708421
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "large",
+        "seed": 5,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.0623744706173e-07,
+        "max_rel_err": 3.3303114669243946e-06,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 1.06e-07)",
+        "kernel_ms": 1555.9394971933216
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "neg_large",
+        "seed": 6,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 2.3588434139992787e-09,
+        "max_rel_err": 4.043083303890962e-07,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 2.36e-09)",
+        "kernel_ms": 0.09290408343076706
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "constant",
+        "seed": 7,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 4.749745128457272e-11,
+        "max_rel_err": 4.749745128457272e-08,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)",
+        "kernel_ms": 0.07429998368024826
+      }
+    ],
+    "bench": {
+      "kernel": {
+        "median_ms": 0.03292800113558769,
+        "p10_ms": 0.03206399828195572,
+        "p90_ms": 0.03513599932193756,
+        "min_ms": 0.031072000041604042,
+        "iters": 50
+      },
+      "torch": {
+        "median_ms": 0.036720000207424164,
+        "p10_ms": 0.03580800071358681,
+        "p90_ms": 0.037696000188589096,
+        "min_ms": 0.03532800078392029,
+        "iters": 50
+      }
+    }
+  },
+  "glm_D1 (r2)": {
+    "outcomes": [
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 256
+        },
+        "dist": "normal",
+        "seed": 0,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 16384,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 8.174746005118472e-09,
+        "max_rel_err": 4.286414181775418e-07,
+        "examples": [],
+        "message": "all 16384 outputs within tolerance (max abs err 8.17e-09)",
+        "kernel_ms": 1434.709815075621
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 1000
+        },
+        "dist": "normal",
+        "seed": 1,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 64000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 3.0100437420355064e-09,
+        "max_rel_err": 5.25779953522867e-07,
+        "examples": [],
+        "message": "all 64000 outputs within tolerance (max abs err 3.01e-09)",
+        "kernel_ms": 1363.5154920630157
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 4096
+        },
+        "dist": "normal",
+        "seed": 2,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 262144,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.420725083585428e-09,
+        "max_rel_err": 5.199158522494798e-07,
+        "examples": [],
+        "message": "all 262144 outputs within tolerance (max abs err 1.42e-09)",
+        "kernel_ms": 1366.2929458077997
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 3,
+          "N": 129
+        },
+        "dist": "normal",
+        "seed": 3,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 387,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 9.159101289901717e-09,
+        "max_rel_err": 2.5268385442013307e-07,
+        "examples": [],
+        "message": "all 387 outputs within tolerance (max abs err 9.16e-09)",
+        "kernel_ms": 1341.656336095184
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 2,
+          "N": 1
+        },
+        "dist": "normal",
+        "seed": 4,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 2,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 0.0,
+        "max_rel_err": 0.0,
+        "examples": [],
+        "message": "all 2 outputs within tolerance (max abs err 0)",
+        "kernel_ms": 1322.6734979543835
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "large",
+        "seed": 5,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.0623744706173e-07,
+        "max_rel_err": 3.2712874091041756e-06,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 1.06e-07)",
+        "kernel_ms": 1362.326913047582
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "neg_large",
+        "seed": 6,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 5.241381405285406e-09,
+        "max_rel_err": 5.226203325800275e-07,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 5.24e-09)",
+        "kernel_ms": 0.09167194366455078
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "constant",
+        "seed": 7,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 4.749745128457272e-11,
+        "max_rel_err": 4.749745128457272e-08,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)",
+        "kernel_ms": 0.07506110705435276
+      }
+    ],
+    "bench": {
+      "kernel": {
+        "median_ms": 0.032496001571416855,
+        "p10_ms": 0.031328000128269196,
+        "p90_ms": 0.033535998314619064,
+        "min_ms": 0.03033600002527237,
+        "iters": 50
+      },
+      "torch": {
+        "median_ms": 0.03675200045108795,
+        "p10_ms": 0.035711999982595444,
+        "p90_ms": 0.03743999823927879,
+        "min_ms": 0.03545600175857544,
+        "iters": 50
+      }
+    }
+  },
+  "glm_D2 (r1)": {
+    "outcomes": [
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 256
+        },
+        "dist": "normal",
+        "seed": 0,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 16384,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 8.220202490916151e-09,
+        "max_rel_err": 6.82246009143272e-07,
+        "examples": [],
+        "message": "all 16384 outputs within tolerance (max abs err 8.22e-09)",
+        "kernel_ms": 1335.8239049557596
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 1000
+        },
+        "dist": "normal",
+        "seed": 1,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 64000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 3.1632136944514944e-09,
+        "max_rel_err": 7.041628270346727e-07,
+        "examples": [],
+        "message": "all 64000 outputs within tolerance (max abs err 3.16e-09)",
+        "kernel_ms": 1257.0424780715257
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 4096
+        },
+        "dist": "normal",
+        "seed": 2,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 262144,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.2788970975979863e-09,
+        "max_rel_err": 8.356748746262961e-07,
+        "examples": [],
+        "message": "all 262144 outputs within tolerance (max abs err 1.28e-09)",
+        "kernel_ms": 1241.7775669600815
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 3,
+          "N": 129
+        },
+        "dist": "normal",
+        "seed": 3,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 387,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 5.686326090548199e-09,
+        "max_rel_err": 3.676521178237785e-07,
+        "examples": [],
+        "message": "all 387 outputs within tolerance (max abs err 5.69e-09)",
+        "kernel_ms": 1236.6983441170305
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 2,
+          "N": 1
+        },
+        "dist": "normal",
+        "seed": 4,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 2,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 0.0,
+        "max_rel_err": 0.0,
+        "examples": [],
+        "message": "all 2 outputs within tolerance (max abs err 0)",
+        "kernel_ms": 1225.9229288902134
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "large",
+        "seed": 5,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.0623744706173e-07,
+        "max_rel_err": 3.3303114669243946e-06,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 1.06e-07)",
+        "kernel_ms": 1249.8970269225538
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "neg_large",
+        "seed": 6,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 2.6700538169333043e-09,
+        "max_rel_err": 5.226203325800275e-07,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 2.67e-09)",
+        "kernel_ms": 0.10098982602357864
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "constant",
+        "seed": 7,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 4.749745128457272e-11,
+        "max_rel_err": 4.749745128457272e-08,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)",
+        "kernel_ms": 0.07547205314040184
+      }
+    ],
+    "bench": {
+      "kernel": {
+        "median_ms": 0.0326399989426136,
+        "p10_ms": 0.03171199932694435,
+        "p90_ms": 0.034623999148607254,
+        "min_ms": 0.030719999223947525,
+        "iters": 50
+      },
+      "torch": {
+        "median_ms": 0.0366239994764328,
+        "p10_ms": 0.035840000957250595,
+        "p90_ms": 0.03766399994492531,
+        "min_ms": 0.035232000052928925,
+        "iters": 50
+      }
+    }
+  },
+  "glm_D3 (r1)": {
+    "outcomes": [
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 256
+        },
+        "dist": "normal",
+        "seed": 0,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 16384,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 8.220202490916151e-09,
+        "max_rel_err": 6.82246009143272e-07,
+        "examples": [],
+        "message": "all 16384 outputs within tolerance (max abs err 8.22e-09)",
+        "kernel_ms": 1339.021977968514
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 1000
+        },
+        "dist": "normal",
+        "seed": 1,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 64000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 3.1632136944514944e-09,
+        "max_rel_err": 7.041628270346727e-07,
+        "examples": [],
+        "message": "all 64000 outputs within tolerance (max abs err 3.16e-09)",
+        "kernel_ms": 1349.7510862071067
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 64,
+          "N": 4096
+        },
+        "dist": "normal",
+        "seed": 2,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 262144,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.2788970975979863e-09,
+        "max_rel_err": 8.356748746262961e-07,
+        "examples": [],
+        "message": "all 262144 outputs within tolerance (max abs err 1.28e-09)",
+        "kernel_ms": 1295.5561662092805
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 3,
+          "N": 129
+        },
+        "dist": "normal",
+        "seed": 3,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 387,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 5.686326090548199e-09,
+        "max_rel_err": 3.676521178237785e-07,
+        "examples": [],
+        "message": "all 387 outputs within tolerance (max abs err 5.69e-09)",
+        "kernel_ms": 1231.608279980719
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 2,
+          "N": 1
+        },
+        "dist": "normal",
+        "seed": 4,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 2,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 0.0,
+        "max_rel_err": 0.0,
+        "examples": [],
+        "message": "all 2 outputs within tolerance (max abs err 0)",
+        "kernel_ms": 1229.547421913594
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "large",
+        "seed": 5,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 1.0623744706173e-07,
+        "max_rel_err": 3.3303114669243946e-06,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 1.06e-07)",
+        "kernel_ms": 1253.2543381676078
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "neg_large",
+        "seed": 6,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 2.6700538169333043e-09,
+        "max_rel_err": 5.226203325800275e-07,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 2.67e-09)",
+        "kernel_ms": 0.08431798778474331
+      },
+      {
+        "op": "softmax",
+        "shape": {
+          "rows": 8,
+          "N": 1000
+        },
+        "dist": "constant",
+        "seed": 7,
+        "repeat": 1,
+        "tag": "tirx-gpu",
+        "misalign": 0,
+        "passed": true,
+        "reason": "ok",
+        "n": 8000,
+        "n_bad": 0,
+        "n_nonfinite": 0,
+        "n_unwritten": 0,
+        "canary_ok": true,
+        "max_abs_err": 4.749745128457272e-11,
+        "max_rel_err": 4.749745128457272e-08,
+        "examples": [],
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)",
+        "kernel_ms": 0.07593212649226189
+      }
+    ],
+    "bench": {
+      "kernel": {
+        "median_ms": 0.032896000891923904,
+        "p10_ms": 0.03155200183391571,
+        "p90_ms": 0.034015998244285583,
+        "min_ms": 0.03110400028526783,
+        "iters": 50
+      },
+      "torch": {
+        "median_ms": 0.03651200048625469,
+        "p10_ms": 0.03580800071358681,
+        "p90_ms": 0.03753599897027016,
+        "min_ms": 0.0352960005402565,
+        "iters": 50
+      }
+    }
+  }
+}
