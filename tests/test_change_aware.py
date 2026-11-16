@@ -99,7 +99,11 @@ class GenerateTests(unittest.TestCase):
     def test_volta_shapes_put_boundary_in_cta0(self):
         self.assertTrue(any(s["N"] % 128 for s in volta_shapes("softmax", ["tiling"], (128,))))
         self.assertTrue(any(s["M"] < 16 for s in volta_shapes("gemm", ["indexing"], (16, 16))))
-        self.assertEqual(volta_shapes("softmax", ["numerical"], (128,)), [{"N": 256}])   # VOLTA can't help
+        self.assertEqual(volta_shapes("softmax", ["numerical"], (128,)), [{"N": 256}, {"N": 584}])  # default + deep
+        self.assertEqual(volta_shapes("layernorm", ["numerical"], (128,)), [{"N": 128}])            # no deep shape
+
+    def test_deep_shape_runs_unrolled_paths(self):
+        self.assertTrue(any(s["N"] > 4 * 128 for s in volta_shapes("softmax", [], (128,))))
 
 
 @unittest.skipUnless(shutil.which("nvcc") and VOLTA_BIN.exists(), "needs nvcc and VOLTA")
@@ -115,7 +119,7 @@ class VoltaIntegration(unittest.TestCase):
             rp, bp = (compile_to_ptx(x.file, out / op).ptx for x in (ref, bug))
             from verify.volta import run_compare
             statuses = [run_compare(make_case(op, rp, ref, bp, bug, s)).status for s in p.volta]
-            self.assertEqual(statuses[0], "EQUIV", f"{name}: default shape should miss it")
+            self.assertEqual(statuses[0], "EQUIV", f"{name}: default shape should miss it")   # statuses[1] = deep shape
             self.assertTrue(set(statuses) & set(FAIL_STATUSES), f"{name}: {statuses}")
 
 

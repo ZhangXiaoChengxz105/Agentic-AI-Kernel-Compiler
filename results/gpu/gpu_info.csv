@@ -1,0 +1,2 @@
+name, driver_version, compute_cap, memory.total [MiB]
+NVIDIA A100-SXM4-40GB, 595.71.05, 8.0, 40960 MiB

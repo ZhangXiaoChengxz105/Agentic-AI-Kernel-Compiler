@@ -1,0 +1,879 @@
+{
+  "op": "layernorm",
+  "tests": [
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 2050341269,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 677618335,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 938383477,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 855854100,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 1520281897,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 1584430408,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 1586350776,
+      "repeat": 1,
+      "tag": "tiling: N=255 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 1516248793,
+      "repeat": 1,
+      "tag": "indexing: N=255 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 857413969,
+      "repeat": 1,
+      "tag": "tiling: N=257 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 938921264,
+      "repeat": 1,
+      "tag": "indexing: N=257 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1068307011,
+      "repeat": 1,
+      "tag": "tiling: N=1000 vs block 128"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 726669991,
+      "repeat": 1,
+      "tag": "indexing: N=1000 vs block 128"
+    }
+  ],
+  "results": [
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 2050341269,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 2,
+      "n_bad": 2,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 119.50303445756435,
+      "max_rel_err": 1384.3457492763428,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          119.41670989990234,
+          -0.08632455766201019
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          100.44639587402344,
+          -0.08632455766201019
+        ]
+      ],
+      "message": "2 of 2 outputs exceed tolerance (max abs err 120, max rel err 1.38e+03)",
+      "kernel_ms": 0.19451393745839596
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 677618335,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 3,
+      "n_bad": 3,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 509.6639290880412,
+      "max_rel_err": 19116.444075803258,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -509.63726806640625,
+          0.026661021634936333
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          14.798601150512695,
+          0.026661021634936333
+        ],
+        [
+          [
+            2,
+            0
+          ],
+          459.07147216796875,
+          0.026661021634936333
+        ]
+      ],
+      "message": "3 of 3 outputs exceed tolerance (max abs err 510, max rel err 1.91e+04)",
+      "kernel_ms": 0.079959980212152
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 938383477,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 254,
+      "n_bad": 254,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 923.8859195494784,
+      "max_rel_err": 13029.108185654128,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          239.0333251953125,
+          0.7756739676248761
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          816.2689819335938,
+          2.3150447427170224
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          616.3065185546875,
+          2.1111144532594732
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -145.1505889892578,
+          -0.6106893019067795
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          29.397136688232422,
+          0.2287485437960713
+        ]
+      ],
+      "message": "254 of 254 outputs exceed tolerance (max abs err 924, max rel err 1.3e+04)",
+      "kernel_ms": 0.06762600969523191
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 855854100,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 381,
+      "n_bad": 381,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1236.1224378095985,
+      "max_rel_err": 46261.573174777346,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          270.9356689453125,
+          0.8152427496732395
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          -390.7705993652344,
+          -1.1386523377185587
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -158.94097900390625,
+          -0.5340093515141682
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          328.761474609375,
+          0.9659051973760305
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -165.80520629882812,
+          -0.5204889321415196
+        ]
+      ],
+      "message": "381 of 381 outputs exceed tolerance (max abs err 1.24e+03, max rel err 4.63e+04)",
+      "kernel_ms": 0.07059203926473856
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 1520281897,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 258,
+      "n_bad": 243,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0303820760917084,
+      "max_rel_err": 0.9827753772452393,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.8676560521125793,
+          0.8704384402869728
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.26936280727386475,
+          0.27760708161624487
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -1.8184871673583984,
+          -1.7963932654736425
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.6805846095085144,
+          0.6849029395651136
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -0.24891464412212372,
+          -0.23945646481519495
+        ]
+      ],
+      "message": "243 of 258 outputs exceed tolerance (max abs err 0.0304, max rel err 0.983)",
+      "kernel_ms": 0.06428989581763744
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 1584430408,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 387,
+      "n_bad": 365,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.04380485141476287,
+      "max_rel_err": 1.7923844801303466,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -1.4517384767532349,
+          -1.4279140588576693
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          -0.8397794365882874,
+          -0.8238239576443022
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -0.3493661880493164,
+          -0.3368969717839374
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -1.702201008796692,
+          -1.6798173081824799
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.09405576437711716,
+          0.10185744626900618
+        ]
+      ],
+      "message": "365 of 387 outputs exceed tolerance (max abs err 0.0438, max rel err 1.79)",
+      "kernel_ms": 0.06276706699281931
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 1586350776,
+      "repeat": 1,
+      "tag": "tiling: N=255 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 510,
+      "n_bad": 510,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.3830575383447514,
+      "max_rel_err": 273.93756604275706,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.6138426065444946,
+          0.4652637938364538
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          -0.39954084157943726,
+          -0.2568213554188658
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -2.111772298812866,
+          -1.6308241103058618
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.4428674280643463,
+          0.3479829531897868
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -2.095790386199951,
+          -1.6223291992133866
+        ]
+      ],
+      "message": "510 of 510 outputs exceed tolerance (max abs err 1.38, max rel err 274)",
+      "kernel_ms": 0.06252701859921217
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 1516248793,
+      "repeat": 1,
+      "tag": "indexing: N=255 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 765,
+      "n_bad": 764,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.609514160432107,
+      "max_rel_err": 47.42208940879266,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -0.02001778967678547,
+          0.05987343159971976
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          -1.0832438468933105,
+          -0.6460588685816941
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -1.1182098388671875,
+          -0.6104409126945753
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          1.3266680240631104,
+          1.0234967991654553
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -1.212225079536438,
+          -0.6789129617474965
+        ]
+      ],
+      "message": "764 of 765 outputs exceed tolerance (max abs err 1.61, max rel err 47.4)",
+      "kernel_ms": 0.0620759092271328
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 857413969,
+      "repeat": 1,
+      "tag": "tiling: N=257 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 514,
+      "n_bad": 470,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.018248083925925584,
+      "max_rel_err": 2.550028070068979,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.37176305055618286,
+          0.3750743389782279
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          -1.499582052230835,
+          -1.493098663797132
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -1.3479238748550415,
+          -1.3425396506346419
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.964343786239624,
+          0.9663662117120281
+        ],
+        [
+          [
+            0,
+            5
+          ],
+          -0.6421997547149658,
+          -0.6380530136094668
+        ]
+      ],
+      "message": "470 of 514 outputs exceed tolerance (max abs err 0.0182, max rel err 2.55)",
+      "kernel_ms": 0.06306800059974194
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 938921264,
+      "repeat": 1,
+      "tag": "indexing: N=257 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 771,
+      "n_bad": 688,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.005185370260449851,
+      "max_rel_err": 0.6211037916780672,
+      "examples": [
+        [
+          [
+            0,
+            1
+          ],
+          -0.23952345550060272,
+          -0.23738845050448282
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -0.7777031660079956,
+          -0.775827932885413
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.41214418411254883,
+          0.41401182686501026
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.5915666222572327,
+          0.5932810652744137
+        ],
+        [
+          [
+            0,
+            5
+          ],
+          -0.09916920214891434,
+          -0.09734153802764156
+        ]
+      ],
+      "message": "688 of 771 outputs exceed tolerance (max abs err 0.00519, max rel err 0.621)",
+      "kernel_ms": 0.06991100963205099
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 2,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1068307011,
+      "repeat": 1,
+      "tag": "tiling: N=1000 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 2000,
+      "n_bad": 1993,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.20163404616024438,
+      "max_rel_err": 14.63146086120244,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -1.7636044025421143,
+          -1.6700649818895235
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          -1.0218420028686523,
+          -0.960358839624066
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.1051841750741005,
+          0.10609508708738656
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -0.1687631458044052,
+          -0.15194944102675645
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -0.34775009751319885,
+          -0.313087238363928
+        ]
+      ],
+      "message": "1993 of 2000 outputs exceed tolerance (max abs err 0.202, max rel err 14.6)",
+      "kernel_ms": 0.06284809205681086
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 3,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 726669991,
+      "repeat": 1,
+      "tag": "indexing: N=1000 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 3000,
+      "n_bad": 2991,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.2639485594367361,
+      "max_rel_err": 31.586675861956298,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.08380620181560516,
+          0.0883271773638296
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.8147097229957581,
+          0.7832605152618171
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -0.3878430128097534,
+          -0.3451032405511862
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -0.49191850423812866,
+          -0.4589229871398081
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -1.5356597900390625,
+          -1.4456013691608312
+        ]
+      ],
+      "message": "2991 of 3000 outputs exceed tolerance (max abs err 0.264, max rel err 31.6)",
+      "kernel_ms": 0.06364902947098017
+    }
+  ]
+}

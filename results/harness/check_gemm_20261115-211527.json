@@ -1,0 +1,641 @@
+{
+  "op": "gemm",
+  "tests": [
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 482952604,
+      "repeat": 1,
+      "tag": "tiling: {'M': 12, 'N': 12, 'K': 40} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 1654234662,
+      "repeat": 1,
+      "tag": "indexing: {'M': 12, 'N': 12, 'K': 40} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 100,
+        "N": 100,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 745946027,
+      "repeat": 1,
+      "tag": "tiling: {'M': 100, 'N': 100, 'K': 40} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 100,
+        "N": 100,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 593332373,
+      "repeat": 1,
+      "tag": "indexing: {'M': 100, 'N': 100, 'K': 40} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 33,
+        "N": 47,
+        "K": 61
+      },
+      "dist": "normal",
+      "seed": 637684936,
+      "repeat": 1,
+      "tag": "tiling: {'M': 33, 'N': 47, 'K': 61} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 33,
+        "N": 47,
+        "K": 61
+      },
+      "dist": "normal",
+      "seed": 1481807730,
+      "repeat": 1,
+      "tag": "indexing: {'M': 33, 'N': 47, 'K': 61} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 1,
+        "N": 1,
+        "K": 1
+      },
+      "dist": "normal",
+      "seed": 436814949,
+      "repeat": 1,
+      "tag": "tiling: {'M': 1, 'N': 1, 'K': 1} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 1,
+        "N": 1,
+        "K": 1
+      },
+      "dist": "normal",
+      "seed": 640936552,
+      "repeat": 1,
+      "tag": "indexing: {'M': 1, 'N': 1, 'K': 1} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 17,
+        "N": 15,
+        "K": 16
+      },
+      "dist": "normal",
+      "seed": 1463885248,
+      "repeat": 1,
+      "tag": "tiling: {'M': 17, 'N': 15, 'K': 16} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 17,
+        "N": 15,
+        "K": 16
+      },
+      "dist": "normal",
+      "seed": 689030778,
+      "repeat": 1,
+      "tag": "indexing: {'M': 17, 'N': 15, 'K': 16} vs tile 16"
+    }
+  ],
+  "results": [
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 482952604,
+      "repeat": 1,
+      "tag": "tiling: {'M': 12, 'N': 12, 'K': 40} vs tile 16",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 144,
+      "n_bad": 144,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 10.418052246976188,
+      "max_rel_err": 9.12068160926482,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.6640406250953674,
+          2.655778285608627
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          2.4434540271759033,
+          2.180421463659484
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -5.234431743621826,
+          -6.749854154051741
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          1.9248589277267456,
+          7.446582449695761
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          1.5980607271194458,
+          0.462343969996569
+        ]
+      ],
+      "message": "144 of 144 outputs exceed tolerance (max abs err 10.4, max rel err 9.12)",
+      "kernel_ms": 0.2985179889947176
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 1654234662,
+      "repeat": 1,
+      "tag": "indexing: {'M': 12, 'N': 12, 'K': 40} vs tile 16",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 144,
+      "n_bad": 144,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.80493765152196,
+      "max_rel_err": 25.061842029949393,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          2.386977195739746,
+          -0.9714317849391279
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          6.821625709533691,
+          7.276165333006018
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -7.479465961456299,
+          -3.750419155771813
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          2.0543718338012695,
+          -1.9562579993649445
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -2.943341016769409,
+          -2.7129045596948007
+        ]
+      ],
+      "message": "144 of 144 outputs exceed tolerance (max abs err 8.8, max rel err 25.1)",
+      "kernel_ms": 0.07916789036244154
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 100,
+        "N": 100,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 745946027,
+      "repeat": 1,
+      "tag": "tiling: {'M': 100, 'N': 100, 'K': 40} vs tile 16",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 10000,
+      "n_bad": 10000,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 15.241660876563003,
+      "max_rel_err": 97537.56740082327,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -0.9268976449966431,
+          -2.0606286274638697
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          -9.666963577270508,
+          -6.495755966228328
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -2.9204211235046387,
+          -0.1562840110567283
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -10.047748565673828,
+          -8.46035231933968
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -3.825714349746704,
+          -5.410577140258411
+        ]
+      ],
+      "message": "10000 of 10000 outputs exceed tolerance (max abs err 15.2, max rel err 9.75e+04)",
+      "kernel_ms": 0.06933009717613459
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 100,
+        "N": 100,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 593332373,
+      "repeat": 1,
+      "tag": "indexing: {'M': 100, 'N': 100, 'K': 40} vs tile 16",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 10000,
+      "n_bad": 9999,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 13.61000950976948,
+      "max_rel_err": 7323.221064920222,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -3.4365079402923584,
+          -7.632550250493626
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          3.844846248626709,
+          3.5577706842428913
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -1.2309452295303345,
+          -2.4293751596239477
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          1.2665581703186035,
+          -3.227534690351063
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -7.241835594177246,
+          -9.697685150442808
+        ]
+      ],
+      "message": "9999 of 10000 outputs exceed tolerance (max abs err 13.6, max rel err 7.32e+03)",
+      "kernel_ms": 0.06926001515239477
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 33,
+        "N": 47,
+        "K": 61
+      },
+      "dist": "normal",
+      "seed": 637684936,
+      "repeat": 1,
+      "tag": "tiling: {'M': 33, 'N': 47, 'K': 61} vs tile 16",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 1551,
+      "n_bad": 1550,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 13.448657465325534,
+      "max_rel_err": 149.71521518552052,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -12.298988342285156,
+          -16.423998395886827
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          6.525315761566162,
+          8.349305839034347
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          3.5097577571868896,
+          10.577883326238561
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -9.326590538024902,
+          -11.999651133676881
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          1.6566392183303833,
+          2.3433192932183644
+        ]
+      ],
+      "message": "1550 of 1551 outputs exceed tolerance (max abs err 13.4, max rel err 150)",
+      "kernel_ms": 0.0674370676279068
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 33,
+        "N": 47,
+        "K": 61
+      },
+      "dist": "normal",
+      "seed": 1481807730,
+      "repeat": 1,
+      "tag": "indexing: {'M': 33, 'N': 47, 'K': 61} vs tile 16",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 1551,
+      "n_bad": 1551,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 15.751100696796048,
+      "max_rel_err": 563.8233652064544,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          4.8059916496276855,
+          -0.2846521318374773
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          -9.306013107299805,
+          -14.884933745315465
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          4.279139518737793,
+          6.657356242666671
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          6.851012229919434,
+          6.018679578491905
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -0.60114985704422,
+          -4.9468408190968125
+        ]
+      ],
+      "message": "1551 of 1551 outputs exceed tolerance (max abs err 15.8, max rel err 564)",
+      "kernel_ms": 0.06680504884570837
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 1,
+        "N": 1,
+        "K": 1
+      },
+      "dist": "normal",
+      "seed": 436814949,
+      "repeat": 1,
+      "tag": "tiling: {'M': 1, 'N': 1, 'K': 1} vs tile 16",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 1,
+      "n_bad": 1,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.09412439484323443,
+      "max_rel_err": 1.0,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.0,
+          -0.09412439484323443
+        ]
+      ],
+      "message": "1 of 1 outputs exceed tolerance (max abs err 0.0941, max rel err 1)",
+      "kernel_ms": 0.07095304317772388
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 1,
+        "N": 1,
+        "K": 1
+      },
+      "dist": "normal",
+      "seed": 640936552,
+      "repeat": 1,
+      "tag": "indexing: {'M': 1, 'N': 1, 'K': 1} vs tile 16",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 1,
+      "n_bad": 1,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.6764162052485005,
+      "max_rel_err": 1.0,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.0,
+          -2.6764162052485005
+        ]
+      ],
+      "message": "1 of 1 outputs exceed tolerance (max abs err 2.68, max rel err 1)",
+      "kernel_ms": 0.06707501597702503
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 17,
+        "N": 15,
+        "K": 16
+      },
+      "dist": "normal",
+      "seed": 1463885248,
+      "repeat": 1,
+      "tag": "tiling: {'M': 17, 'N': 15, 'K': 16} vs tile 16",
+      "passed": true,
+      "reason": "ok",
+      "n": 255,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.2812498901837444e-06,
+      "max_rel_err": 3.2738822923698407e-06,
+      "examples": [],
+      "message": "all 255 outputs within tolerance (max abs err 1.28e-06)",
+      "kernel_ms": 0.06624404340982437
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 17,
+        "N": 15,
+        "K": 16
+      },
+      "dist": "normal",
+      "seed": 689030778,
+      "repeat": 1,
+      "tag": "indexing: {'M': 17, 'N': 15, 'K': 16} vs tile 16",
+      "passed": true,
+      "reason": "ok",
+      "n": 255,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 9.719887819059636e-07,
+      "max_rel_err": 7.059274640851918e-06,
+      "examples": [],
+      "message": "all 255 outputs within tolerance (max abs err 9.72e-07)",
+      "kernel_ms": 0.06559304893016815
+    }
+  ]
+}

@@ -1,0 +1,718 @@
+{
+  "op": "softmax",
+  "tests": [
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed"
+    }
+  ],
+  "results": [
+    {
+      "variant": "softmax_ref",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.222151245818594e-08,
+      "max_rel_err": 9.311433465680822e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 3.22e-08)",
+      "kernel_ms": 0.2612390089780092
+    },
+    {
+      "variant": "softmax_ref",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.9142535809951733e-08,
+      "max_rel_err": 1.1979731032185154e-06,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 1.91e-08)",
+      "kernel_ms": 0.26722997426986694
+    },
+    {
+      "variant": "softmax_ref",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.0446541489430037e-08,
+      "max_rel_err": 3.2214058919974546e-06,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 2.04e-08)",
+      "kernel_ms": 0.7205778965726495
+    },
+    {
+      "variant": "softmax_opt",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.728170346721353e-09,
+      "max_rel_err": 4.2808202167243937e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 7.73e-09)",
+      "kernel_ms": 0.2375739859417081
+    },
+    {
+      "variant": "softmax_opt",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.996493553813039e-09,
+      "max_rel_err": 4.25040799731312e-07,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 2e-09)",
+      "kernel_ms": 0.11573603842407465
+    },
+    {
+      "variant": "softmax_opt",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.542094505013196e-10,
+      "max_rel_err": 4.792877498765618e-07,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 6.54e-10)",
+      "kernel_ms": 0.068719033151865
+    },
+    {
+      "variant": "softmax_bug_nosync",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 16384,
+      "n_bad": 3328,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.03787829113645127,
+      "max_rel_err": 0.7008271145816564,
+      "examples": [
+        [
+          [
+            1,
+            0
+          ],
+          0.0011396887712180614,
+          0.0016845706813148852
+        ],
+        [
+          [
+            1,
+            1
+          ],
+          0.0005318763433024287,
+          0.0007861647497565601
+        ],
+        [
+          [
+            1,
+            2
+          ],
+          0.0007222264539450407,
+          0.0010675208199846687
+        ],
+        [
+          [
+            1,
+            3
+          ],
+          0.0008258135640062392,
+          0.0012206325672579309
+        ],
+        [
+          [
+            1,
+            4
+          ],
+          0.0021281240042299032,
+          0.0031455743955811663
+        ]
+      ],
+      "message": "3328 of 16384 outputs exceed tolerance (max abs err 0.0379, max rel err 0.701)",
+      "kernel_ms": 0.2345589455217123
+    },
+    {
+      "variant": "softmax_bug_nosync",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 65536,
+      "n_bad": 13274,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.01290764005443516,
+      "max_rel_err": 0.6523102895453946,
+      "examples": [
+        [
+          [
+            2,
+            0
+          ],
+          0.00036652092239819467,
+          0.000462453371693546
+        ],
+        [
+          [
+            2,
+            1
+          ],
+          0.0004833362181670964,
+          0.0006098436532713029
+        ],
+        [
+          [
+            2,
+            2
+          ],
+          0.0001251562498509884,
+          0.00015791439786876462
+        ],
+        [
+          [
+            2,
+            3
+          ],
+          8.653024269733578e-05,
+          0.00010917848293123744
+        ],
+        [
+          [
+            2,
+            4
+          ],
+          0.001543559366837144,
+          0.0019475674781836
+        ]
+      ],
+      "message": "13274 of 65536 outputs exceed tolerance (max abs err 0.0129, max rel err 0.652)",
+      "kernel_ms": 0.06898900028318167
+    },
+    {
+      "variant": "softmax_bug_nosync",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 262144,
+      "n_bad": 56932,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0014502052496194197,
+      "max_rel_err": 0.4046885390942166,
+      "examples": [
+        [
+          [
+            1,
+            0
+          ],
+          4.4799158786190674e-05,
+          6.313449995469689e-05
+        ],
+        [
+          [
+            1,
+            1
+          ],
+          0.00123303709551692,
+          0.0017376931567865933
+        ],
+        [
+          [
+            1,
+            2
+          ],
+          5.919964314671233e-05,
+          8.342881138379726e-05
+        ],
+        [
+          [
+            1,
+            3
+          ],
+          0.00010465984814800322,
+          0.0001474949153720231
+        ],
+        [
+          [
+            1,
+            4
+          ],
+          3.71657770301681e-05,
+          5.2376930411621704e-05
+        ]
+      ],
+      "message": "56932 of 262144 outputs exceed tolerance (max abs err 0.00145, max rel err 0.405)",
+      "kernel_ms": 0.06671494338661432
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.728170346721353e-09,
+      "max_rel_err": 4.2808202167243937e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 7.73e-09)",
+      "kernel_ms": 0.2324549714103341
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.996493553813039e-09,
+      "max_rel_err": 4.25040799731312e-07,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 2e-09)",
+      "kernel_ms": 0.11536595411598682
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.542094505013196e-10,
+      "max_rel_err": 4.792877498765618e-07,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 6.54e-10)",
+      "kernel_ms": 0.06859900895506144
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 16384,
+      "n_bad": 13759,
+      "n_nonfinite": 256,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0012268281199549272,
+      "max_rel_err": 0.029968816457735418,
+      "examples": [
+        [
+          [
+            63,
+            0
+          ],
+          NaN,
+          0.0009628910572438952
+        ],
+        [
+          [
+            63,
+            1
+          ],
+          NaN,
+          0.0042210494182221975
+        ],
+        [
+          [
+            63,
+            2
+          ],
+          NaN,
+          0.0023860255760942664
+        ],
+        [
+          [
+            63,
+            3
+          ],
+          NaN,
+          0.004002669415480667
+        ],
+        [
+          [
+            63,
+            4
+          ],
+          NaN,
+          0.0021932114803021262
+        ]
+      ],
+      "message": "256 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.24655100423842669
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 65536,
+      "n_bad": 13166,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 9.221677299318248e-05,
+      "max_rel_err": 0.008451824438491629,
+      "examples": [
+        [
+          [
+            0,
+            13
+          ],
+          0.003024357371032238,
+          0.003028499847040547
+        ],
+        [
+          [
+            0,
+            15
+          ],
+          0.0008933480130508542,
+          0.0008945714564474331
+        ],
+        [
+          [
+            0,
+            18
+          ],
+          0.0011265138164162636,
+          0.0011280566753060642
+        ],
+        [
+          [
+            0,
+            20
+          ],
+          0.001330131315626204,
+          0.001331953111269078
+        ],
+        [
+          [
+            0,
+            23
+          ],
+          0.0012546961661428213,
+          0.001256414776107216
+        ]
+      ],
+      "message": "13166 of 65536 outputs exceed tolerance (max abs err 9.22e-05, max rel err 0.00845)",
+      "kernel_ms": 0.0697900541126728
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 262144,
+      "n_bad": 1180,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.7604512411784068e-05,
+      "max_rel_err": 0.0016274772301497042,
+      "examples": [
+        [
+          [
+            1,
+            93
+          ],
+          0.0025521456263959408,
+          0.0025536400919154716
+        ],
+        [
+          [
+            1,
+            866
+          ],
+          0.0028986982069909573,
+          0.002900395974128281
+        ],
+        [
+          [
+            1,
+            1122
+          ],
+          0.002287868410348892,
+          0.0022892084479121414
+        ],
+        [
+          [
+            1,
+            1366
+          ],
+          0.0027171510737389326,
+          0.0027187427662798734
+        ],
+        [
+          [
+            1,
+            1451
+          ],
+          0.0022730377968400717,
+          0.0022743692433671156
+        ]
+      ],
+      "message": "1180 of 262144 outputs exceed tolerance (max abs err 1.76e-05, max rel err 0.00163)",
+      "kernel_ms": 0.06842799484729767
+    },
+    {
+      "variant": "softmax_bug_nomax",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.248601520786874e-08,
+      "max_rel_err": 2.3207685620514206e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 1.25e-08)",
+      "kernel_ms": 0.23625197354704142
+    },
+    {
+      "variant": "softmax_bug_nomax",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.470507572821523e-09,
+      "max_rel_err": 2.1397003456542712e-07,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 2.47e-09)",
+      "kernel_ms": 0.11047697626054287
+    },
+    {
+      "variant": "softmax_bug_nomax",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.000422807095891e-09,
+      "max_rel_err": 2.4364927620437365e-07,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 1e-09)",
+      "kernel_ms": 0.07015105802565813
+    }
+  ]
+}

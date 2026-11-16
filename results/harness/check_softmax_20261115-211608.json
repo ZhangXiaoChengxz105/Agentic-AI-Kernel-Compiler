@@ -1,0 +1,447 @@
+{
+  "op": "softmax",
+  "tests": [
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 1399915728,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 2069324305,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 371479373,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 305410268,
+      "repeat": 1,
+      "tag": "indexing: N=255 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 2141381429,
+      "repeat": 1,
+      "tag": "indexing: N=257 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1534245382,
+      "repeat": 1,
+      "tag": "indexing: N=1000 vs block 128"
+    }
+  ],
+  "results": [
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 1399915728,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 3,
+      "n_bad": 3,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.9647597745060921,
+      "max_rel_err": 0.9647597745060921,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.287864089012146,
+          1.0
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          0.03524022549390793,
+          1.0
+        ],
+        [
+          [
+            2,
+            0
+          ],
+          0.9455241560935974,
+          1.0
+        ]
+      ],
+      "message": "3 of 3 outputs exceed tolerance (max abs err 0.965, max rel err 0.965)",
+      "kernel_ms": 0.23723405320197344
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 2069324305,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 381,
+      "n_bad": 325,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0010084547569635671,
+      "max_rel_err": 0.016962933487737107,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.0035953260958194733,
+          0.0036573644327795077
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.007027180399745703,
+          0.007148436835737432
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.005054351408034563,
+          0.005141565771447769
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.0018991567194461823,
+          0.0019319270808027468
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.0026563070714473724,
+          0.002702142388049367
+        ]
+      ],
+      "message": "325 of 381 outputs exceed tolerance (max abs err 0.00101, max rel err 0.017)",
+      "kernel_ms": 0.07399800233542919
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 371479373,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs block 128",
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 387,
+      "n_bad": 386,
+      "n_nonfinite": 129,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0005206243787738152,
+      "max_rel_err": 0.006064815080949911,
+      "examples": [
+        [
+          [
+            2,
+            0
+          ],
+          NaN,
+          0.001973768244794117
+        ],
+        [
+          [
+            2,
+            1
+          ],
+          NaN,
+          0.0062852748336507825
+        ],
+        [
+          [
+            2,
+            2
+          ],
+          NaN,
+          0.00793873564226075
+        ],
+        [
+          [
+            2,
+            3
+          ],
+          NaN,
+          0.001174525584994801
+        ],
+        [
+          [
+            2,
+            4
+          ],
+          NaN,
+          0.004257091184174567
+        ]
+      ],
+      "message": "129 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.06434100214391947
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 305410268,
+      "repeat": 1,
+      "tag": "indexing: N=255 vs block 128",
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 765,
+      "n_bad": 723,
+      "n_nonfinite": 255,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.001132636660299e-05,
+      "max_rel_err": 0.0018981964649850602,
+      "examples": [
+        [
+          [
+            2,
+            0
+          ],
+          NaN,
+          0.0013654176577855722
+        ],
+        [
+          [
+            2,
+            1
+          ],
+          NaN,
+          0.005112222990127963
+        ],
+        [
+          [
+            2,
+            2
+          ],
+          NaN,
+          0.000973657377741509
+        ],
+        [
+          [
+            2,
+            3
+          ],
+          NaN,
+          0.006968139344530585
+        ],
+        [
+          [
+            2,
+            4
+          ],
+          NaN,
+          0.0006550850785607409
+        ]
+      ],
+      "message": "255 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.07456890307366848
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 2141381429,
+      "repeat": 1,
+      "tag": "indexing: N=257 vs block 128",
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 771,
+      "n_bad": 513,
+      "n_nonfinite": 257,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.4620276749809664e-05,
+      "max_rel_err": 0.0008326070747665259,
+      "examples": [
+        [
+          [
+            2,
+            0
+          ],
+          NaN,
+          0.000982440205199821
+        ],
+        [
+          [
+            2,
+            1
+          ],
+          NaN,
+          0.002765399740600243
+        ],
+        [
+          [
+            2,
+            2
+          ],
+          NaN,
+          0.0015786542226315125
+        ],
+        [
+          [
+            2,
+            3
+          ],
+          NaN,
+          0.00501713545678866
+        ],
+        [
+          [
+            2,
+            4
+          ],
+          NaN,
+          0.007016822703307416
+        ]
+      ],
+      "message": "257 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.06131501868367195
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1534245382,
+      "repeat": 1,
+      "tag": "indexing: N=1000 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 3000,
+      "n_bad": 358,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0528928666111992e-05,
+      "max_rel_err": 0.0006479412687301725,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.006176291033625603,
+          0.006180293631924986
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.003058810718357563,
+          0.0030607928697269507
+        ],
+        [
+          [
+            0,
+            7
+          ],
+          0.0029349790420383215,
+          0.002936881143094952
+        ],
+        [
+          [
+            0,
+            8
+          ],
+          0.0056469254195690155,
+          0.005650584672511861
+        ],
+        [
+          [
+            0,
+            22
+          ],
+          0.002901015104725957,
+          0.0029028952108776673
+        ]
+      ],
+      "message": "358 of 3000 outputs exceed tolerance (max abs err 1.05e-05, max rel err 0.000648)",
+      "kernel_ms": 0.06188603583723307
+    }
+  ]
+}

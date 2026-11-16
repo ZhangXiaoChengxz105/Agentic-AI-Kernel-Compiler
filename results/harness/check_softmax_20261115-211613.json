@@ -1,0 +1,879 @@
+{
+  "op": "softmax",
+  "tests": [
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 1272186871,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 1399915728,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 1291599418,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 2069324305,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 563023718,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 371479373,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 631205111,
+      "repeat": 1,
+      "tag": "tiling: N=255 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 305410268,
+      "repeat": 1,
+      "tag": "indexing: N=255 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 1208598302,
+      "repeat": 1,
+      "tag": "tiling: N=257 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 2141381429,
+      "repeat": 1,
+      "tag": "indexing: N=257 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1505058020,
+      "repeat": 1,
+      "tag": "tiling: N=1000 vs block 128"
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1534245382,
+      "repeat": 1,
+      "tag": "indexing: N=1000 vs block 128"
+    }
+  ],
+  "results": [
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 1272186871,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs block 128",
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 2,
+      "n_bad": 2,
+      "n_nonfinite": 2,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": Infinity,
+      "max_rel_err": Infinity,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          Infinity,
+          1.0
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          Infinity,
+          1.0
+        ]
+      ],
+      "message": "2 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.21415995433926582
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 1
+      },
+      "dist": "normal",
+      "seed": 1399915728,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs block 128",
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 3,
+      "n_bad": 3,
+      "n_nonfinite": 3,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": Infinity,
+      "max_rel_err": Infinity,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          Infinity,
+          1.0
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          Infinity,
+          1.0
+        ],
+        [
+          [
+            2,
+            0
+          ],
+          Infinity,
+          1.0
+        ]
+      ],
+      "message": "3 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.08497899398207664
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 1291599418,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs block 128",
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 254,
+      "n_bad": 254,
+      "n_nonfinite": 254,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": Infinity,
+      "max_rel_err": Infinity,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          Infinity,
+          0.0022587444257693647
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          Infinity,
+          0.0030070208415709787
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          Infinity,
+          0.004351235185475242
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          Infinity,
+          0.009719093835986627
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          Infinity,
+          0.003778603196281406
+        ]
+      ],
+      "message": "254 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.06559293251484632
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 127
+      },
+      "dist": "normal",
+      "seed": 2069324305,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs block 128",
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 381,
+      "n_bad": 381,
+      "n_nonfinite": 381,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": Infinity,
+      "max_rel_err": Infinity,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          Infinity,
+          0.0036573644327795077
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          Infinity,
+          0.007148436835737432
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          Infinity,
+          0.005141565771447769
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          Infinity,
+          0.0019319270808027468
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          Infinity,
+          0.002702142388049367
+        ]
+      ],
+      "message": "381 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.061866012401878834
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 563023718,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 258,
+      "n_bad": 255,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0002940216457306549,
+      "max_rel_err": 0.0034057051210458033,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.0006343712448142469,
+          0.0006322770020819201
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.00369239947758615,
+          0.0036802102509047438
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.007842364721000195,
+          0.007816475928790404
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.01524651050567627,
+          0.015196179457244897
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.007384960073977709,
+          0.007360581306723999
+        ]
+      ],
+      "message": "255 of 258 outputs exceed tolerance (max abs err 0.000294, max rel err 0.00341)",
+      "kernel_ms": 0.0623560044914484
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 129
+      },
+      "dist": "normal",
+      "seed": 371479373,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 387,
+      "n_bad": 386,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0028304530586270027,
+      "max_rel_err": 0.03297137729022421,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.010511280037462711,
+          0.010175775522155522
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.014497789554297924,
+          0.014035038854640268
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.0019054478034377098,
+          0.00184462843211819
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.005950989667326212,
+          0.005761041489646813
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.0021734670735895634,
+          0.0021040927668819114
+        ]
+      ],
+      "message": "386 of 387 outputs exceed tolerance (max abs err 0.00283, max rel err 0.033)",
+      "kernel_ms": 0.06278802175074816
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 631205111,
+      "repeat": 1,
+      "tag": "tiling: N=255 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 510,
+      "n_bad": 510,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.044912543975797685,
+      "max_rel_err": 1.2151821913581984,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.015272594057023525,
+          0.007257394330891794
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.0018119006417691708,
+          0.0008609983153257835
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.001923075527884066,
+          0.0009138277696451763
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.023938365280628204,
+          0.0113752885949426
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.005989987403154373,
+          0.002846385954367242
+        ]
+      ],
+      "message": "510 of 510 outputs exceed tolerance (max abs err 0.0449, max rel err 1.22)",
+      "kernel_ms": 0.06112491246312857
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 255
+      },
+      "dist": "normal",
+      "seed": 305410268,
+      "repeat": 1,
+      "tag": "indexing: N=255 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 765,
+      "n_bad": 765,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.03878315918978252,
+      "max_rel_err": 1.197660265127,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.007014651317149401,
+          0.0031918739216524887
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.005657178815454245,
+          0.002574183597678587
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.0009431900689378381,
+          0.0004291792609379126
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.0059180171228945255,
+          0.002692872644813714
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.00854095071554184,
+          0.003886384814216041
+        ]
+      ],
+      "message": "765 of 765 outputs exceed tolerance (max abs err 0.0388, max rel err 1.2)",
+      "kernel_ms": 0.05983200389891863
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 1208598302,
+      "repeat": 1,
+      "tag": "tiling: N=257 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 514,
+      "n_bad": 440,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.00023830842496128102,
+      "max_rel_err": 0.002585303988162644,
+      "examples": [
+        [
+          [
+            0,
+            1
+          ],
+          0.003071962157264352,
+          0.0030691467419417615
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.007087426260113716,
+          0.007080930784967168
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.0028175737243145704,
+          0.0028149913100109056
+        ],
+        [
+          [
+            0,
+            5
+          ],
+          0.003986179828643799,
+          0.003982526832942065
+        ],
+        [
+          [
+            0,
+            6
+          ],
+          0.0046303123235702515,
+          0.004626069108129853
+        ]
+      ],
+      "message": "440 of 514 outputs exceed tolerance (max abs err 0.000238, max rel err 0.00259)",
+      "kernel_ms": 0.06781599950045347
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 257
+      },
+      "dist": "normal",
+      "seed": 2141381429,
+      "repeat": 1,
+      "tag": "indexing: N=257 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 771,
+      "n_bad": 712,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 9.161499439686027e-05,
+      "max_rel_err": 0.0028314102855515793,
+      "examples": [
+        [
+          [
+            0,
+            1
+          ],
+          0.002442002296447754,
+          0.0024382191064722825
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.0072492510080337524,
+          0.0072380212789092836
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.002683369442820549,
+          0.002679212415237333
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.003028235398232937,
+          0.0030235442502344026
+        ],
+        [
+          [
+            0,
+            5
+          ],
+          0.0010566679993644357,
+          0.0010550309802885127
+        ]
+      ],
+      "message": "712 of 771 outputs exceed tolerance (max abs err 9.16e-05, max rel err 0.00283)",
+      "kernel_ms": 0.06097403820604086
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 2,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1505058020,
+      "repeat": 1,
+      "tag": "tiling: N=1000 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 2000,
+      "n_bad": 2000,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0024263981420115655,
+      "max_rel_err": 0.13518065249852307,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          8.83698885445483e-05,
+          8.07311383728446e-05
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.0005421143723651767,
+          0.0004952536989290262
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.0007974570617079735,
+          0.0007285243808220174
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.0011370348511263728,
+          0.001038748827291494
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.0011137534165754914,
+          0.0010174800186884014
+        ]
+      ],
+      "message": "2000 of 2000 outputs exceed tolerance (max abs err 0.00243, max rel err 0.135)",
+      "kernel_ms": 0.061274971812963486
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 3,
+        "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1534245382,
+      "repeat": 1,
+      "tag": "indexing: N=1000 vs block 128",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 3000,
+      "n_bad": 3000,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0016391639285360474,
+      "max_rel_err": 0.12577544302591562,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.006764482706785202,
+          0.006180293631924986
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.0008978814585134387,
+          0.000820339362686067
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.00335011282004416,
+          0.0030607928697269507
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          8.27555195428431e-05,
+          7.560863057632247e-05
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          0.00010793313413159922,
+          9.861191537267108e-05
+        ]
+      ],
+      "message": "3000 of 3000 outputs exceed tolerance (max abs err 0.00164, max rel err 0.126)",
+      "kernel_ms": 0.06165599916130304
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "op": "gemm",
+  "tests": [
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 512,
+        "N": 512,
+        "K": 512
+      },
+      "dist": "normal",
+      "seed": 644256714,
+      "repeat": 5,
+      "tag": "sync: many K-tiles, repeated x5"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 257,
+        "N": 263,
+        "K": 1031
+      },
+      "dist": "normal",
+      "seed": 766141776,
+      "repeat": 5,
+      "tag": "sync: ragged + many K-tiles, repeated x5"
+    }
+  ],
+  "results": [
+    {
+      "variant": "gemm_bug_nosync",
+      "op": "gemm",
+      "shape": {
+        "M": 512,
+        "N": 512,
+        "K": 512
+      },
+      "dist": "normal",
+      "seed": 644256714,
+      "repeat": 5,
+      "tag": "sync: many K-tiles, repeated x5",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 262144,
+      "n_bad": 21119,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 14.138079192238628,
+      "max_rel_err": 525.768395062679,
+      "examples": [
+        [
+          [
+            98,
+            432
+          ],
+          -23.107589721679688,
+          -23.175751236488935
+        ],
+        [
+          [
+            98,
+            433
+          ],
+          -19.378507614135742,
+          -19.109205305805624
+        ],
+        [
+          [
+            98,
+            434
+          ],
+          -16.66869354248047,
+          -17.083638141412123
+        ],
+        [
+          [
+            98,
+            435
+          ],
+          -38.70079040527344,
+          -39.21184336550572
+        ],
+        [
+          [
+            98,
+            436
+          ],
+          27.681859970092773,
+          27.37756050600883
+        ]
+      ],
+      "message": "21119 of 262144 outputs exceed tolerance (max abs err 14.1, max rel err 526)",
+      "kernel_ms": 0.2566899638622999
+    },
+    {
+      "variant": "gemm_bug_nosync",
+      "op": "gemm",
+      "shape": {
+        "M": 257,
+        "N": 263,
+        "K": 1031
+      },
+      "dist": "normal",
+      "seed": 766141776,
+      "repeat": 5,
+      "tag": "sync: ragged + many K-tiles, repeated x5",
+      "passed": false,
+      "reason": "nondeterministic",
+      "n": 67591,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0001549523167341249,
+      "max_rel_err": 0.004997165011678106,
+      "examples": [],
+      "message": "output differs between identical launches (3 of 4 repeats differ from run 0): likely a data race",
+      "kernel_ms": 0.11900300160050392
+    }
+  ]
+}

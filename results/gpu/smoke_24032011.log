@@ -1,0 +1,233 @@
+== [1] GPU / driver
+Sun Nov 15 21:12:35 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.71.05              Driver Version: 595.71.05      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-40GB          On  |   00000000:07:00.0 Off |                    0 |
+| N/A   30C    P0             51W /  400W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+name, driver_version, compute_cap, memory.total [MiB]
+NVIDIA A100-SXM4-40GB, 595.71.05, 8.0, 40960 MiB
+Build cuda_13.2.r13.2/compiler.37668154_0
+== [2] torch
+2.14.1+cu132 13.2 NVIDIA A100-SXM4-40GB (8, 0)
+== [3] GPU unit tests
+test_canary_detects_out_of_bounds_store (tests.test_harness.CheckTests.test_canary_detects_out_of_bounds_store) ... ok
+test_exact_passes (tests.test_harness.CheckTests.test_exact_passes) ... ok
+test_gemm_tolerance_scales_with_magnitude (tests.test_harness.CheckTests.test_gemm_tolerance_scales_with_magnitude) ... ok
+test_mismatch_reports_index (tests.test_harness.CheckTests.test_mismatch_reports_index) ... ok
+test_nan_is_nonfinite (tests.test_harness.CheckTests.test_nan_is_nonfinite) ... ok
+test_sentinel_is_a_nan_payload (tests.test_harness.CheckTests.test_sentinel_is_a_nan_payload) ... ok
+test_unwritten_detected (tests.test_harness.CheckTests.test_unwritten_detected) ... ok
+test_fixed_suite_is_power_of_two_normal (tests.test_harness.FixedSuiteTests.test_fixed_suite_is_power_of_two_normal) ... ok
+test_testcase_roundtrip (tests.test_harness.FixedSuiteTests.test_testcase_roundtrip) ... ok
+test_gemm_shapes (tests.test_harness.GoldenTests.test_gemm_shapes) ... ok
+test_launch_configs (tests.test_harness.GoldenTests.test_launch_configs) ... ok
+test_layernorm_matches_formula (tests.test_harness.GoldenTests.test_layernorm_matches_formula) ... ok
+test_softmax_rows_sum_to_one (tests.test_harness.GoldenTests.test_softmax_rows_sum_to_one) ... ok
+test_blind_spots_caught_on_gpu (tests.test_harness.GpuTests.test_blind_spots_caught_on_gpu) ... ok
+test_reference_and_opt_pass_fixed_suite (tests.test_harness.GpuTests.test_reference_and_opt_pass_fixed_suite) ... ok
+test_shape_bugs_caught_on_gpu (tests.test_harness.GpuTests.test_shape_bugs_caught_on_gpu) ... ok
+test_deterministic (tests.test_harness.InputTests.test_deterministic) ... ok
+test_distributions_hit_their_targets (tests.test_harness.InputTests.test_distributions_hit_their_targets) ... ok
+test_onepass_variance_cancels (tests.test_harness.NumericalBlindSpotEmulation.test_onepass_variance_cancels) ... ok
+test_softmax_without_max_overflows (tests.test_harness.NumericalBlindSpotEmulation.test_softmax_without_max_overflows) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 32.080s
+
+OK
+== [4] fixed suite (config A) on all variants
+softmax_ref                  3/3   passed   
+softmax_opt                  3/3   passed   
+softmax_bug_nosync           0/3   passed   mismatch
+    FAIL softmax[rows=64,N=256] dist=normal seed=0 x3         mismatch         3328 of 16384 outputs exceed tolerance (max abs err 0.0379, max rel err 0.701)
+    FAIL softmax[rows=64,N=1024] dist=normal seed=1 x3        mismatch         13274 of 65536 outputs exceed tolerance (max abs err 0.0129, max rel err 0.652)
+    FAIL softmax[rows=64,N=4096] dist=normal seed=2 x3        mismatch         56932 of 262144 outputs exceed tolerance (max abs err 0.00145, max rel err 0.405
+softmax_bug_tail             3/3   passed   
+softmax_bug_offbyone         0/3   passed   mismatch, nonfinite
+    FAIL softmax[rows=64,N=256] dist=normal seed=0 x3         nonfinite        256 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=64,N=1024] dist=normal seed=1 x3        mismatch         13166 of 65536 outputs exceed tolerance (max abs err 9.22e-05, max rel err 0.008
+    FAIL softmax[rows=64,N=4096] dist=normal seed=2 x3        mismatch         1180 of 262144 outputs exceed tolerance (max abs err 1.76e-05, max rel err 0.001
+softmax_bug_nomax            3/3   passed   
+saved results/harness/check_softmax_20261115-211340.json
+gemm_ref                     3/3   passed   
+gemm_opt                     3/3   passed   
+gemm_bug_nosync              2/3   passed   mismatch
+    FAIL gemm[M=512,N=512,K=512] dist=normal seed=2 x3        mismatch         30596 of 262144 outputs exceed tolerance (max abs err 13.8, max rel err 1.79e+03
+gemm_bug_ktail               3/3   passed   
+gemm_bug_guard               3/3   passed   
+saved results/harness/check_gemm_20261115-211357.json
+layernorm_ref                3/3   passed   
+layernorm_opt                3/3   passed   
+layernorm_bug_nosync         3/3   passed   
+layernorm_bug_tail           3/3   passed   
+layernorm_bug_offbyone       0/3   passed   mismatch
+    FAIL layernorm[rows=64,N=256] dist=normal seed=0 x3       mismatch         7396 of 16384 outputs exceed tolerance (max abs err 0.0384, max rel err 3.61)
+    FAIL layernorm[rows=64,N=1024] dist=normal seed=1 x3      mismatch         5078 of 65536 outputs exceed tolerance (max abs err 0.0104, max rel err 3.81)
+    FAIL layernorm[rows=64,N=4096] dist=normal seed=2 x3      mismatch         125 of 262144 outputs exceed tolerance (max abs err 0.00297, max rel err 1.59)
+layernorm_bug_onepass        3/3   passed   
+saved results/harness/check_layernorm_20261115-211418.json
+== [5] benchmark
+op=softmax shape={'rows': 4096, 'N': 1024} (median of 50, L2 flushed)
+  torch                         0.0369 ms     909.4 GB/s    0.568 TFLOP/s  x1.00 vs torch
+  softmax_ref                   0.6454 ms      52.0 GB/s    0.032 TFLOP/s  x0.06 vs torch
+  softmax_opt                   0.0379 ms     884.9 GB/s    0.553 TFLOP/s  x0.97 vs torch
+  softmax_bug_nosync         skipped: incorrect on bench shape: mismatch
+  softmax_bug_tail              0.0366 ms     917.4 GB/s    0.573 TFLOP/s  x1.01 vs torch
+  softmax_bug_offbyone       skipped: incorrect on bench shape: mismatch
+  softmax_bug_nomax             0.0360 ms     932.1 GB/s    0.583 TFLOP/s  x1.02 vs torch
+saved results/harness/bench_softmax_20261115-211438.json
+op=gemm shape={'M': 1024, 'N': 1024, 'K': 1024} (median of 50, L2 flushed)
+  torch                         0.1718 ms      73.2 GB/s   12.500 TFLOP/s  x1.00 vs torch
+  gemm_ref                      0.8898 ms      14.1 GB/s    2.414 TFLOP/s  x0.19 vs torch
+  gemm_opt                      0.6094 ms      20.6 GB/s    3.524 TFLOP/s  x0.28 vs torch
+  gemm_bug_nosync            skipped: incorrect on bench shape: mismatch
+  gemm_bug_ktail                0.5865 ms      21.5 GB/s    3.662 TFLOP/s  x0.29 vs torch
+  gemm_bug_guard                0.6093 ms      20.6 GB/s    3.524 TFLOP/s  x0.28 vs torch
+saved results/harness/bench_gemm_20261115-211455.json
+op=layernorm shape={'rows': 4096, 'N': 1024} (median of 50, L2 flushed)
+  torch                         0.0417 ms     805.2 GB/s    0.805 TFLOP/s  x1.00 vs torch
+  layernorm_ref                 0.3363 ms      99.8 GB/s    0.100 TFLOP/s  x0.12 vs torch
+  layernorm_opt                 0.0350 ms     960.0 GB/s    0.960 TFLOP/s  x1.19 vs torch
+  layernorm_bug_nosync          0.0379 ms     885.8 GB/s    0.886 TFLOP/s  x1.10 vs torch
+  layernorm_bug_tail            0.0373 ms     899.5 GB/s    0.899 TFLOP/s  x1.12 vs torch
+  layernorm_bug_offbyone     skipped: incorrect on bench shape: mismatch
+  layernorm_bug_onepass         0.0361 ms     929.8 GB/s    0.930 TFLOP/s  x1.15 vs torch
+saved results/harness/bench_layernorm_20261115-211516.json
+== [6] change-aware GPU tests for the injected bugs
+gemm_bug_guard               0/5   passed   canary
+    FAIL gemm[M=12,N=12,K=40] dist=normal seed=1654234662 x1  canary           kernel wrote outside the output buffer (out-of-bounds store)
+    FAIL gemm[M=100,N=100,K=40] dist=normal seed=593332373 x1 canary           kernel wrote outside the output buffer (out-of-bounds store)
+    FAIL gemm[M=33,N=47,K=61] dist=normal seed=1481807730 x1  canary           kernel wrote outside the output buffer (out-of-bounds store)
+    FAIL gemm[M=1,N=1,K=1] dist=normal seed=640936552 x1      canary           kernel wrote outside the output buffer (out-of-bounds store)
+    FAIL gemm[M=17,N=15,K=16] dist=normal seed=689030778 x1   canary           kernel wrote outside the output buffer (out-of-bounds store)
+saved results/harness/check_gemm_20261115-211521.json
+gemm_bug_ktail               2/10  passed   mismatch
+    FAIL gemm[M=12,N=12,K=40] dist=normal seed=482952604 x1   mismatch         144 of 144 outputs exceed tolerance (max abs err 10.4, max rel err 9.12)
+    FAIL gemm[M=12,N=12,K=40] dist=normal seed=1654234662 x1  mismatch         144 of 144 outputs exceed tolerance (max abs err 8.8, max rel err 25.1)
+    FAIL gemm[M=100,N=100,K=40] dist=normal seed=745946027 x1 mismatch         10000 of 10000 outputs exceed tolerance (max abs err 15.2, max rel err 9.75e+04)
+    FAIL gemm[M=100,N=100,K=40] dist=normal seed=593332373 x1 mismatch         9999 of 10000 outputs exceed tolerance (max abs err 13.6, max rel err 7.32e+03)
+    FAIL gemm[M=33,N=47,K=61] dist=normal seed=637684936 x1   mismatch         1550 of 1551 outputs exceed tolerance (max abs err 13.4, max rel err 150)
+    FAIL gemm[M=33,N=47,K=61] dist=normal seed=1481807730 x1  mismatch         1551 of 1551 outputs exceed tolerance (max abs err 15.8, max rel err 564)
+    FAIL gemm[M=1,N=1,K=1] dist=normal seed=436814949 x1      mismatch         1 of 1 outputs exceed tolerance (max abs err 0.0941, max rel err 1)
+    FAIL gemm[M=1,N=1,K=1] dist=normal seed=640936552 x1      mismatch         1 of 1 outputs exceed tolerance (max abs err 2.68, max rel err 1)
+saved results/harness/check_gemm_20261115-211527.json
+gemm_bug_nosync              0/2   passed   mismatch, nondeterministic
+    FAIL gemm[M=512,N=512,K=512] dist=normal seed=644256714 x5 mismatch         21119 of 262144 outputs exceed tolerance (max abs err 14.1, max rel err 526)
+    FAIL gemm[M=257,N=263,K=1031] dist=normal seed=766141776 x5 nondeterministic output differs between identical launches (3 of 4 repeats differ from run 0): li
+saved results/harness/check_gemm_20261115-211532.json
+layernorm_bug_nosync         2/2   passed   
+saved results/harness/check_layernorm_20261115-211537.json
+layernorm_bug_offbyone       1/6   passed   mismatch, nonfinite
+    FAIL layernorm[rows=3,N=127] dist=normal seed=855854100 x1 mismatch         127 of 381 outputs exceed tolerance (max abs err 0.0288, max rel err 0.068)
+    FAIL layernorm[rows=3,N=129] dist=normal seed=1584430408 x1 mismatch         244 of 387 outputs exceed tolerance (max abs err 0.0293, max rel err 0.139)
+    FAIL layernorm[rows=3,N=255] dist=normal seed=1516248793 x1 nonfinite        255 outputs are NaN/Inf where the reference is finite
+    FAIL layernorm[rows=3,N=257] dist=normal seed=938921264 x1 mismatch         441 of 771 outputs exceed tolerance (max abs err 0.00851, max rel err 0.0198)
+    FAIL layernorm[rows=3,N=1000] dist=normal seed=726669991 x1 mismatch         903 of 3000 outputs exceed tolerance (max abs err 0.00792, max rel err 0.785)
+saved results/harness/check_layernorm_20261115-211542.json
+layernorm_bug_onepass        3/4   passed   nonfinite
+    FAIL layernorm[rows=8,N=1000] dist=offset seed=246001307 x1 nonfinite        3000 outputs are NaN/Inf where the reference is finite
+saved results/harness/check_layernorm_20261115-211547.json
+layernorm_bug_tail           0/12  passed   mismatch
+    FAIL layernorm[rows=2,N=1] dist=normal seed=2050341269 x1 mismatch         2 of 2 outputs exceed tolerance (max abs err 120, max rel err 1.38e+03)
+    FAIL layernorm[rows=3,N=1] dist=normal seed=677618335 x1  mismatch         3 of 3 outputs exceed tolerance (max abs err 510, max rel err 1.91e+04)
+    FAIL layernorm[rows=2,N=127] dist=normal seed=938383477 x1 mismatch         254 of 254 outputs exceed tolerance (max abs err 924, max rel err 1.3e+04)
+    FAIL layernorm[rows=3,N=127] dist=normal seed=855854100 x1 mismatch         381 of 381 outputs exceed tolerance (max abs err 1.24e+03, max rel err 4.63e+04)
+    FAIL layernorm[rows=2,N=129] dist=normal seed=1520281897 x1 mismatch         243 of 258 outputs exceed tolerance (max abs err 0.0304, max rel err 0.983)
+    FAIL layernorm[rows=3,N=129] dist=normal seed=1584430408 x1 mismatch         365 of 387 outputs exceed tolerance (max abs err 0.0438, max rel err 1.79)
+    FAIL layernorm[rows=2,N=255] dist=normal seed=1586350776 x1 mismatch         510 of 510 outputs exceed tolerance (max abs err 1.38, max rel err 274)
+    FAIL layernorm[rows=3,N=255] dist=normal seed=1516248793 x1 mismatch         764 of 765 outputs exceed tolerance (max abs err 1.61, max rel err 47.4)
+    FAIL layernorm[rows=2,N=257] dist=normal seed=857413969 x1 mismatch         470 of 514 outputs exceed tolerance (max abs err 0.0182, max rel err 2.55)
+    FAIL layernorm[rows=3,N=257] dist=normal seed=938921264 x1 mismatch         688 of 771 outputs exceed tolerance (max abs err 0.00519, max rel err 0.621)
+    FAIL layernorm[rows=2,N=1000] dist=normal seed=1068307011 x1 mismatch         1993 of 2000 outputs exceed tolerance (max abs err 0.202, max rel err 14.6)
+    FAIL layernorm[rows=3,N=1000] dist=normal seed=726669991 x1 mismatch         2991 of 3000 outputs exceed tolerance (max abs err 0.264, max rel err 31.6)
+saved results/harness/check_layernorm_20261115-211553.json
+softmax_bug_nomax            1/4   passed   nonfinite
+    FAIL softmax[rows=8,N=1000] dist=large seed=1654187883 x1 nonfinite        1496 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=8,N=1000] dist=neg_large seed=800775222 x1 nonfinite        8000 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=8,N=1000] dist=mixed seed=1391079926 x1 nonfinite        1329 outputs are NaN/Inf where the reference is finite
+saved results/harness/check_softmax_20261115-211558.json
+softmax_bug_nosync           0/2   passed   mismatch
+    FAIL softmax[rows=256,N=4096] dist=normal seed=1538214856 x5 mismatch         131446 of 1048576 outputs exceed tolerance (max abs err 0.00444, max rel err 0.6
+    FAIL softmax[rows=256,N=4099] dist=normal seed=972301527 x5 mismatch         171364 of 1049344 outputs exceed tolerance (max abs err 0.00419, max rel err 0.7
+saved results/harness/check_softmax_20261115-211603.json
+softmax_bug_offbyone         0/6   passed   mismatch, nonfinite
+    FAIL softmax[rows=3,N=1] dist=normal seed=1399915728 x1   mismatch         3 of 3 outputs exceed tolerance (max abs err 0.965, max rel err 0.965)
+    FAIL softmax[rows=3,N=127] dist=normal seed=2069324305 x1 mismatch         325 of 381 outputs exceed tolerance (max abs err 0.00101, max rel err 0.017)
+    FAIL softmax[rows=3,N=129] dist=normal seed=371479373 x1  nonfinite        129 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=3,N=255] dist=normal seed=305410268 x1  nonfinite        255 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=3,N=257] dist=normal seed=2141381429 x1 nonfinite        257 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=3,N=1000] dist=normal seed=1534245382 x1 mismatch         358 of 3000 outputs exceed tolerance (max abs err 1.05e-05, max rel err 0.000648
+saved results/harness/check_softmax_20261115-211608.json
+softmax_bug_tail             0/12  passed   mismatch, nonfinite
+    FAIL softmax[rows=2,N=1] dist=normal seed=1272186871 x1   nonfinite        2 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=3,N=1] dist=normal seed=1399915728 x1   nonfinite        3 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=2,N=127] dist=normal seed=1291599418 x1 nonfinite        254 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=3,N=127] dist=normal seed=2069324305 x1 nonfinite        381 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=2,N=129] dist=normal seed=563023718 x1  mismatch         255 of 258 outputs exceed tolerance (max abs err 0.000294, max rel err 0.00341)
+    FAIL softmax[rows=3,N=129] dist=normal seed=371479373 x1  mismatch         386 of 387 outputs exceed tolerance (max abs err 0.00283, max rel err 0.033)
+    FAIL softmax[rows=2,N=255] dist=normal seed=631205111 x1  mismatch         510 of 510 outputs exceed tolerance (max abs err 0.0449, max rel err 1.22)
+    FAIL softmax[rows=3,N=255] dist=normal seed=305410268 x1  mismatch         765 of 765 outputs exceed tolerance (max abs err 0.0388, max rel err 1.2)
+    FAIL softmax[rows=2,N=257] dist=normal seed=1208598302 x1 mismatch         440 of 514 outputs exceed tolerance (max abs err 0.000238, max rel err 0.00259)
+    FAIL softmax[rows=3,N=257] dist=normal seed=2141381429 x1 mismatch         712 of 771 outputs exceed tolerance (max abs err 9.16e-05, max rel err 0.00283)
+    FAIL softmax[rows=2,N=1000] dist=normal seed=1505058020 x1 mismatch         2000 of 2000 outputs exceed tolerance (max abs err 0.00243, max rel err 0.135)
+    FAIL softmax[rows=3,N=1000] dist=normal seed=1534245382 x1 mismatch         3000 of 3000 outputs exceed tolerance (max abs err 0.00164, max rel err 0.126)
+saved results/harness/check_softmax_20261115-211613.json
+== [7] GLM CUDA kernels
+softmax_opt                 24/24  passed   
+glm_A_r1_FLTMAX             24/24  passed   
+glm_A_r3                    12/24  passed   mismatch, nonfinite
+    FAIL softmax[rows=64,N=1024] dist=normal seed=1 x1        mismatch         65536 of 65536 outputs exceed tolerance (max abs err 0.0105, max rel err 0.427)
+    FAIL softmax[rows=64,N=4096] dist=normal seed=2 x1        mismatch         262135 of 262144 outputs exceed tolerance (max abs err 0.0042, max rel err 0.389
+    FAIL softmax[rows=256,N=4096] dist=normal seed=1538214856 x5 mismatch         1048522 of 1048576 outputs exceed tolerance (max abs err 0.00612, max rel err 0.
+    FAIL softmax[rows=8,N=1000] dist=large seed=1654187883 x1 mismatch         11 of 8000 outputs exceed tolerance (max abs err 8.9e+07, max rel err 8.9e+07)
+    FAIL softmax[rows=3,N=1001] dist=normal seed=768157148 x1 mismatch         3003 of 3003 outputs exceed tolerance (max abs err 0.00531, max rel err 0.326)
+    FAIL softmax[rows=256,N=4099] dist=normal seed=972301527 x5 mismatch         1049293 of 1049344 outputs exceed tolerance (max abs err 0.00593, max rel err 0.
+    FAIL softmax[rows=8,N=1000] dist=neg_large seed=800775222 x1 mismatch         8000 of 8000 outputs exceed tolerance (max abs err 0.00687, max rel err 0.365)
+    FAIL softmax[rows=3,N=1023] dist=normal seed=425998906 x1 mismatch         3069 of 3069 outputs exceed tolerance (max abs err 0.00702, max rel err 0.38)
+    FAIL softmax[rows=8,N=1000] dist=mixed seed=1391079926 x1 nonfinite        2000 outputs are NaN/Inf where the reference is finite
+    FAIL softmax[rows=8,N=1000] dist=constant seed=837123038 x1 mismatch         8000 of 8000 outputs exceed tolerance (max abs err 0.000302, max rel err 0.302)
+    FAIL softmax[rows=2,N=1000] dist=normal seed=1505058020 x1 mismatch         2000 of 2000 outputs exceed tolerance (max abs err 0.0058, max rel err 0.323)
+    FAIL softmax[rows=3,N=1000] dist=normal seed=1534245382 x1 mismatch         3000 of 3000 outputs exceed tolerance (max abs err 0.00518, max rel err 0.326)
+glm_B1_r1_racy              24/24  passed   
+glm_B1_r3                   24/24  passed   
+glm_B2_r1                   24/24  passed   
+glm_B3_r1                   24/24  passed   
+saved results/harness/check_softmax_20261115-211638.json
+op=softmax shape={'rows': 4096, 'N': 1024} (median of 50, L2 flushed)
+  torch                         0.0370 ms     907.1 GB/s    0.567 TFLOP/s  x1.00 vs torch
+  softmax_ref                   0.6163 ms      54.4 GB/s    0.034 TFLOP/s  x0.06 vs torch
+  softmax_opt                   0.0363 ms     923.9 GB/s    0.577 TFLOP/s  x1.02 vs torch
+  softmax_bug_nosync         skipped: incorrect on bench shape: mismatch
+  softmax_bug_tail              0.0360 ms     933.3 GB/s    0.583 TFLOP/s  x1.03 vs torch
+  softmax_bug_offbyone       skipped: incorrect on bench shape: mismatch
+  softmax_bug_nomax             0.0363 ms     923.4 GB/s    0.577 TFLOP/s  x1.02 vs torch
+  glm_A_r1_FLTMAX               0.0343 ms     978.6 GB/s    0.612 TFLOP/s  x1.08 vs torch
+  glm_A_r3                   skipped: incorrect on bench shape: mismatch
+  glm_B1_r1_racy                0.0404 ms     830.6 GB/s    0.519 TFLOP/s  x0.92 vs torch
+  glm_B1_r3                     0.0407 ms     825.3 GB/s    0.516 TFLOP/s  x0.91 vs torch
+  glm_B2_r1                     0.0366 ms     917.4 GB/s    0.573 TFLOP/s  x1.01 vs torch
+  glm_B3_r1                     0.0394 ms     850.8 GB/s    0.532 TFLOP/s  x0.94 vs torch
+saved results/harness/bench_softmax_20261115-211716.json
+== [8] tirx-lite kernels on the GPU
+txl_ref (hand-written)   8/8 cases passed   bench rows=4096,n=1024: 0.0341 ms (torch 0.0368 ms, x1.08)
+glm_C (r2)               8/8 cases passed   bench rows=4096,n=1024: 0.0320 ms (torch 0.0369 ms, x1.15)
+glm_D1 (r2)              8/8 cases passed   bench rows=4096,n=1024: 0.0318 ms (torch 0.0367 ms, x1.15)
+glm_D2 (r1)              8/8 cases passed   bench rows=4096,n=1024: 0.0317 ms (torch 0.0367 ms, x1.16)
+glm_D3 (r1)              8/8 cases passed   bench rows=4096,n=1024: 0.0319 ms (torch 0.0368 ms, x1.16)
+saved results/harness/tirx_gpu_20261115-211846.json
+== done at 2026-11-15T21:18:46-06:00

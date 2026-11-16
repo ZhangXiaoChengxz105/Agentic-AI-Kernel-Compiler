@@ -1,0 +1,77 @@
+{
+  "op": "layernorm",
+  "tests": [
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4096
+      },
+      "dist": "normal",
+      "seed": 1035404655,
+      "repeat": 5,
+      "tag": "sync: N=4096, many iterations, repeated x5"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "normal",
+      "seed": 1609329264,
+      "repeat": 5,
+      "tag": "sync: N=4099, many iterations, repeated x5"
+    }
+  ],
+  "results": [
+    {
+      "variant": "layernorm_bug_nosync",
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4096
+      },
+      "dist": "normal",
+      "seed": 1035404655,
+      "repeat": 5,
+      "tag": "sync: N=4096, many iterations, repeated x5",
+      "passed": true,
+      "reason": "ok",
+      "n": 1048576,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.877999852468065e-07,
+      "max_rel_err": 0.010955187679855214,
+      "examples": [],
+      "message": "all 1048576 outputs within tolerance (max abs err 7.88e-07)",
+      "kernel_ms": 0.20066602155566216
+    },
+    {
+      "variant": "layernorm_bug_nosync",
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "normal",
+      "seed": 1609329264,
+      "repeat": 5,
+      "tag": "sync: N=4099, many iterations, repeated x5",
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.1465698355195286e-06,
+      "max_rel_err": 0.0042855776275321725,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.15e-06)",
+      "kernel_ms": 0.1296919072046876
+    }
+  ]
+}

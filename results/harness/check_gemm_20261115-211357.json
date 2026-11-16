@@ -1,0 +1,459 @@
+{
+  "op": "gemm",
+  "tests": [
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 128
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 256,
+        "N": 256,
+        "K": 256
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 512,
+        "N": 512,
+        "K": 512
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed"
+    }
+  ],
+  "results": [
+    {
+      "variant": "gemm_ref",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 128
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.1542762468129695e-05,
+      "max_rel_err": 0.0006510959154668694,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+      "kernel_ms": 0.24434702936559916
+    },
+    {
+      "variant": "gemm_ref",
+      "op": "gemm",
+      "shape": {
+        "M": 256,
+        "N": 256,
+        "K": 256
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.072619566386493e-05,
+      "max_rel_err": 0.10590636721095462,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+      "kernel_ms": 0.11862209066748619
+    },
+    {
+      "variant": "gemm_ref",
+      "op": "gemm",
+      "shape": {
+        "M": 512,
+        "N": 512,
+        "K": 512
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.83508713656056e-05,
+      "max_rel_err": 0.008491038751917352,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 8.84e-05)",
+      "kernel_ms": 0.18080801237374544
+    },
+    {
+      "variant": "gemm_opt",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 128
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.1542762468129695e-05,
+      "max_rel_err": 0.0006510959154668694,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+      "kernel_ms": 0.23697305005043745
+    },
+    {
+      "variant": "gemm_opt",
+      "op": "gemm",
+      "shape": {
+        "M": 256,
+        "N": 256,
+        "K": 256
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.072619566386493e-05,
+      "max_rel_err": 0.10590636721095462,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+      "kernel_ms": 0.11925306171178818
+    },
+    {
+      "variant": "gemm_opt",
+      "op": "gemm",
+      "shape": {
+        "M": 512,
+        "N": 512,
+        "K": 512
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.83508713656056e-05,
+      "max_rel_err": 0.008491038751917352,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 8.84e-05)",
+      "kernel_ms": 0.1388400560244918
+    },
+    {
+      "variant": "gemm_bug_nosync",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 128
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.1542762468129695e-05,
+      "max_rel_err": 0.0006510959154668694,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+      "kernel_ms": 0.22726505994796753
+    },
+    {
+      "variant": "gemm_bug_nosync",
+      "op": "gemm",
+      "shape": {
+        "M": 256,
+        "N": 256,
+        "K": 256
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.072619566386493e-05,
+      "max_rel_err": 0.10590636721095462,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+      "kernel_ms": 0.11511496268212795
+    },
+    {
+      "variant": "gemm_bug_nosync",
+      "op": "gemm",
+      "shape": {
+        "M": 512,
+        "N": 512,
+        "K": 512
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": false,
+      "reason": "mismatch",
+      "n": 262144,
+      "n_bad": 30596,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 13.77637660507494,
+      "max_rel_err": 1788.5744664764297,
+      "examples": [
+        [
+          [
+            96,
+            400
+          ],
+          25.68451690673828,
+          25.11368752527075
+        ],
+        [
+          [
+            96,
+            401
+          ],
+          -15.69205379486084,
+          -15.40336723690881
+        ],
+        [
+          [
+            96,
+            402
+          ],
+          -16.767902374267578,
+          -15.278594645950747
+        ],
+        [
+          [
+            96,
+            403
+          ],
+          -0.9325019717216492,
+          -1.3683421942091818
+        ],
+        [
+          [
+            96,
+            404
+          ],
+          -3.6252875328063965,
+          -2.1841799072926174
+        ]
+      ],
+      "message": "30596 of 262144 outputs exceed tolerance (max abs err 13.8, max rel err 1.79e+03)",
+      "kernel_ms": 0.1363350311294198
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 128
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.1542762468129695e-05,
+      "max_rel_err": 0.0006510959154668694,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+      "kernel_ms": 0.2375839976593852
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 256,
+        "N": 256,
+        "K": 256
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.072619566386493e-05,
+      "max_rel_err": 0.10590636721095462,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+      "kernel_ms": 0.11799100320786238
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 512,
+        "N": 512,
+        "K": 512
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.83508713656056e-05,
+      "max_rel_err": 0.008491038751917352,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 8.84e-05)",
+      "kernel_ms": 0.14234601985663176
+    },
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 128
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.1542762468129695e-05,
+      "max_rel_err": 0.0006510959154668694,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+      "kernel_ms": 0.24522899184376
+    },
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 256,
+        "N": 256,
+        "K": 256
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.072619566386493e-05,
+      "max_rel_err": 0.10590636721095462,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+      "kernel_ms": 0.13009295798838139
+    },
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 512,
+        "N": 512,
+        "K": 512
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.83508713656056e-05,
+      "max_rel_err": 0.008491038751917352,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 8.84e-05)",
+      "kernel_ms": 0.13972108718007803
+    }
+  ]
+}

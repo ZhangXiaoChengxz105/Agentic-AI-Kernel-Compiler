@@ -116,3 +116,7 @@ source env.sh && source envs/tirx/bin/activate && export RUSTUP_TOOLCHAIN=1.95.0
   `gpuA100x4-interactive` ≈ minutes (max 1 h) → scripts default to the interactive partition.
 - **Login-node limits**: a VOLTA LayerNorm run at N≥512 reached ~10 GB RSS after 3.5 min and was stopped; run VOLTA
   scaling experiments on a compute node, keep login-node VOLTA runs small (layernorm N ≤ 200).
+
+### Update (2026-11-15, night): compute node confirmed (Slurm job 24032011, gpua001)
+NVIDIA A100-SXM4-40GB, compute capability 8.0, driver **595.71.05** (same as the login node packages), 40 GiB.
+torch 2.14.1+cu132 works on it; PTX JIT via the driver API works. Results: notes/gpu_results.md.

@@ -154,7 +154,7 @@ it must be re-measured on agent-written revisions and bugs written by someone el
 | 11 | VOLTA LayerNorm N≥512: >3.5 min, ~10 GB RAM on the login node | O(N²) expansion of the variance | stopped it; VOLTA layernorm shapes ≤ 200; scaling runs belong on a compute node |
 | 12 | `pkill -f <pattern>` returned 144 | pattern matched its own shell | harmless; use the PID next time |
 
-## 5. Waiting for approval
+## 5. Waiting for approval (update: item 1 done, job 24032011, see notes/gpu_results.md; item 2 done, see notes/glm_pilot.md)
 1. **GPU smoke test** (`sbatch scripts/slurm/smoke.sbatch`): 1 A100, ≤30 min on `gpuA100x4-interactive`
    (≈0.5 of the 749 remaining GPU-hours): driver version, 3 GPU unit tests, fixed suite on all 15 variants,
    benchmarks. Then the change-aware GPU tests for the 11 bugs (`results/change_aware/tests/*.json`).

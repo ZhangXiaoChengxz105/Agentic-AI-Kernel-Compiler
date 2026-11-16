@@ -1,0 +1,188 @@
+{
+  "op": "layernorm",
+  "tests": [
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 8,
+        "N": 1000
+      },
+      "dist": "offset",
+      "seed": 246001307,
+      "repeat": 1,
+      "tag": "numerical: value range 'offset'"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 8,
+        "N": 1000
+      },
+      "dist": "constant",
+      "seed": 305705460,
+      "repeat": 1,
+      "tag": "numerical: value range 'constant'"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 8,
+        "N": 1000
+      },
+      "dist": "tiny",
+      "seed": 1617260409,
+      "repeat": 1,
+      "tag": "numerical: value range 'tiny'"
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 8,
+        "N": 1000
+      },
+      "dist": "large",
+      "seed": 314197962,
+      "repeat": 1,
+      "tag": "numerical: value range 'large'"
+    }
+  ],
+  "results": [
+    {
+      "variant": "layernorm_bug_onepass",
+      "op": "layernorm",
+      "shape": {
+        "rows": 8,
+        "N": 1000
+      },
+      "dist": "offset",
+      "seed": 246001307,
+      "repeat": 1,
+      "tag": "numerical: value range 'offset'",
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 8000,
+      "n_bad": 7997,
+      "n_nonfinite": 3000,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.1273877099105283,
+      "max_rel_err": 655.163905045808,
+      "examples": [
+        [
+          [
+            2,
+            0
+          ],
+          NaN,
+          1.0063159864489424
+        ],
+        [
+          [
+            2,
+            1
+          ],
+          NaN,
+          0.01481627389491252
+        ],
+        [
+          [
+            2,
+            2
+          ],
+          NaN,
+          -0.26110340068991683
+        ],
+        [
+          [
+            2,
+            3
+          ],
+          NaN,
+          1.0921556088394522
+        ],
+        [
+          [
+            2,
+            4
+          ],
+          NaN,
+          0.9834008573669653
+        ]
+      ],
+      "message": "3000 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.21055398974567652
+    },
+    {
+      "variant": "layernorm_bug_onepass",
+      "op": "layernorm",
+      "shape": {
+        "rows": 8,
+        "N": 1000
+      },
+      "dist": "constant",
+      "seed": 305705460,
+      "repeat": 1,
+      "tag": "numerical: value range 'constant'",
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.09257299825549126
+    },
+    {
+      "variant": "layernorm_bug_onepass",
+      "op": "layernorm",
+      "shape": {
+        "rows": 8,
+        "N": 1000
+      },
+      "dist": "tiny",
+      "seed": 1617260409,
+      "repeat": 1,
+      "tag": "numerical: value range 'tiny'",
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.0798800028860569
+    },
+    {
+      "variant": "layernorm_bug_onepass",
+      "op": "layernorm",
+      "shape": {
+        "rows": 8,
+        "N": 1000
+      },
+      "dist": "large",
+      "seed": 314197962,
+      "repeat": 1,
+      "tag": "numerical: value range 'large'",
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.914546541418986e-07,
+      "max_rel_err": 3.576343148612348e-05,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 5.91e-07)",
+      "kernel_ms": 0.0676959753036499
+    }
+  ]
+}

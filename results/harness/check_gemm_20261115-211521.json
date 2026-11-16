@@ -1,0 +1,192 @@
+{
+  "op": "gemm",
+  "tests": [
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 1654234662,
+      "repeat": 1,
+      "tag": "indexing: {'M': 12, 'N': 12, 'K': 40} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 100,
+        "N": 100,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 593332373,
+      "repeat": 1,
+      "tag": "indexing: {'M': 100, 'N': 100, 'K': 40} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 33,
+        "N": 47,
+        "K": 61
+      },
+      "dist": "normal",
+      "seed": 1481807730,
+      "repeat": 1,
+      "tag": "indexing: {'M': 33, 'N': 47, 'K': 61} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 1,
+        "N": 1,
+        "K": 1
+      },
+      "dist": "normal",
+      "seed": 640936552,
+      "repeat": 1,
+      "tag": "indexing: {'M': 1, 'N': 1, 'K': 1} vs tile 16"
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 17,
+        "N": 15,
+        "K": 16
+      },
+      "dist": "normal",
+      "seed": 689030778,
+      "repeat": 1,
+      "tag": "indexing: {'M': 17, 'N': 15, 'K': 16} vs tile 16"
+    }
+  ],
+  "results": [
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 1654234662,
+      "repeat": 1,
+      "tag": "indexing: {'M': 12, 'N': 12, 'K': 40} vs tile 16",
+      "passed": false,
+      "reason": "canary",
+      "n": 144,
+      "n_bad": 7,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": false,
+      "max_abs_err": 9.18043265978971,
+      "max_rel_err": 1.0,
+      "examples": [],
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+      "kernel_ms": 0.2129090717062354
+    },
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 100,
+        "N": 100,
+        "K": 40
+      },
+      "dist": "normal",
+      "seed": 593332373,
+      "repeat": 1,
+      "tag": "indexing: {'M': 100, 'N': 100, 'K': 40} vs tile 16",
+      "passed": false,
+      "reason": "canary",
+      "n": 10000,
+      "n_bad": 6,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": false,
+      "max_abs_err": 13.981030384914451,
+      "max_rel_err": 1.0,
+      "examples": [],
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+      "kernel_ms": 0.11156790424138308
+    },
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 33,
+        "N": 47,
+        "K": 61
+      },
+      "dist": "normal",
+      "seed": 1481807730,
+      "repeat": 1,
+      "tag": "indexing: {'M': 33, 'N': 47, 'K': 61} vs tile 16",
+      "passed": false,
+      "reason": "canary",
+      "n": 1551,
+      "n_bad": 5,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": false,
+      "max_abs_err": 11.29762248798661,
+      "max_rel_err": 1.0,
+      "examples": [],
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+      "kernel_ms": 0.09122095070779324
+    },
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 1,
+        "N": 1,
+        "K": 1
+      },
+      "dist": "normal",
+      "seed": 640936552,
+      "repeat": 1,
+      "tag": "indexing: {'M': 1, 'N': 1, 'K': 1} vs tile 16",
+      "passed": false,
+      "reason": "canary",
+      "n": 1,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": false,
+      "max_abs_err": 4.6572353085139184e-08,
+      "max_rel_err": 1.7401012964205627e-08,
+      "examples": [],
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+      "kernel_ms": 0.07435900624841452
+    },
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 17,
+        "N": 15,
+        "K": 16
+      },
+      "dist": "normal",
+      "seed": 689030778,
+      "repeat": 1,
+      "tag": "indexing: {'M': 17, 'N': 15, 'K': 16} vs tile 16",
+      "passed": false,
+      "reason": "canary",
+      "n": 255,
+      "n_bad": 10,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": false,
+      "max_abs_err": 3.841466139029103,
+      "max_rel_err": 1.0,
+      "examples": [],
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+      "kernel_ms": 0.06720598321408033
+    }
+  ]
+}

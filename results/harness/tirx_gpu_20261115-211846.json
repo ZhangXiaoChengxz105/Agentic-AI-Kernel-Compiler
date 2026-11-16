@@ -1,0 +1,452 @@
+{
+  "txl_ref (hand-written)": {
+    "cases": [
+      {
+        "rows": 64,
+        "n": 256,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 8.220202490916151e-09,
+        "message": "all 16384 outputs within tolerance (max abs err 8.22e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 1000,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 2.8649057570717673e-09,
+        "message": "all 64000 outputs within tolerance (max abs err 2.86e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 4096,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 7.804054728832721e-10,
+        "message": "all 262144 outputs within tolerance (max abs err 7.8e-10)"
+      },
+      {
+        "rows": 3,
+        "n": 129,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 6.786625969534832e-09,
+        "message": "all 387 outputs within tolerance (max abs err 6.79e-09)"
+      },
+      {
+        "rows": 2,
+        "n": 1,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 0.0,
+        "message": "all 2 outputs within tolerance (max abs err 0)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 3.567107087487642e-08,
+        "message": "all 8000 outputs within tolerance (max abs err 3.57e-08)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "neg_large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 2.0426990550437285e-09,
+        "message": "all 8000 outputs within tolerance (max abs err 2.04e-09)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "constant",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 4.749745128457272e-11,
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)"
+      }
+    ],
+    "bench": {
+      "median_ms": 0.03407999873161316,
+      "p10_ms": 0.03328000009059906,
+      "p90_ms": 0.03526400029659271,
+      "min_ms": 0.033055998384952545,
+      "iters": 50
+    },
+    "torch": {
+      "median_ms": 0.036768000572919846,
+      "p10_ms": 0.035840000957250595,
+      "p90_ms": 0.037567999213933945,
+      "min_ms": 0.035392001271247864,
+      "iters": 50
+    }
+  },
+  "glm_C (r2)": {
+    "cases": [
+      {
+        "rows": 64,
+        "n": 256,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 8.220202490916151e-09,
+        "message": "all 16384 outputs within tolerance (max abs err 8.22e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 1000,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 2.839083135253162e-09,
+        "message": "all 64000 outputs within tolerance (max abs err 2.84e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 4096,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 9.878122105011489e-10,
+        "message": "all 262144 outputs within tolerance (max abs err 9.88e-10)"
+      },
+      {
+        "rows": 3,
+        "n": 129,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 1.285903736270022e-08,
+        "message": "all 387 outputs within tolerance (max abs err 1.29e-08)"
+      },
+      {
+        "rows": 2,
+        "n": 1,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 0.0,
+        "message": "all 2 outputs within tolerance (max abs err 0)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 3.567107087487642e-08,
+        "message": "all 8000 outputs within tolerance (max abs err 3.57e-08)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "neg_large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 2.048297701590096e-09,
+        "message": "all 8000 outputs within tolerance (max abs err 2.05e-09)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "constant",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 4.749745128457272e-11,
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)"
+      }
+    ],
+    "bench": {
+      "median_ms": 0.03198400139808655,
+      "p10_ms": 0.030880000442266464,
+      "p90_ms": 0.03286400064826012,
+      "min_ms": 0.030751999467611313,
+      "iters": 50
+    },
+    "torch": {
+      "median_ms": 0.036896001547575,
+      "p10_ms": 0.036159999668598175,
+      "p90_ms": 0.03753599897027016,
+      "min_ms": 0.03587200120091438,
+      "iters": 50
+    }
+  },
+  "glm_D1 (r2)": {
+    "cases": [
+      {
+        "rows": 64,
+        "n": 256,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 8.174746005118472e-09,
+        "message": "all 16384 outputs within tolerance (max abs err 8.17e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 1000,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 4.611497461670666e-09,
+        "message": "all 64000 outputs within tolerance (max abs err 4.61e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 4096,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 1.1204470528464183e-09,
+        "message": "all 262144 outputs within tolerance (max abs err 1.12e-09)"
+      },
+      {
+        "rows": 3,
+        "n": 129,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 6.786625969534832e-09,
+        "message": "all 387 outputs within tolerance (max abs err 6.79e-09)"
+      },
+      {
+        "rows": 2,
+        "n": 1,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 0.0,
+        "message": "all 2 outputs within tolerance (max abs err 0)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 3.567107087487642e-08,
+        "message": "all 8000 outputs within tolerance (max abs err 3.57e-08)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "neg_large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 3.1451186863207248e-09,
+        "message": "all 8000 outputs within tolerance (max abs err 3.15e-09)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "constant",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 4.749745128457272e-11,
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)"
+      }
+    ],
+    "bench": {
+      "median_ms": 0.03177599981427193,
+      "p10_ms": 0.03081599995493889,
+      "p90_ms": 0.03267199918627739,
+      "min_ms": 0.030239999294281006,
+      "iters": 50
+    },
+    "torch": {
+      "median_ms": 0.03667199984192848,
+      "p10_ms": 0.03587200120091438,
+      "p90_ms": 0.03759999945759773,
+      "min_ms": 0.035711999982595444,
+      "iters": 50
+    }
+  },
+  "glm_D2 (r1)": {
+    "cases": [
+      {
+        "rows": 64,
+        "n": 256,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 8.220202490916151e-09,
+        "message": "all 16384 outputs within tolerance (max abs err 8.22e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 1000,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 3.0120361621532865e-09,
+        "message": "all 64000 outputs within tolerance (max abs err 3.01e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 4096,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 9.878122105011489e-10,
+        "message": "all 262144 outputs within tolerance (max abs err 9.88e-10)"
+      },
+      {
+        "rows": 3,
+        "n": 129,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 2.7760198556547877e-08,
+        "message": "all 387 outputs within tolerance (max abs err 2.78e-08)"
+      },
+      {
+        "rows": 2,
+        "n": 1,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 0.0,
+        "message": "all 2 outputs within tolerance (max abs err 0)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 3.567107087487642e-08,
+        "message": "all 8000 outputs within tolerance (max abs err 3.57e-08)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "neg_large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 2.048297701590096e-09,
+        "message": "all 8000 outputs within tolerance (max abs err 2.05e-09)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "constant",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 4.749745128457272e-11,
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)"
+      }
+    ],
+    "bench": {
+      "median_ms": 0.03174399957060814,
+      "p10_ms": 0.03097599931061268,
+      "p90_ms": 0.03276799991726875,
+      "min_ms": 0.030400000512599945,
+      "iters": 50
+    },
+    "torch": {
+      "median_ms": 0.03673600032925606,
+      "p10_ms": 0.03606399893760681,
+      "p90_ms": 0.03753599897027016,
+      "min_ms": 0.03564799949526787,
+      "iters": 50
+    }
+  },
+  "glm_D3 (r1)": {
+    "cases": [
+      {
+        "rows": 64,
+        "n": 256,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 8.220202490916151e-09,
+        "message": "all 16384 outputs within tolerance (max abs err 8.22e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 1000,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 3.0120361621532865e-09,
+        "message": "all 64000 outputs within tolerance (max abs err 3.01e-09)"
+      },
+      {
+        "rows": 64,
+        "n": 4096,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 9.878122105011489e-10,
+        "message": "all 262144 outputs within tolerance (max abs err 9.88e-10)"
+      },
+      {
+        "rows": 3,
+        "n": 129,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 2.7760198556547877e-08,
+        "message": "all 387 outputs within tolerance (max abs err 2.78e-08)"
+      },
+      {
+        "rows": 2,
+        "n": 1,
+        "dist": "normal",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 0.0,
+        "message": "all 2 outputs within tolerance (max abs err 0)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 3.567107087487642e-08,
+        "message": "all 8000 outputs within tolerance (max abs err 3.57e-08)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "neg_large",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 2.048297701590096e-09,
+        "message": "all 8000 outputs within tolerance (max abs err 2.05e-09)"
+      },
+      {
+        "rows": 8,
+        "n": 1000,
+        "dist": "constant",
+        "passed": true,
+        "reason": "ok",
+        "max_abs_err": 4.749745128457272e-11,
+        "message": "all 8000 outputs within tolerance (max abs err 4.75e-11)"
+      }
+    ],
+    "bench": {
+      "median_ms": 0.031856000423431396,
+      "p10_ms": 0.030688000842928886,
+      "p90_ms": 0.03363199904561043,
+      "min_ms": 0.030239999294281006,
+      "iters": 50
+    },
+    "torch": {
+      "median_ms": 0.03683200106024742,
+      "p10_ms": 0.03590400144457817,
+      "p90_ms": 0.037728000432252884,
+      "min_ms": 0.03548799827694893,
+      "iters": 50
+    }
+  }
+}

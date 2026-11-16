@@ -18,7 +18,8 @@ Strategy per category (B = block size along the reduced dim, T = gemm tile):
             layernorm offset/constant/tiny/large, gemm large/mixed/tiny
   (none)    a small sanity set (one non-divisible shape + one stress distribution)
 
-VOLTA only runs CTA 0 at the exact sizes it is given, so volta_shapes puts the boundary INSIDE CTA 0:
+VOLTA only runs CTA 0 at the exact sizes it is given, so volta_shapes adds a "deep" shape (DEEP_VOLTA, always,
+for softmax/gemm) that exercises unrolled/multi-iteration paths, and puts the boundary INSIDE CTA 0:
   row ops   N = B + B/2 + 8 (not a multiple of B, > 1 tile) and N = B - 28 (< 1 tile)
   gemm      K % T != 0 (K = 2T + 8) and M = N = T - 4 (< 1 tile, so CTA 0 is also the edge CTA)
 VOLTA cannot see numerical problems (real-number semantics): for "numerical" it adds nothing beyond
@@ -37,6 +38,11 @@ NUMERICAL_DISTS = {
     "gemm": ("large", "mixed", "tiny"),
 }
 DEFAULT_VOLTA = {"softmax": {"N": 256}, "layernorm": {"N": 128}, "gemm": {"M": 32, "N": 32, "K": 48}}
+# "Deep" shape: large enough that unrolled / multi-iteration code paths run (GLM pilot: a kernel whose 4x-unrolled
+# loop only runs for N > 384 dropped a term; VOLTA said EQUIV at N <= 384 and NOT_EQUIV at N = 385).
+# Always added, because such a bug can come from an earlier revision than the one being diffed.
+# Not for layernorm: its VCs grow ~N^2 (N >= 512 took > 3.5 min and ~10 GB RAM).
+DEEP_VOLTA = {"softmax": {"N": 584}, "gemm": {"M": 32, "N": 32, "K": 72}}
 
 
 def _seed(*parts) -> int:
@@ -97,6 +103,8 @@ def generate_tests(op: str, cats: list[str], block: tuple[int, ...], budget: int
 
 def volta_shapes(op: str, cats: list[str], block: tuple[int, ...]) -> list[dict]:
     shapes = [dict(DEFAULT_VOLTA[op])]
+    if op in DEEP_VOLTA:
+        shapes.append(dict(DEEP_VOLTA[op]))
     if op in ROW_OPS:
         B = block[0]
         if {"tiling", "indexing", "memory"} & set(cats):
