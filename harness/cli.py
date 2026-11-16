@@ -18,7 +18,7 @@ from pathlib import Path
 WORKSPACE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WORKSPACE))
 
-from verify.cases import load_manifest  # noqa: E402
+from verify.cases import Variant, load_manifest  # noqa: E402
 from verify.ptx import compile_to_ptx  # noqa: E402
 
 from .fixed_suite import FIXED  # noqa: E402
@@ -28,17 +28,37 @@ BENCH_SHAPES = {"softmax": {"rows": 4096, "N": 1024}, "layernorm": {"rows": 4096
                 "gemm": {"M": 1024, "N": 1024, "K": 1024}}
 
 
-def _variants(op: str, only: str | None):
+def _variants(op: str, only: str | None, extra: list[str] | None = None):
+    """Manifest variants (optionally filtered) + extra kernels given as NAME=PATH[:BLOCK] (e.g. LLM output).
+    NAME must be the kernel's extern "C" entry name; BLOCK defaults to the reference op's candidate block."""
     _, variants = load_manifest(op)
     if only:
         keep = set(only.split(","))
         variants = [v for v in variants if v.name in keep]
+    default_block = next((v.block for v in load_manifest(op)[1] if v.role == "candidate"), (128,))
+    for spec in extra or []:
+        name, rest = spec.split("=", 1)
+        path, _, blk = rest.partition(":")
+        block = tuple(int(b) for b in blk.split(",")) if blk else default_block
+        variants.append(Variant(name, Path(path).resolve(), "candidate", block, None, None))
     return variants
 
 
 def _compile(op: str, variants) -> dict:
+    """label -> (ptx path, kernel entry name). For extra kernels the label is free-form: if it is not an
+    entry in the PTX and the PTX has exactly one entry, that entry is used."""
     out = WORKSPACE / "build" / "ptx_gpu" / op
-    return {v.name: compile_to_ptx(v.file, out, mode="gpu").ptx for v in variants}
+    res = {}
+    for v in variants:      # extra files may share a stem (softmax_glm_r1.cu in several dirs) -> per-label dir
+        b = compile_to_ptx(v.file, out / v.name, mode="gpu")
+        if v.name in b.kernels:
+            entry = v.name
+        elif len(b.kernels) == 1:
+            entry = b.kernels[0]
+        else:
+            raise SystemExit(f"{v.file}: cannot pick a kernel for label {v.name}; entries: {b.kernels}")
+        res[v.name] = (b.ptx, entry)
+    return res
 
 
 def _save(kind: str, op: str, payload: dict) -> Path:
@@ -51,7 +71,7 @@ def _save(kind: str, op: str, payload: dict) -> Path:
 
 def cmd_check(args) -> int:
     from .runner import run_tests_isolated
-    variants = _variants(args.op, args.variants)
+    variants = _variants(args.op, args.variants, args.extra)
     if args.tests in (None, "fixed"):
         tests = FIXED[args.op]
     else:
@@ -61,7 +81,7 @@ def cmd_check(args) -> int:
     ptx = _compile(args.op, variants)
     all_rows, summary = [], []
     for v in variants:
-        rows = run_tests_isolated(args.op, ptx[v.name], v.name, v.block, tests)
+        rows = run_tests_isolated(args.op, ptx[v.name][0], ptx[v.name][1], v.block, tests)
         n_pass = sum(r["passed"] for r in rows)
         reasons = sorted({r["reason"] for r in rows if not r["passed"]})
         summary.append((v.name, n_pass, len(rows), reasons))
@@ -87,7 +107,7 @@ def cmd_bench(args) -> int:
     op = OPS[args.op]
     shape = ({k: int(v) for k, v in (kv.split("=") for kv in args.shape.split(","))} if args.shape
              else BENCH_SHAPES[args.op])
-    variants = _variants(args.op, args.variants)
+    variants = _variants(args.op, args.variants, args.extra)
     ptx = _compile(args.op, variants)
     tc = TestCase(args.op, shape, "normal", 0, 1, "bench")
     inputs = {k: v.cuda() for k, v in op.make_inputs(shape, "normal", 0).items()}
@@ -102,11 +122,11 @@ def cmd_bench(args) -> int:
     t = bench(lambda: op.torch_impl(inputs), args.warmup, args.iters)
     rows.append({"impl": "torch", **t, **metrics(t["median_ms"])})
     for v in variants:
-        ok = run_tests_isolated(args.op, ptx[v.name], v.name, v.block, [tc])[0]
+        ok = run_tests_isolated(args.op, ptx[v.name][0], ptx[v.name][1], v.block, [tc])[0]
         if not ok["passed"]:
             rows.append({"impl": v.name, "skipped": f"incorrect on bench shape: {ok['reason']}"})
             continue
-        fn = CudaModule(ptx[v.name]).get(v.name)
+        fn = CudaModule(ptx[v.name][0]).get(ptx[v.name][1])
         _, out = alloc_output(numel)
         grid, blk = op.launch(shape, v.block)
         a = op.kernel_args(inputs, out, shape)
@@ -133,12 +153,14 @@ def main() -> int:
     c.add_argument("--variants")
     c.add_argument("--tests", help="'fixed' (default) or a JSON file with a list of TestCase dicts")
     c.add_argument("--repeat", type=int, help="override repeat count for every test")
+    c.add_argument("--extra", action="append", help="extra kernel NAME=PATH[:BLOCK] (repeatable)")
     b = sub.add_parser("bench")
     b.add_argument("--op", required=True, choices=sorted(FIXED))
     b.add_argument("--variants")
     b.add_argument("--shape")
     b.add_argument("--warmup", type=int, default=10)
     b.add_argument("--iters", type=int, default=50)
+    b.add_argument("--extra", action="append", help="extra kernel NAME=PATH[:BLOCK] (repeatable)")
     args = ap.parse_args()
     return cmd_check(args) if args.cmd == "check" else cmd_bench(args)
 
