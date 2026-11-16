@@ -15,7 +15,7 @@ Note: equivalence checking is CPU-heavy (~2 min for a 64×64 matmul). Larger run
 | Kernel | Outlook | Why |
 |---|---|---|
 | Tiled GEMM | **Supported** | Polynomial fragment; bundled MatMul/GEMM/TileLang benchmarks prove equivalence. Must avoid `cp.async`/TMA pipelines. |
-| Row-wise softmax | **Partially**: needs testing | `exp`/`max` fragment is handled (attention benchmarks), but division/normalization can come back `unknown`. |
+| Row-wise softmax | **Supported (verified 2026-11-15)** | Our ref (1 thread/row) vs opt (128-thread tree reduction, `*1/sum`) proved EQUIV at N=200/256/1000/1024 in ≤0.5 s. Requires `exp` as `__symexpf` and PTX without `-lineinfo`. See `notes/volta_loop_log.md` |
 | LayerNorm | **Race checks work; equivalence unclear** | `sqrt`/`rsqrt` get lowered (lowering.rs), but the paper's equivalence benchmarks contain no LayerNorm. Needs an experiment. |
 
 ## Key limits that matter for us

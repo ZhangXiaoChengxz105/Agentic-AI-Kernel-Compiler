@@ -25,3 +25,6 @@ third_party/
 logs/
 *.out
 *.err
+
+# build outputs (PTX, cubins)
+build/
