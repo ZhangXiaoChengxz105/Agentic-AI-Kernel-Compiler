@@ -101,6 +101,7 @@ class GenerateTests(unittest.TestCase):
         self.assertTrue(any(s["M"] < 16 for s in volta_shapes("gemm", ["indexing"], (16, 16))))
         self.assertEqual(volta_shapes("softmax", ["numerical"], (128,)), [{"N": 256}, {"N": 584}])  # default + deep
         self.assertEqual(volta_shapes("layernorm", ["numerical"], (128,)), [{"N": 128}])            # no deep shape
+        self.assertTrue(all(s["N"] <= 200 for s in volta_shapes("layernorm", ["sync", "tiling"], (128,))))  # cost cap
 
     def test_deep_shape_runs_unrolled_paths(self):
         self.assertTrue(any(s["N"] > 4 * 128 for s in volta_shapes("softmax", [], (128,))))

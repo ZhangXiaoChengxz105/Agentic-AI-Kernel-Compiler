@@ -21,6 +21,11 @@ _HINTS = [
     ("data race on",
      "Two threads access the same address between barriers and at least one writes: add the missing "
      "__syncthreads() (or make each thread touch only its own element)."),
+    ("division by a symbolically zero value",
+     "For these sizes an output divides by an expression that is identically zero, e.g. a sum over an empty "
+     "range: check loop bounds/tile counts for sizes smaller than one tile or block."),
+    ("VC too large",
+     "Verifier limitation: the proof obligation grew too large for this size. Not necessarily a bug."),
     ("written footprints differ",
      "Your kernel writes a different set of output elements than the reference: check guards/bounds."),
 ]

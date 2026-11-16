@@ -27,7 +27,7 @@ BASE0 = 0x0010_0000
 ALIGN = 0x1_0000
 ROWS = 2                       # rows given to VOLTA for row-wise ops
 LN_EPS = "1e-05"
-FAIL_STATUSES = ("RACE", "DEADLOCK", "OUT_OF_BOUNDS", "UNINIT", "FOOTPRINT", "NOT_EQUIV")
+FAIL_STATUSES = ("RACE", "DEADLOCK", "OUT_OF_BOUNDS", "UNINIT", "FOOTPRINT", "NOT_EQUIV", "DIV_BY_ZERO")
 
 
 @dataclass(frozen=True)

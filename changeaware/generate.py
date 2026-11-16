@@ -43,6 +43,7 @@ DEFAULT_VOLTA = {"softmax": {"N": 256}, "layernorm": {"N": 128}, "gemm": {"M": 3
 # Always added, because such a bug can come from an earlier revision than the one being diffed.
 # Not for layernorm: its VCs grow ~N^2 (N >= 512 took > 3.5 min and ~10 GB RAM).
 DEEP_VOLTA = {"softmax": {"N": 584}, "gemm": {"M": 32, "N": 32, "K": 72}}
+VOLTA_MAX_N = {"layernorm": 200}     # cap every row-op VOLTA shape for ops with ~N^2 VC growth
 
 
 def _seed(*parts) -> int:
@@ -117,6 +118,8 @@ def volta_shapes(op: str, cats: list[str], block: tuple[int, ...]) -> list[dict]
             shapes += [{"M": 2 * T, "N": 2 * T, "K": 2 * T + 8}, {"M": T - 4, "N": T - 4, "K": 2 * T + 8}]
         if "sync" in cats:
             shapes += [{"M": T, "N": T, "K": 4 * T}]
+    if op in VOLTA_MAX_N:
+        shapes = [{**s, "N": min(s["N"], VOLTA_MAX_N[op])} for s in shapes]
     uniq = []
     for s in shapes:
         if s not in uniq:

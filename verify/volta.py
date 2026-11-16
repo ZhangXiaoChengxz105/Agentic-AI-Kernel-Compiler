@@ -14,6 +14,8 @@ and crates/volta_analysis/src/eval/error.rs):
   OUT_OF_BOUNDS  memory access outside the declared arrays                         exit 1
   UNINIT         read of uninitialized register/memory reaching an output          exit 1
   FOOTPRINT      the two kernels wrote different sets of output elements           exit 1
+  DIV_BY_ZERO    an output divides by an expression that is identically zero for these sizes
+                 (e.g. an empty reduction); counts as a detected bug               exit 1
   UNSUPPORTED    VOLTA cannot analyze this kernel/config (not structured-CTA, unsupported
                  instruction, lowering failure, instruction limit, i128 overflow of its exact
                  rational arithmetic on huge constants such as FLT_MAX ...)       exit 1
@@ -172,6 +174,10 @@ _ERROR_PATTERNS = [  # (status, substring) checked in order
     ("UNSUPPORTED", "value kind mismatch"),
     ("UNSUPPORTED", "trap reached"),
     ("UNSUPPORTED", "overflowed i128"),          # decision procedure's exact rationals overflow (e.g. -FLT_MAX)
+    ("UNSUPPORTED", "monomial power overflowed"),
+    ("UNSUPPORTED", "VC too large"),               # canon term-operation budget exhausted
+    ("DIV_BY_ZERO", "division by a symbolically zero value"),
+    ("UNINIT", "cannot check equivalence of undefined values"),
     ("CONFIG_ERROR", "configuration error"),
     ("CONFIG_ERROR", "no kernel named"),
     ("CONFIG_ERROR", "no kernel entry"),

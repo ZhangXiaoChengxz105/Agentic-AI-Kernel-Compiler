@@ -66,6 +66,10 @@ class ParseTests(unittest.TestCase):
             "error: output element y[3] is undefined (uninitialized read)": "UNINIT",
             # real output (GLM pilot, 2026-11-15): kernel used -FLT_MAX (3.4e38 > i128 max 1.7e38)
             "error: equivalence check failed: rational coefficient overflowed i128": "UNSUPPORTED",
+            # real output (softmax_bug_tail at N=100: empty reduction -> sum identically 0)
+            "error: equivalence check failed: division by a symbolically zero value": "DIV_BY_ZERO",
+            "error: equivalence check failed: VC too large: exceeded 4000000000 term operations": "UNSUPPORTED",
+            "error: equivalence check failed: cannot check equivalence of undefined values": "UNINIT",
         }
         for err, want in cases.items():
             with self.subTest(err=err):
