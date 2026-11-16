@@ -1,0 +1,789 @@
+[
+  {
+    "op": "softmax",
+    "bug": "softmax_bug_nosync",
+    "truth": "sync",
+    "predicted": [
+      "sync"
+    ],
+    "labels": [
+      {
+        "category": "sync",
+        "rule": "barrier",
+        "line": 25,
+        "evidence": "__syncthreads();"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/softmax_bug_nosync.json",
+    "n_tests": 2,
+    "volta_B": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 256
+          },
+          "status": "RACE",
+          "wall_s": 0.021,
+          "detail": "data race on Shared[0x4]: write by t1 at pc:64 conflicts with read by t0 at pc:98"
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 256
+          },
+          "status": "RACE",
+          "wall_s": 0.017,
+          "detail": "data race on Shared[0x4]: write by t1 at pc:64 conflicts with read by t0 at pc:98"
+        },
+        {
+          "shape": {
+            "N": 584
+          },
+          "status": "RACE",
+          "wall_s": 0.02,
+          "detail": "data race on Shared[0x4]: write by t1 at pc:64 conflicts with read by t0 at pc:98"
+        },
+        {
+          "shape": {
+            "N": 264
+          },
+          "status": "RACE",
+          "wall_s": 0.016,
+          "detail": "data race on Shared[0x4]: write by t1 at pc:64 conflicts with read by t0 at pc:98"
+        }
+      ]
+    }
+  },
+  {
+    "op": "softmax",
+    "bug": "softmax_bug_tail",
+    "truth": "tiling",
+    "predicted": [
+      "tiling",
+      "indexing"
+    ],
+    "labels": [
+      {
+        "category": "tiling",
+        "rule": "tile-count",
+        "line": 20,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) m = fmaxf(m, xr[i]);  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) m = fmaxf(m, xr[i]);"
+      },
+      {
+        "category": "tiling",
+        "rule": "round-to-tile",
+        "line": 20,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) m = fmaxf(m, xr[i]);  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) m = fmaxf(m, xr[i]);"
+      },
+      {
+        "category": "indexing",
+        "rule": "loop-bound",
+        "line": 20,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) m = fmaxf(m, xr[i]);  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) m = fmaxf(m, xr[i]);"
+      },
+      {
+        "category": "tiling",
+        "rule": "tile-count",
+        "line": 32,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) sum += EXP(xr[i] - m);  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) sum += EXP(xr[i] - m);"
+      },
+      {
+        "category": "tiling",
+        "rule": "round-to-tile",
+        "line": 32,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) sum += EXP(xr[i] - m);  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) sum += EXP(xr[i] - m);"
+      },
+      {
+        "category": "indexing",
+        "rule": "loop-bound",
+        "line": 32,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) sum += EXP(xr[i] - m);  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) sum += EXP(xr[i] - m);"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/softmax_bug_tail.json",
+    "n_tests": 12,
+    "volta_B": {
+      "detected": false,
+      "runs": [
+        {
+          "shape": {
+            "N": 256
+          },
+          "status": "EQUIV",
+          "wall_s": 0.057,
+          "detail": ""
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 256
+          },
+          "status": "EQUIV",
+          "wall_s": 0.059,
+          "detail": ""
+        },
+        {
+          "shape": {
+            "N": 584
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.755,
+          "detail": "NOT EQUIVALENT: 584 mismatched element"
+        },
+        {
+          "shape": {
+            "N": 200
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.095,
+          "detail": "NOT EQUIVALENT: 200 mismatched element"
+        },
+        {
+          "shape": {
+            "N": 100
+          },
+          "status": "ERROR",
+          "wall_s": 0.021,
+          "detail": "equivalence check failed: division by a symbolically zero value"
+        }
+      ]
+    }
+  },
+  {
+    "op": "softmax",
+    "bug": "softmax_bug_offbyone",
+    "truth": "indexing",
+    "predicted": [
+      "indexing"
+    ],
+    "labels": [
+      {
+        "category": "indexing",
+        "rule": "comparison-op",
+        "line": 32,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) sum += EXP(xr[i] - m);  ->  for (int i = tid; i <= N; i += BLOCK) sum += EXP(xr[i] - m);"
+      },
+      {
+        "category": "indexing",
+        "rule": "loop-bound",
+        "line": 32,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) sum += EXP(xr[i] - m);  ->  for (int i = tid; i <= N; i += BLOCK) sum += EXP(xr[i] - m);"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/softmax_bug_offbyone.json",
+    "n_tests": 6,
+    "volta_B": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 256
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.139,
+          "detail": "NOT EQUIVALENT: 256 mismatched element"
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 256
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.137,
+          "detail": "NOT EQUIVALENT: 256 mismatched element"
+        },
+        {
+          "shape": {
+            "N": 584
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.647,
+          "detail": "NOT EQUIVALENT: 584 mismatched element"
+        },
+        {
+          "shape": {
+            "N": 200
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.092,
+          "detail": "NOT EQUIVALENT: 200 mismatched element"
+        },
+        {
+          "shape": {
+            "N": 100
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.043,
+          "detail": "NOT EQUIVALENT: 100 mismatched element"
+        }
+      ]
+    }
+  },
+  {
+    "op": "softmax",
+    "bug": "softmax_bug_nomax",
+    "truth": "numerical",
+    "predicted": [
+      "numerical"
+    ],
+    "labels": [
+      {
+        "category": "numerical",
+        "rule": "math-call",
+        "line": 32,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) sum += EXP(xr[i] - m);  ->  for (int i = tid; i < N; i += BLOCK) sum += EXP(xr[i]);"
+      },
+      {
+        "category": "numerical",
+        "rule": "math-call",
+        "line": 42,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) yr[i] = EXP(xr[i] - m) * inv;  ->  for (int i = tid; i < N; i += BLOCK) yr[i] = EXP(xr[i]) * inv;"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/softmax_bug_nomax.json",
+    "n_tests": 4,
+    "volta_B": {
+      "detected": false,
+      "runs": [
+        {
+          "shape": {
+            "N": 256
+          },
+          "status": "EQUIV",
+          "wall_s": 3.655,
+          "detail": ""
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": false,
+      "runs": [
+        {
+          "shape": {
+            "N": 256
+          },
+          "status": "EQUIV",
+          "wall_s": 3.421,
+          "detail": ""
+        },
+        {
+          "shape": {
+            "N": 584
+          },
+          "status": "EQUIV",
+          "wall_s": 27.059,
+          "detail": ""
+        }
+      ]
+    }
+  },
+  {
+    "op": "gemm",
+    "bug": "gemm_bug_nosync",
+    "truth": "sync",
+    "predicted": [
+      "sync"
+    ],
+    "labels": [
+      {
+        "category": "sync",
+        "rule": "barrier",
+        "line": 31,
+        "evidence": "__syncthreads();"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/gemm_bug_nosync.json",
+    "n_tests": 2,
+    "volta_B": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 48
+          },
+          "status": "RACE",
+          "wall_s": 0.072,
+          "detail": "data race on Shared[0x0]: read by t1 at pc:59 conflicts with write by t0 at pc:47"
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 48
+          },
+          "status": "RACE",
+          "wall_s": 0.061,
+          "detail": "data race on Shared[0x0]: read by t1 at pc:59 conflicts with write by t0 at pc:47"
+        },
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 72
+          },
+          "status": "RACE",
+          "wall_s": 0.082,
+          "detail": "data race on Shared[0x0]: read by t1 at pc:59 conflicts with write by t0 at pc:47"
+        },
+        {
+          "shape": {
+            "M": 16,
+            "N": 16,
+            "K": 64
+          },
+          "status": "RACE",
+          "wall_s": 0.082,
+          "detail": "data race on Shared[0x0]: read by t1 at pc:59 conflicts with write by t0 at pc:47"
+        }
+      ]
+    }
+  },
+  {
+    "op": "gemm",
+    "bug": "gemm_bug_ktail",
+    "truth": "tiling",
+    "predicted": [
+      "tiling",
+      "indexing"
+    ],
+    "labels": [
+      {
+        "category": "tiling",
+        "rule": "tile-count",
+        "line": 23,
+        "evidence": "const int ntiles = (K + TILE - 1) / TILE;  ->  const int ntiles = K / TILE;"
+      },
+      {
+        "category": "indexing",
+        "rule": "plus-minus-one",
+        "line": 23,
+        "evidence": "const int ntiles = (K + TILE - 1) / TILE;  ->  const int ntiles = K / TILE;"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/gemm_bug_ktail.json",
+    "n_tests": 10,
+    "volta_B": {
+      "detected": false,
+      "runs": [
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 48
+          },
+          "status": "EQUIV",
+          "wall_s": 0.113,
+          "detail": ""
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 48
+          },
+          "status": "EQUIV",
+          "wall_s": 0.114,
+          "detail": ""
+        },
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 72
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.168,
+          "detail": "NOT EQUIVALENT: 256 mismatched element"
+        },
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 40
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.115,
+          "detail": "NOT EQUIVALENT: 256 mismatched element"
+        },
+        {
+          "shape": {
+            "M": 12,
+            "N": 12,
+            "K": 40
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.069,
+          "detail": "NOT EQUIVALENT: 144 mismatched element"
+        }
+      ]
+    }
+  },
+  {
+    "op": "gemm",
+    "bug": "gemm_bug_guard",
+    "truth": "indexing",
+    "predicted": [
+      "indexing"
+    ],
+    "labels": [
+      {
+        "category": "indexing",
+        "rule": "comparison-op",
+        "line": 33,
+        "evidence": "if (row < M && col < N) C[row * N + col] = acc;  ->  if (row <= M && col <= N) C[row * N + col] = acc;"
+      },
+      {
+        "category": "indexing",
+        "rule": "guard",
+        "line": 33,
+        "evidence": "if (row < M && col < N) C[row * N + col] = acc;  ->  if (row <= M && col <= N) C[row * N + col] = acc;"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/gemm_bug_guard.json",
+    "n_tests": 5,
+    "volta_B": {
+      "detected": false,
+      "runs": [
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 48
+          },
+          "status": "EQUIV",
+          "wall_s": 0.148,
+          "detail": ""
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 48
+          },
+          "status": "EQUIV",
+          "wall_s": 0.141,
+          "detail": ""
+        },
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 72
+          },
+          "status": "EQUIV",
+          "wall_s": 0.209,
+          "detail": ""
+        },
+        {
+          "shape": {
+            "M": 32,
+            "N": 32,
+            "K": 40
+          },
+          "status": "EQUIV",
+          "wall_s": 0.124,
+          "detail": ""
+        },
+        {
+          "shape": {
+            "M": 12,
+            "N": 12,
+            "K": 40
+          },
+          "status": "RACE",
+          "wall_s": 0.066,
+          "detail": "data race on Global[0x140030]: write by t16 at pc:123 conflicts with write by t12 at pc:123"
+        }
+      ]
+    }
+  },
+  {
+    "op": "layernorm",
+    "bug": "layernorm_bug_nosync",
+    "truth": "sync",
+    "predicted": [
+      "sync"
+    ],
+    "labels": [
+      {
+        "category": "sync",
+        "rule": "barrier",
+        "line": 29,
+        "evidence": "__syncthreads();"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/layernorm_bug_nosync.json",
+    "n_tests": 2,
+    "volta_B": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 128
+          },
+          "status": "RACE",
+          "wall_s": 0.02,
+          "detail": "data race on Shared[0x0]: read by t1 at pc:114 conflicts with write by t0 at pc:165"
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 128
+          },
+          "status": "RACE",
+          "wall_s": 0.017,
+          "detail": "data race on Shared[0x0]: read by t1 at pc:114 conflicts with write by t0 at pc:165"
+        },
+        {
+          "shape": {
+            "N": 264
+          },
+          "status": "RACE",
+          "wall_s": 0.019,
+          "detail": "data race on Shared[0x0]: read by t1 at pc:114 conflicts with write by t0 at pc:165"
+        }
+      ]
+    }
+  },
+  {
+    "op": "layernorm",
+    "bug": "layernorm_bug_tail",
+    "truth": "tiling",
+    "predicted": [
+      "tiling",
+      "indexing"
+    ],
+    "labels": [
+      {
+        "category": "tiling",
+        "rule": "tile-count",
+        "line": 21,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) s += xr[i];  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) s += xr[i];"
+      },
+      {
+        "category": "tiling",
+        "rule": "round-to-tile",
+        "line": 21,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) s += xr[i];  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) s += xr[i];"
+      },
+      {
+        "category": "indexing",
+        "rule": "loop-bound",
+        "line": 21,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) s += xr[i];  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) s += xr[i];"
+      },
+      {
+        "category": "tiling",
+        "rule": "tile-count",
+        "line": 33,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) {  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) {"
+      },
+      {
+        "category": "tiling",
+        "rule": "round-to-tile",
+        "line": 33,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) {  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) {"
+      },
+      {
+        "category": "indexing",
+        "rule": "loop-bound",
+        "line": 33,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) {  ->  for (int i = tid; i < (N / BLOCK) * BLOCK; i += BLOCK) {"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/layernorm_bug_tail.json",
+    "n_tests": 12,
+    "volta_B": {
+      "detected": false,
+      "runs": [
+        {
+          "shape": {
+            "N": 128
+          },
+          "status": "EQUIV",
+          "wall_s": 2.095,
+          "detail": ""
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 128
+          },
+          "status": "EQUIV",
+          "wall_s": 1.771,
+          "detail": ""
+        },
+        {
+          "shape": {
+            "N": 200
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 4.15,
+          "detail": "NOT EQUIVALENT: 200 mismatched element"
+        },
+        {
+          "shape": {
+            "N": 100
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.368,
+          "detail": "NOT EQUIVALENT: 100 mismatched element"
+        }
+      ]
+    }
+  },
+  {
+    "op": "layernorm",
+    "bug": "layernorm_bug_offbyone",
+    "truth": "indexing",
+    "predicted": [
+      "indexing"
+    ],
+    "labels": [
+      {
+        "category": "indexing",
+        "rule": "comparison-op",
+        "line": 33,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) {  ->  for (int i = tid; i <= N; i += BLOCK) {"
+      },
+      {
+        "category": "indexing",
+        "rule": "loop-bound",
+        "line": 33,
+        "evidence": "for (int i = tid; i < N; i += BLOCK) {  ->  for (int i = tid; i <= N; i += BLOCK) {"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/layernorm_bug_offbyone.json",
+    "n_tests": 6,
+    "volta_B": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 128
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 1.863,
+          "detail": "NOT EQUIVALENT: 128 mismatched element"
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": true,
+      "runs": [
+        {
+          "shape": {
+            "N": 128
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 1.866,
+          "detail": "NOT EQUIVALENT: 128 mismatched element"
+        },
+        {
+          "shape": {
+            "N": 200
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 5.517,
+          "detail": "NOT EQUIVALENT: 200 mismatched element"
+        },
+        {
+          "shape": {
+            "N": 100
+          },
+          "status": "NOT_EQUIV",
+          "wall_s": 0.887,
+          "detail": "NOT EQUIVALENT: 100 mismatched element"
+        }
+      ]
+    }
+  },
+  {
+    "op": "layernorm",
+    "bug": "layernorm_bug_onepass",
+    "truth": "numerical",
+    "predicted": [
+      "numerical"
+    ],
+    "labels": [
+      {
+        "category": "numerical",
+        "rule": "special-value",
+        "line": 43,
+        "evidence": "const float rstd = rsqrtf(red[0] / N + eps);  ->  const float rstd = rsqrtf(red[0] / N - mean * mean + eps);"
+      },
+      {
+        "category": "numerical",
+        "rule": "math-call",
+        "line": 43,
+        "evidence": "const float rstd = rsqrtf(red[0] / N + eps);  ->  const float rstd = rsqrtf(red[0] / N - mean * mean + eps);"
+      }
+    ],
+    "tests_file": "results/change_aware/tests/layernorm_bug_onepass.json",
+    "n_tests": 4,
+    "volta_B": {
+      "detected": false,
+      "runs": [
+        {
+          "shape": {
+            "N": 128
+          },
+          "status": "EQUIV",
+          "wall_s": 1.479,
+          "detail": ""
+        }
+      ]
+    },
+    "volta_C": {
+      "detected": false,
+      "runs": [
+        {
+          "shape": {
+            "N": 128
+          },
+          "status": "EQUIV",
+          "wall_s": 1.481,
+          "detail": ""
+        }
+      ]
+    }
+  }
+]
