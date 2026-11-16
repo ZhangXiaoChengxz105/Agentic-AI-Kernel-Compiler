@@ -27,3 +27,6 @@ export PATH="$CARGO_HOME/bin:$PATH"
 # --- Z3 shared library (from pip z3-solver in tools/z3), needed to link/run VOLTA ---
 export LIBRARY_PATH="$CS521/tools/z3/z3/lib${LIBRARY_PATH:+:$LIBRARY_PATH}"
 export LD_LIBRARY_PATH="$CS521/tools/z3/z3/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+# --- Lumen API key (kept in git-ignored .secrets/, never commit it) ---
+[ -f "$CS521/.secrets/lumen.env" ] && source "$CS521/.secrets/lumen.env"
