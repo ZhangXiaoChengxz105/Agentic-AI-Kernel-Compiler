@@ -1,7 +1,7 @@
 """Task 2.3: turn change categories into targeted tests (run by a test executor) and VOLTA shapes.
 
 extract_tiles(src, lang)                    tile/block sizes written in the candidate itself
-generate_tests(workload, cats, tiles, budget) -> list[TestCase]
+generate_tests(workload, cats, tiles, budget, regimes, lang) -> list[TestCase]
 volta_shapes(workload, cats, tiles)         -> list[dict]
 
 All operator knowledge comes from the workload manifest (launch kind, default tiles, numerical
@@ -13,7 +13,11 @@ Strategy per category (B = row-op block / tile, T = 2-D tile):
   tiling    sizes around every tile: 1, T-1, T+1, 2T-1, 2T+1, and a non-power-of-two (1000)
             tile2d: K % T != 0, M/N not multiples of T, a matrix smaller than one tile
   indexing  same boundary sizes, with rows > 1 so off-by-one reads hit real neighbouring data
-  memory    odd sizes (N % 4 != 0) and misaligned pointers (misalign=1 element: breaks float4 alignment)
+  memory    odd sizes (N % 4 != 0) and misaligned pointers (misalign=1 element: breaks float4 alignment).
+            tirx-lite: no misaligned pointers. The function TIRx compiles checks every tensor argument's data
+            alignment before the kernel runs and raises an error for a misaligned one, so the kernel can never
+            silently read misaligned data, and the test would fail for every tirx kernel, correct or not
+            (final evaluation, 2026-11-17: 7 mutants "caught" only by that error)
   sync      large sizes and repeats (nondeterminism = race), plus a grid sweep (1 CTA with many
             iterations, many CTAs with few) -- GPU tests are weak at races; VOLTA is the main race check
   numerical value distributions from the manifest at a modest shape; "outlier" becomes outlier@T (T = first tile)
@@ -303,13 +307,16 @@ def _same_test(a: TestCase, b: TestCase) -> bool:
 
 
 def generate_tests(workload: str, cats: list[str], tiles: list[int] | None = None, budget: int = 16,
-                   regimes: list[tuple[str, int]] | None = None) -> list[TestCase]:
+                   regimes: list[tuple[str, int]] | None = None, lang: str = "cuda") -> list[TestCase]:
     """Targeted tests for the categories (round-robin, at most `budget`), then the floor tests not already present.
-    regimes: extract_thresholds(new_src, ...) of the candidate."""
+    regimes: extract_thresholds(new_src, ...) of the candidate. lang "tirx": no misaligned-pointer tests (see the
+    module docstring, memory)."""
     wl = load_workload(workload)
     tiles = sorted(set(wl.tiles) | set(tiles or []))
     out, seen = [], set()
     per_cat = [_tests_for(wl, c, tiles) for c in cats]
+    if lang == "tirx":
+        per_cat = [[t for t in p if not t.misalign] for p in per_cat]
     for i in range(max((len(p) for p in per_cat), default=0)):   # round-robin: every category gets tests first
         for p in per_cat:
             if i < len(p) and p[i].key() not in seen and len(out) < budget:

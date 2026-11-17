@@ -78,7 +78,7 @@ def plan(workload: str, old_src: str | None, new_src: str, lang: str | None = No
     from ...task.workload import load_workload
     wl = load_workload(workload)
     regimes = extract_thresholds(new_src, lang, wl.shape_keys, wl.launch["kind"], wl.domain)
-    tests = generate_tests(workload, cats, tiles, budget, regimes)
+    tests = generate_tests(workload, cats, tiles, budget, regimes, lang)
     if llm_res is not None:
         tests += _llm_tests(workload, llm_res, tests)
     shapes = volta_shapes(workload, cats, tiles)          # both languages: VOLTA runs on CUDA and tirx-lite

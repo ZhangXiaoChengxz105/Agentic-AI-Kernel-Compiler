@@ -1,0 +1,3346 @@
+{
+ "rows": [
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 30,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": false,
+     "seconds": 11.422,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 11.422,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 23.867,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 12.445,
+       "decided": true,
+       "kinds": [
+        "race",
+        "uninitialized"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 11.422,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 33.665,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 12.445,
+       "decided": true,
+       "kinds": [
+        "race",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 11.422,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 9.798,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 87.669,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 12.445,
+       "decided": true,
+       "kinds": [
+        "race",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 11.422,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": false,
+       "seconds": 26.49,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 37.312,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "seconds": 50.35921471193433
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 43,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": false,
+     "seconds": 9.334,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.334,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 20.344,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.01,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.334,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 30.107,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.01,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.334,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 9.762,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 81.282,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.01,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.334,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 21.424,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 39.514,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "nonfinite"
+     ]
+    },
+    "seconds": 41.77072554710321
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 51,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": false,
+     "seconds": 9.06,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.06,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 20.181,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.121,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.06,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 29.973,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.121,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.06,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 9.793,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 76.171,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.121,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.06,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 24.975,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 31.015,
+       "decided": true,
+       "kinds": [
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch"
+     ]
+    },
+    "seconds": 45.15842325100675
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 27,
+   "desc": "[tid] -> [tid + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 9.143,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.143,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.687,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.544,
+       "decided": true,
+       "kinds": [
+        "uninitialized"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.143,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 22.509,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.544,
+       "decided": true,
+       "kinds": [
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.143,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 2.822,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 56.535,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.544,
+       "decided": true,
+       "kinds": [
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.143,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 18.502,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 18.346,
+       "decided": true,
+       "kinds": [
+        "compile_error",
+        "out_of_bounds"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch"
+     ]
+    },
+    "seconds": 38.192074237857014
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 32,
+   "desc": "[tid + s] -> [tid + s + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 9.174,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.174,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.68,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.505,
+       "decided": true,
+       "kinds": [
+        "uninitialized"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.174,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 24.309,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.505,
+       "decided": true,
+       "kinds": [
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.174,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 4.629,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 58.566,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.505,
+       "decided": true,
+       "kinds": [
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.174,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 18.382,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 20.504,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch"
+     ]
+    },
+    "seconds": 38.06429458013736
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 52,
+   "desc": "[r, col] -> [r, col + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 8.856,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.856,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nonfinite"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.906,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.05,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.856,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nonfinite"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 27.13,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.05,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.856,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nonfinite"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 7.224,
+       "decided": true,
+       "kinds": [
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 95.609,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.05,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.856,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nonfinite"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 18.46,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 57.242,
+       "decided": true,
+       "kinds": [
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch",
+      "nonfinite"
+     ]
+    },
+    "seconds": 38.36894478299655
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 8,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "tiling",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": false,
+     "seconds": 8.986,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.986,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.842,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.856,
+       "decided": true,
+       "kinds": [
+        "uninitialized"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.986,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 25.035,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.856,
+       "decided": true,
+       "kinds": [
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.986,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 5.193,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 70.146,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.856,
+       "decided": true,
+       "kinds": [
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.986,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 24.946,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 25.358,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "nonfinite"
+     ]
+    },
+    "seconds": 44.79042551992461
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 29,
+   "desc": "64 -> 32",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 8.769,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.769,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.339,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.57,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.769,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 22.211,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.57,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.769,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 2.873,
+       "decided": true,
+       "kinds": [
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 51.484,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.57,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.769,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 21.627,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 10.518,
+       "decided": true,
+       "kinds": [
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch",
+      "nonfinite"
+     ]
+    },
+    "seconds": 40.96777669689618
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "define",
+   "line": 8,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "tiling",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 9.005,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.005,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.282,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.277,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.005,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 21.938,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.277,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.005,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 2.656,
+       "decided": true,
+       "kinds": [
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 72.972,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.277,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.005,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 26.212,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 27.478,
+       "decided": true,
+       "kinds": [
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch",
+      "nonfinite"
+     ]
+    },
+    "seconds": 45.49659487698227
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "nosync",
+   "line": 28,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 9.043,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.043,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.628,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.585,
+       "decided": true,
+       "kinds": [
+        "race",
+        "uninitialized"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.043,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 24.161,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.585,
+       "decided": true,
+       "kinds": [
+        "race",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.043,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 4.533,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 44.843,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.585,
+       "decided": true,
+       "kinds": [
+        "race",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.043,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 15.646,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nondeterministic",
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 9.569,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch",
+      "nondeterministic",
+      "nonfinite"
+     ]
+    },
+    "seconds": 35.27642124216072
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "nosync",
+   "line": 34,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 8.763,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.763,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.441,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.678,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.763,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 21.987,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.678,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.763,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 2.546,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 45.523,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.678,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.763,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 15.7,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 10.383,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch"
+     ]
+    },
+    "seconds": 35.14210813702084
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "nosync",
+   "line": 37,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": false,
+     "seconds": 9.102,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.102,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.678,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.576,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.102,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 21.774,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.576,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.102,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 2.096,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 42.245,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 10.576,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 9.102,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 15.668,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 6.899,
+       "decided": true,
+       "kinds": [
+        "race"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch"
+     ]
+    },
+    "seconds": 35.34811239386909
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 53,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 8.77,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.77,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.416,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.646,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.77,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 22.046,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.646,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.77,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 2.629,
+       "decided": true,
+       "kinds": [
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 39.744,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.646,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.77,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 14.479,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 5.848,
+       "decided": true,
+       "kinds": [
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch"
+     ]
+    },
+    "seconds": 33.8973738909699
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "math",
+   "line": 45,
+   "desc": "txl.max -> txl.min",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 9.108,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.108,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.852,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.744,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.108,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 25.232,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.744,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.108,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 5.38,
+       "decided": false,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 40.808,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.744,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.108,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 12.911,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 8.045,
+       "decided": false,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "nonfinite"
+     ]
+    },
+    "seconds": 32.76544930716045
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "math",
+   "line": 46,
+   "desc": "txl.max -> txl.min",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": false,
+     "seconds": 8.797,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.797,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": false,
+     "seconds": 19.276,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.479,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.797,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": false,
+     "seconds": 21.334,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.479,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.797,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 2.058,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 38.233,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.479,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.797,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 13.721,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 5.236,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "nonfinite"
+     ]
+    },
+    "seconds": 32.99852189584635
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 30,
+   "desc": "if (tid < s) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 9.039,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.039,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 20.244,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.205,
+       "decided": true,
+       "kinds": [
+        "race",
+        "uninitialized"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.039,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 22.895,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.205,
+       "decided": true,
+       "kinds": [
+        "race",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.039,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 2.652,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 55.768,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.205,
+       "decided": true,
+       "kinds": [
+        "race",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.039,
+       "decided": true,
+       "kinds": [
+        "mismatch"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 21.213,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 14.312,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch",
+      "nonfinite"
+     ]
+    },
+    "seconds": 41.459128230810165
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 43,
+   "desc": "if (col < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 8.949,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.949,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 20.155,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.206,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds",
+        "uninitialized"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.949,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 22.74,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.206,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.949,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 2.585,
+       "decided": false,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 58.28,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.206,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.949,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 24.891,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 13.235,
+       "decided": false,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "nonfinite"
+     ]
+    },
+    "seconds": 45.048093480058014
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 51,
+   "desc": "if (col < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 8.704,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.704,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 19.884,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.181,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds",
+        "uninitialized"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.704,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 24.12,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.181,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.704,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": true
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 4.236,
+       "decided": true,
+       "kinds": [
+        "div_by_zero"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": true,
+     "seconds": 54.322,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.181,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds",
+        "uninitialized"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 8.704,
+       "decided": true,
+       "kinds": [
+        "nonfinite"
+       ],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": true,
+       "seconds": 21.795,
+       "decided": true,
+       "kinds": [
+        "mismatch",
+        "nonfinite"
+       ],
+       "cached": false
+      },
+      "volta": {
+       "caught": true,
+       "seconds": 12.643,
+       "decided": true,
+       "kinds": [
+        "div_by_zero",
+        "not_equivalent"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [],
+     "changeaware_errors": [
+      "mismatch",
+      "nonfinite"
+     ]
+    },
+    "seconds": 41.68134064809419
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 16,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 15,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 9.362,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.362,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 20.852,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.49,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds",
+        "runtime_error"
+       ],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.362,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": true,
+     "seconds": 20.852,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.49,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds",
+        "runtime_error"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.362,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [
+      "volta"
+     ]
+    },
+    "C": {
+     "caught": true,
+     "seconds": 20.852,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 11.49,
+       "decided": true,
+       "kinds": [
+        "out_of_bounds",
+        "runtime_error"
+       ],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 9.362,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [
+      "changeaware",
+      "volta"
+     ]
+    },
+    "seconds": 20.85283082118258
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 22,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  ld_proxy_readonly: ld_proxy_readonly: missing required modifier(s):"
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 4.365,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 4.365,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 3.732,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 3.732,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": [
+      "fixed_tests"
+     ]
+    },
+    "B": {
+     "caught": true,
+     "seconds": 3.732,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 3.732,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [
+      "fixed_tests",
+      "volta"
+     ]
+    },
+    "C": {
+     "caught": true,
+     "seconds": 3.732,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 3.732,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [
+      "fixed_tests",
+      "changeaware",
+      "volta"
+     ]
+    },
+    "seconds": 8.097395557910204
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 35,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  ld: ld: destination 'd' must have dtype float32 / uint32 / int32 / "
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": true,
+     "seconds": 4.326,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": true,
+       "seconds": 4.326,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": true,
+     "seconds": 3.746,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 3.746,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": false
+      }
+     },
+     "skipped": [
+      "fixed_tests"
+     ]
+    },
+    "B": {
+     "caught": true,
+     "seconds": 3.746,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 3.746,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [
+      "fixed_tests",
+      "volta"
+     ]
+    },
+    "C": {
+     "caught": true,
+     "seconds": 3.746,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": true,
+       "seconds": 3.746,
+       "decided": true,
+       "kinds": [
+        "compile_error"
+       ],
+       "cached": true
+      }
+     },
+     "skipped": [
+      "fixed_tests",
+      "changeaware",
+      "volta"
+     ]
+    },
+    "seconds": 8.072617673082277
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "v -> v_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": false,
+     "seconds": 8.881,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.881,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": false,
+     "seconds": 19.624,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.743,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.881,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": false,
+     "seconds": 22.185,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.743,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.881,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 2.561,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": false,
+     "seconds": 35.047,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.743,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.881,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": false,
+       "seconds": 10.631,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 4.793,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "seconds": 30.25662215310149
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "b -> b_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": false,
+     "seconds": 8.916,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.916,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": false,
+     "seconds": 19.61,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.693,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.916,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": false,
+     "seconds": 21.787,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.693,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.916,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 2.177,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": false,
+     "seconds": 36.429,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.693,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.916,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": false,
+       "seconds": 9.914,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 6.906,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "seconds": 29.52556319721043
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "m -> m_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   },
+   "base_ok": true,
+   "detect": {
+    "A0": {
+     "caught": false,
+     "seconds": 8.587,
+     "per_validator": {
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.587,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      }
+     },
+     "skipped": []
+    },
+    "A": {
+     "caught": false,
+     "seconds": 19.246,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.659,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.587,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "B": {
+     "caught": false,
+     "seconds": 21.731,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.659,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.587,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 2.485,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "C": {
+     "caught": false,
+     "seconds": 35.051,
+     "per_validator": {
+      "compiler_checks": {
+       "caught": false,
+       "seconds": 10.659,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "fixed_tests": {
+       "caught": false,
+       "seconds": 8.587,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      },
+      "changeaware": {
+       "caught": false,
+       "seconds": 10.746,
+       "decided": true,
+       "kinds": [],
+       "cached": false
+      },
+      "volta": {
+       "caught": false,
+       "seconds": 5.059,
+       "decided": true,
+       "kinds": [],
+       "cached": true
+      }
+     },
+     "skipped": []
+    },
+    "seconds": 29.99432016699575
+   }
+  }
+ ],
+ "seconds": 894.2853012979031,
+ "llm_model": null,
+ "classifier": "ir",
+ "set": "bases",
+ "lang": "tirx",
+ "detect_configs": [
+  "A0",
+  "A",
+  "B",
+  "C"
+ ],
+ "volta_workers": 12,
+ "complete": true
+}

@@ -202,6 +202,15 @@ class GenerateTests(unittest.TestCase):
         self.assertIn("large", {t.dist for t in generate_tests("softmax", ["numerical"], (128,))})
         self.assertIn("offset", {t.dist for t in generate_tests("layernorm", ["numerical"], (128,))})
 
+    def test_misaligned_pointers_for_cuda_only(self):
+        # a compiled tirx-lite function refuses a misaligned tensor before the kernel runs, correct kernel or not
+        for op, tiles in (("softmax", (128,)), ("gemm", (16, 16))):
+            cuda = generate_tests(op, ["memory"], tiles)
+            tirx = generate_tests(op, ["memory"], tiles, lang="tirx")
+            self.assertTrue(any(t.misalign for t in cuda), op)
+            self.assertFalse(any(t.misalign for t in tirx), op)
+            self.assertTrue(any(t.tag.startswith("memory") for t in tirx), op)          # odd sizes stay
+
     def test_sync_repeats(self):
         sync = [t for t in generate_tests("gemm", ["sync"], (16, 16)) if t.tag.startswith("sync")]
         self.assertTrue(sync and all(t.repeat >= 3 for t in sync))

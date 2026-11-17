@@ -872,3 +872,78 @@ output back to the agent, so compute-sanitizer is the dynamic half.
 
 GPU-job time for D2: 3 jobs, 31 min 37 s (24061664: 1 min 32 s; 24061708: 13 min 54 s, cancelled; 24061793:
 16 min 11 s).
+
+## F2: final evaluation on tirx-lite (2026-11-17)
+Goal: Task 5 on the agent's language, as the proposal asks ("Evaluate three configurations … Compare error
+detection, verification coverage, validation overhead"), with the gate as configuration A's first step (A0 is the
+ablation without it). Results and numbers: README §4 "Main experiment", `notes/gpu_results.md` (Final evaluation).
+
+**Changes.**
+- `changeaware.plan()`: VOLTA shapes for tirx-lite too. Before, it returned `volta_shapes(...) if lang == "cuda"
+  else []`, a leftover from before VOLTA ran on tirx, so VOLTA-C = VOLTA-B on tirx (found in D2). `test_changeaware_ir`
+  checks that the nosync plan hands VOLTA N = 256 and 264.
+- `evaluation/volta_pool.py` (new):
+  - VOLTA needs only CPUs, so the mutant evaluation runs it in spawned worker processes while the GPU validators run
+    serially in the main process. Run serially, VOLTA for the 191 edits would have kept the GPU idle for hours.
+  - `VoltaPool.submit(cand)` queues one task per (candidate, shape) for the superset of shapes C can ask for:
+    default + `volta_shapes(workload, all categories, tiles of candidate and parent)`, the same function and tiles
+    `plan()` uses.
+  - `pool.cache(cand)` is a `run_pipeline` report cache whose VOLTA lookups wait for the per-shape reports and merge
+    them. The merge reproduces the serial report: findings in shape order (shapeless ones once), decided = all,
+    seconds = sum.
+  - Workers use their own build directory (`VoltaValidator(build_root=...)`, new) and their own candidate file
+    names, so no two processes write the same file.
+  - Spawned workers re-import `__main__`: run from a file or `akc`, not from stdin (a stdin script gave
+    `BrokenProcessPool`; a file worked).
+  - Wiring:
+    - `bugset.evaluate(cache=...)`;
+    - `mutants._detect(pool=...)`;
+    - `akc mutants --volta-workers N` (tirx only);
+    - the run's JSON records `volta_workers`.
+- `scripts/slurm/tirx_eval.sh`: the three parts:
+  - `bugs_bases`: one stream; its timings are the overhead numbers;
+  - `heldout` and `fresh`: two streams on one GPU, then merged.
+- `generate.py`: no misaligned-pointer tests for tirx-lite (below). `generate_tests(..., lang)`; `plan()` passes it.
+- `scripts/experiments/rerun_mutants.py`:
+  - `--confirm` shows the misalignment error on the correct reference;
+  - `--set S` re-runs only the edits labelled "memory" and replaces their rows in place, after a one-time copy to
+    `..._before_misalign_fix.json`; each re-run row keeps `rerun.old`.
+
+**Steps that did not work at first.**
+1. First CPU smoke test of the pool: `BrokenProcessPool`. The script came from stdin, and spawned workers could not
+   re-import it. The same code from a file: 5 shapes, all RACE for softmax nosync, then the full A0/A/B/C on one
+   edit (VOLTA cached from the pool, C caught).
+2. Heldout and fresh: C caught 70/70 and 68/73. Checking which validator caught what showed 7 edits caught only by a
+   change-aware `compile_error`. All of them were labelled "memory", and 12 of the 14 "memory" edits whose
+   change-aware tests ran had that error. Cause:
+   - the "memory" tests shift every tensor by one element;
+   - a TIRx-compiled function checks argument alignment ("expected data alignment" is in the tvm_tirx library);
+   - job 24078424 confirmed it on the correct `softmax_txl_ref`: `ValueError: Misaligned Tensor data on
+     argument #0`.
+
+   Fix: no misaligned tests for tirx (such a call can never read misaligned data silently; it raises). The 27
+   "memory" edits were re-run: exactly the 7 flipped to "missed", and the other 20 were unchanged.
+
+**Checking C's misses** (by reading each kernel; VOLTA where it decides):
+- 9 block / tile / unroll changes. The kernels derive grid, block, shared sizes and loop counts from the constant.
+- 2 `gemm_txl_opt` paddings 0.0 → 1.0. As[ty, kk] and Bs[kk, tx] stand for the same k, so a padded 1.0 meets a padded
+  0.0.
+- 1 real out-of-bounds read at N = 1 (`layernorm_txl_ref`, x0 = x[r, 1]). The mean is still correct in exact math,
+  because x0 is only a shift, so the outputs stay within tolerance. Not fixed: the gate shapes would need N = 1, and
+  this was found on the fresh set.
+- VOLTA is undecided on the GEMM tile changes because block 0 then covers another part of C ("output shape
+  mismatch: array 'C': 256 elements written vs 64", login-node run of the TILE 8 edit).
+
+**Verified vs assumed.**
+- Verified:
+  - the pool's merged report equals the serial one (unit tests with fake reports, plus one real VOLTA run);
+  - detection rows were checked one by one for every catch that A0 missed;
+  - the misalignment cause was confirmed on the GPU;
+  - 233 unit tests pass on the login node (after the generator test: 234).
+- Assumed:
+  - two evaluation streams on one GPU do not change verdicts. The streams' timings are not used;
+  - VOLTA worker times equal serial times (no CPU oversubscription: 12 or 2 × 6 workers on 16 CPUs, with the main
+    processes mostly waiting on the GPU or child processes).
+- Not done: the repair-success part of Task 5 (needs the agent loop with real Lumen calls).
+
+GPU-job time for F2: 4 jobs, 2 h 9 min 44 s.

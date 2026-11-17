@@ -429,3 +429,95 @@ version: layernorm / gemm opt, softmax reference):
 
 GPU-job time for D2: 3 jobs, 31 min 37 s (24061664: 1 min 32 s; 24061708: 13 min 54 s, cancelled; 24061793:
 16 min 11 s).
+
+# Final evaluation on tirx-lite: A0 / A / B / C (2026-11-17, jobs 24062207, 24062451, 24064163, 24078424)
+**Question.** Task 5 on the agent's language: detection, verification coverage and validation overhead of
+configurations A0 (fixed tests), A (+ compiler-checks gate), B (+ VOLTA at the default size) and C (+ change-aware
+tests, VOLTA at the change-aware sizes), on the 11 injected tirx bugs and on generated single edits of three sets of
+correct tirx kernels. Script: `scripts/slurm/tirx_eval.sh`; build log: `notes/build_log.md` (F2).
+
+**Jobs** (one A100-SXM4-40GB each, `gpuA100x4-interactive`, 16 CPUs, 60 GB):
+
+| job | what | elapsed |
+|---|---|---|
+| 24062207 | `akc eval-bugs --lang tirx` (VOLTA inline) + `akc mutants --set bases --detect --volta --volta-workers 12` (one stream) | 24 min 49 s |
+| 24062451 | `--set heldout`, two streams (2 GLM kernels each, 6 VOLTA workers each) | 48 min 31 s |
+| 24064163 | `--set fresh`, two streams (LayerNorm / GEMM ref + opt) | 26 min 01 s |
+| 24078424 | misalignment check on `softmax_txl_ref` + re-run of the 27 edits labelled "memory" after the generator fix | 30 min 23 s |
+
+**Detection** (after the fix in job 24078424; caught / candidates):
+
+| candidates | A0 | A | B | C | no-op edits flagged (A0/A/B/C) |
+|---|---|---|---|---|---|
+| 11 injected bugs | 3 | 6 | 6 | 11 | – |
+| bases (softmax_txl_ref), 21 edits | 15 | 20 | 20 | 21 | 0/0/0/0 of 3 |
+| heldout (4 GLM tirx), 70 edits | 52 | 56 | 62 | 65 | 0/0/0/0 of 12 |
+| fresh (LN / GEMM ref + opt), 73 edits | 52 | 62 | 66 | 66 | 0/0/0/0 of 12 |
+| all edits, 164 | 119 | 138 | 148 | 152 | 0 of 27 |
+
+- Injected bugs per validator (in C):
+  - gate 6;
+  - fixed tests 3;
+  - change-aware tests 11;
+  - VOLTA-B 4;
+  - VOLTA-C 9: all but nomax and onepass. The tails are NOT_EQUIV at N = 584 / 200 (softmax), 200 / 100
+    (LayerNorm) and K = 72 / 40 (GEMM), and EQUIV at the default size. gemm guard is a RACE at 12×12×40.
+- Edits added by each step:
+  - A0 → A (gate): 19. These are races (2 deleted barriers, 4 `<` → `<=`), out-of-bounds reads (`<` → `<=` in
+    guards / loop bounds) and uninitialized shared reads (halved block size).
+  - A → B (VOLTA, default size): 10. Of these, 7 are `if (lane == 0)` / `if (tid == 0)` negations, which are
+    same-value races whose outputs never change. 2 are halved shared arrays (out-of-bounds shared), and 1 is
+    `+` → `-` in `layernorm_txl_opt`.
+  - B → C (change-aware tests): 4, all float-only:
+    - softmax max → min;
+    - a max initialized to 0.0 instead of -FLT_MAX, in 2 GLM kernels;
+    - `for delta in (16, …)` → `(8, …)` in a GLM warp max.
+- C misses 12 edits:
+  - 9 block / tile / unroll changes in kernels that derive everything from the constant:
+    - GLM C_r2 BLOCK 128 → 64 / 256 and UNROLL 4 → 2;
+    - GLM D2 BLOCK 128 → 64 / 256;
+    - gemm ref and opt TILE 16 → 8 / 32.
+
+    VOLTA proves the 5 GLM ones EQUIV. The 4 GEMM ones are undecided: "output shape mismatch: array 'C': 256
+    elements written vs 64", because block 0 covers another region.
+  - 2 are `gemm_txl_opt` padding 0.0 → 1.0. The padding is always multiplied by the other tile's zero padding.
+    VOLTA: EQUIV.
+  - 1 is real: `layernorm_txl_ref` `x[r, 0]` → `x[r, 0 + 1]`. It reads past `x` on the last row at N = 1, and
+    the outputs stay within tolerance. The gate's shapes (N = T+1, 1000) do not include N = 1.
+- Verification coverage (VOLTA decided / ran):
+  - bugs: B 11/11, C 10/11 (softmax tail at N = 100 is UNSUPPORTED);
+  - edits: 114/132 in both B and C (bases 16/18, heldout 46/53, fresh 52/61).
+
+**Overhead** (single-stream runs; per candidate, each validator's own seconds; VOLTA times come from the worker
+processes in the mutant run and are inline in eval-bugs):
+
+| | A0 | A | B | C |
+|---|---|---|---|---|
+| injected bugs, mean of 11 | 9.3 | 19.5 | 22.4 | 49.1 |
+| bases edits, mean of 24 | 8.7 | 18.6 | 22.4 | 50.2 |
+
+Medians per validator (bugs / bases):
+- gate 10.1 / 10.7;
+- fixed tests 8.9 / 9.0;
+- change-aware tests 20.8 / 18.5;
+- VOLTA-B 3.2 / 2.8;
+- VOLTA-C 9.1 / 12.6.
+
+Wall time per edit in the main process: bases 37 s median, heldout 41 s and fresh 31 s (two streams each).
+`glm_txl_D1_r2` edits are slow: 19 edits took 1964 s, and its BLOCK edits about 440 s each in the re-run.
+
+**Problem found and fixed: misaligned-pointer tests on tirx-lite.**
+- The change-aware "memory" category added tests with every tensor shifted by one element.
+- A TIRx-compiled function checks the alignment of its tensor arguments. Job 24078424, on the correct reference:
+  `softmax_txl_ref misaligned by 1 element: passed=False reason=compile_error message=ValueError: Misaligned Tensor
+  data on argument #0` (the aligned call passes).
+- So every edit labelled "memory" was "caught". In heldout and fresh, 7 edits were counted for C only because of
+  this: GLM C_r2 const L9 / L11 / define L9, GLM D2 const / define L19, gemm opt const / define L11.
+- `generate.py` now leaves misaligned tests out for tirx-lite. The 27 "memory" edits were re-run
+  (`scripts/experiments/rerun_mutants.py`); exactly those 7 changed (C caught → missed), and the other 20 kept their
+  results.
+- Before the fix: heldout C 70/70, fresh C 68/73 (`results/eval/mutants_detect_tirx_{heldout,fresh}_before_misalign_fix.json`).
+
+**Results:** `results/eval/bugset_tirx_gpu_20261117-053113.json`, `results/eval/mutants_detect_tirx_{bases,heldout,fresh}.json`.
+
+GPU time: 2 h 9 min 44 s in 4 jobs.
