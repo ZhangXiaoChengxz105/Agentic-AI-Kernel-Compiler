@@ -20,7 +20,7 @@ class FixedTestsValidator:
     def validate(self, cand: Candidate, ctx: ValidationContext) -> ValidationReport:
         t0 = time.perf_counter()
         tests = ctx.test_cases if ctx.test_cases is not None else fixed_suite(cand.workload)
-        outcomes = run(cand, tests, ctx.resolved_device())
+        outcomes = run(cand, tests, ctx.resolved_device(), ctx.extra.get("numsim_racecheck", True))
         findings = [f for f in (outcome_to_finding(o, self.name) for o in outcomes) if f]
         executed = sum(o.get("reason") != "skipped" for o in outcomes)
         return ValidationReport.build(self.name, findings, executed > 0, t0, outcomes=outcomes, n_tests=len(tests))

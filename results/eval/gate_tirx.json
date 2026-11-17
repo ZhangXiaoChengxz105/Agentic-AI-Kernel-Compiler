@@ -1,0 +1,5857 @@
+{
+ "meta": {
+  "date": "2026-11-17T04:52:44",
+  "job_id": "24061793",
+  "host": "gpua010.delta.ncsa.illinois.edu",
+  "device": "gpu",
+  "groups": "ref_opt,glm,injected,mutant",
+  "n_kernels": 34,
+  "gpu": "NVIDIA A100-SXM4-40GB, 595.71.05",
+  "compute_sanitizer": "/opt/nvidia/hpc_sdk/Linux_x86_64/26.5/cuda/13.2/compute-sanitizer/compute-sanitizer",
+  "sanitizer_version": "Version 2026.1.1.0 (build 37663202) (public-release)",
+  "sanitizer_flags": {
+   "memcheck": [
+    "--tool",
+    "memcheck",
+    "--padding",
+    "256",
+    "--destroy-on-device-error",
+    "context"
+   ],
+   "racecheck": [
+    "--tool",
+    "racecheck",
+    "--racecheck-detect-level",
+    "info"
+   ],
+   "initcheck": [
+    "--tool",
+    "initcheck",
+    "--initcheck-address-space",
+    "all"
+   ],
+   "synccheck": [
+    "--tool",
+    "synccheck"
+   ]
+  },
+  "wall_s": 411.5,
+  "complete": true
+ },
+ "rows": [
+  {
+   "label": "softmax_txl_ref",
+   "group": "ref_opt",
+   "workload": "softmax",
+   "path": "/u/mfang/521/workloads/softmax/tirx/softmax_txl_ref.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 10.29,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.69,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_eff7ecca30/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.2,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_eff7ecca30/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.69,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_eff7ecca30/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.65,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_eff7ecca30/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.661,
+    "trace": 0.1811,
+    "ir_contract": 0.0044,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.7435,
+    "static_child_wall": 7.31,
+    "nvcc_cubin": 0.737,
+    "inputs": 0.023,
+    "sanitizer:memcheck": 1.69,
+    "sanitizer:racecheck": 2.2,
+    "sanitizer:initcheck": 1.69,
+    "sanitizer:synccheck": 1.65
+   },
+   "sanitizer_wall_s": 2.211,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 7.62e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.23e-09)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "layernorm_txl_ref",
+   "group": "ref_opt",
+   "workload": "layernorm",
+   "path": "/u/mfang/521/workloads/layernorm/tirx/layernorm_txl_ref.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 9.91,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.61,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_ref_f441ef7116/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.09,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_ref_f441ef7116/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.6,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_ref_f441ef7116/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.55,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_ref_f441ef7116/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.731,
+    "trace": 0.0369,
+    "ir_contract": 0.001,
+    "well_formed": 0.0003,
+    "verify_memory": 0.0,
+    "compile": 2.3798,
+    "static_child_wall": 6.988,
+    "nvcc_cubin": 0.742,
+    "inputs": 0.066,
+    "sanitizer:memcheck": 1.61,
+    "sanitizer:racecheck": 2.09,
+    "sanitizer:initcheck": 1.6,
+    "sanitizer:synccheck": 1.55
+   },
+   "sanitizer_wall_s": 2.111,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 5.87e-07)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 2.14e-06)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "layernorm_txl_opt",
+   "group": "ref_opt",
+   "workload": "layernorm",
+   "path": "/u/mfang/521/workloads/layernorm/tirx/layernorm_txl_opt.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 10.17,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_opt_da978fe20d/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.03,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_opt_da978fe20d/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_opt_da978fe20d/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.49,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_opt_da978fe20d/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.677,
+    "trace": 0.1772,
+    "ir_contract": 0.0048,
+    "well_formed": 0.0007,
+    "verify_memory": 0.0,
+    "compile": 2.8008,
+    "static_child_wall": 7.362,
+    "nvcc_cubin": 0.719,
+    "inputs": 0.032,
+    "sanitizer:memcheck": 1.59,
+    "sanitizer:racecheck": 2.03,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.49
+   },
+   "sanitizer_wall_s": 2.047,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 3.93e-07)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 3.43e-07)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "gemm_txl_ref",
+   "group": "ref_opt",
+   "workload": "gemm",
+   "path": "/u/mfang/521/workloads/gemm/tirx/gemm_txl_ref.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 9.24,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.49,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_ref_e011c8b8ce/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.04,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_ref_e011c8b8ce/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.53,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_ref_e011c8b8ce/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.48,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_ref_e011c8b8ce/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.653,
+    "trace": 0.0311,
+    "ir_contract": 0.0005,
+    "well_formed": 0.0002,
+    "verify_memory": 0.0,
+    "compile": 2.1538,
+    "static_child_wall": 6.464,
+    "nvcc_cubin": 0.688,
+    "inputs": 0.03,
+    "sanitizer:memcheck": 1.49,
+    "sanitizer:racecheck": 2.04,
+    "sanitizer:initcheck": 1.53,
+    "sanitizer:synccheck": 1.48
+   },
+   "sanitizer_wall_s": 2.052,
+   "shapes": [
+    {
+     "M": 33,
+     "N": 33,
+     "K": 40
+    },
+    {
+     "M": 64,
+     "N": 64,
+     "K": 64
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 40
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 1089 outputs within tolerance (max abs err 4.25e-06)"
+    },
+    {
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4096 outputs within tolerance (max abs err 7.46e-06)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "gemm_txl_opt",
+   "group": "ref_opt",
+   "workload": "gemm",
+   "path": "/u/mfang/521/workloads/gemm/tirx/gemm_txl_opt.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 9.6,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.53,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_opt_68f2346011/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.09,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_opt_68f2346011/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.54,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_opt_68f2346011/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.53,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_opt_68f2346011/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.645,
+    "trace": 0.1647,
+    "ir_contract": 0.0041,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.2951,
+    "static_child_wall": 6.766,
+    "nvcc_cubin": 0.693,
+    "inputs": 0.03,
+    "sanitizer:memcheck": 1.53,
+    "sanitizer:racecheck": 2.09,
+    "sanitizer:initcheck": 1.54,
+    "sanitizer:synccheck": 1.53
+   },
+   "sanitizer_wall_s": 2.105,
+   "shapes": [
+    {
+     "M": 33,
+     "N": 33,
+     "K": 40
+    },
+    {
+     "M": 64,
+     "N": 64,
+     "K": 64
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 40
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 1089 outputs within tolerance (max abs err 4.25e-06)"
+    },
+    {
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4096 outputs within tolerance (max abs err 7.46e-06)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_C_r2",
+   "group": "glm",
+   "workload": "softmax",
+   "path": "/u/mfang/521/results/pilot/20261115-203843/softmax_txl_r2.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 11.97,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_cd3c5cfb03/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.1,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_cd3c5cfb03/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.58,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_cd3c5cfb03/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.51,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_cd3c5cfb03/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.641,
+    "trace": 0.2634,
+    "ir_contract": 0.0087,
+    "well_formed": 0.0011,
+    "verify_memory": 0.0,
+    "compile": 4.3281,
+    "static_child_wall": 9.024,
+    "nvcc_cubin": 0.789,
+    "inputs": 0.036,
+    "sanitizer:memcheck": 1.59,
+    "sanitizer:racecheck": 2.1,
+    "sanitizer:initcheck": 1.58,
+    "sanitizer:synccheck": 1.51
+   },
+   "sanitizer_wall_s": 2.114,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12285
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 7.62e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.28e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12285
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24570 outputs within tolerance (max abs err 1.35e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_D1_r2",
+   "group": "glm",
+   "workload": "softmax",
+   "path": "/u/mfang/521/results/pilot/20261115-204306/softmax_txl_r2.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 11.68,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.69,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D1_r2_6033fbe009/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.18,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D1_r2_6033fbe009/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.69,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D1_r2_6033fbe009/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.64,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D1_r2_6033fbe009/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.683,
+    "trace": 0.4483,
+    "ir_contract": 0.0067,
+    "well_formed": 0.001,
+    "verify_memory": 0.0,
+    "compile": 4.018,
+    "static_child_wall": 8.694,
+    "nvcc_cubin": 0.742,
+    "inputs": 0.036,
+    "sanitizer:memcheck": 1.69,
+    "sanitizer:racecheck": 2.18,
+    "sanitizer:initcheck": 1.69,
+    "sanitizer:synccheck": 1.64
+   },
+   "sanitizer_wall_s": 2.203,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12285
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 7.62e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.38e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12285
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24570 outputs within tolerance (max abs err 2.99e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_D2_r1",
+   "group": "glm",
+   "workload": "softmax",
+   "path": "/u/mfang/521/results/pilot/20261115-205635/softmax_txl_r1.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 11.5,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.6,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_4c93a3a7a7/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.11,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_4c93a3a7a7/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_4c93a3a7a7/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.49,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_4c93a3a7a7/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.75,
+    "trace": 0.2273,
+    "ir_contract": 0.0051,
+    "well_formed": 0.0008,
+    "verify_memory": 0.0,
+    "compile": 3.5094,
+    "static_child_wall": 8.589,
+    "nvcc_cubin": 0.729,
+    "inputs": 0.041,
+    "sanitizer:memcheck": 1.6,
+    "sanitizer:racecheck": 2.11,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.49
+   },
+   "sanitizer_wall_s": 2.133,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12269
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 8.24e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.27e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12269
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24538 outputs within tolerance (max abs err 2.13e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_D3_r1",
+   "group": "glm",
+   "workload": "softmax",
+   "path": "/u/mfang/521/results/pilot/20261115-205831/softmax_txl_r1.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 11.19,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D3_r1_624470ede6/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.09,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D3_r1_624470ede6/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D3_r1_624470ede6/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.53,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D3_r1_624470ede6/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.757,
+    "trace": 0.4158,
+    "ir_contract": 0.0055,
+    "well_formed": 0.0008,
+    "verify_memory": 0.0,
+    "compile": 3.6115,
+    "static_child_wall": 8.33,
+    "nvcc_cubin": 0.71,
+    "inputs": 0.035,
+    "sanitizer:memcheck": 1.59,
+    "sanitizer:racecheck": 2.09,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.53
+   },
+   "sanitizer_wall_s": 2.112,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12289
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 8.24e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.27e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12289
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24578 outputs within tolerance (max abs err 4.57e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "softmax_txl_bug_nosync",
+   "group": "injected",
+   "workload": "softmax",
+   "path": "/u/mfang/521/workloads/softmax/tirx/bugs/softmax_txl_bug_nosync.py",
+   "bug": {
+    "category": "sync",
+    "change": "removed the CTA barrier after each tree-reduction step"
+   },
+   "expect_volta": "RACE",
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 10.13,
+   "kinds": [
+    "race"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.54,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_nosync_5a3ae28ad9/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": true,
+     "kinds": [
+      "race"
+     ],
+     "n_reports": 27,
+     "by_severity": {
+      "error": 9,
+      "warning": 18,
+      "info": 0
+     },
+     "seconds": 2.09,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_nosync_5a3ae28ad9/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.58,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_nosync_5a3ae28ad9/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.58,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_nosync_5a3ae28ad9/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.698,
+    "trace": 0.1711,
+    "ir_contract": 0.0042,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.6837,
+    "static_child_wall": 7.261,
+    "nvcc_cubin": 0.728,
+    "inputs": 0.017,
+    "sanitizer:memcheck": 1.54,
+    "sanitizer:racecheck": 2.09,
+    "sanitizer:initcheck": 1.58,
+    "sanitizer:synccheck": 1.58
+   },
+   "sanitizer_wall_s": 2.105,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": false,
+     "reason": "mismatch",
+     "message": "516 of 516 outputs exceed tolerance (max abs err 8.86, max rel err 113)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": false,
+     "reason": "mismatch",
+     "message": "3998 of 4000 outputs exceed tolerance (max abs err 0.449, max rel err 26.3)"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "race",
+     "severity": "error",
+     "message": "[rows=4,N=129; rows=4,N=1000] compute-sanitizer racecheck found a data race on shared memory: 27 report(s), 6008 hazards; e.g. Error: Race reported between Write access",
+     "location": "generated CUDA line 176 (write) and line 180 (read)",
+     "cuda": "tvm_builtin_ptx_st_shared_f32(tvm_builtin_cuda_cvta_generic_to_shared((&(v[((int)threadIdx.x)]))), (v_ptr_2[0] + v_ptr_3[0]));",
+     "tool": "racecheck"
+    }
+   ]
+  },
+  {
+   "label": "softmax_txl_bug_tail",
+   "group": "injected",
+   "workload": "softmax",
+   "path": "/u/mfang/521/workloads/softmax/tirx/bugs/softmax_txl_bug_tail.py",
+   "bug": {
+    "category": "tiling",
+    "change": "partial max/sum loops run n // 128 tiles (tail dropped)"
+   },
+   "expect_volta": [
+    {
+     "if": "N % 128 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 10.12,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.53,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_tail_bfe4fa2059/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.1,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_tail_bfe4fa2059/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.58,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_tail_bfe4fa2059/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.49,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_tail_bfe4fa2059/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.671,
+    "trace": 0.1797,
+    "ir_contract": 0.0044,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.6953,
+    "static_child_wall": 7.242,
+    "nvcc_cubin": 0.723,
+    "inputs": 0.022,
+    "sanitizer:memcheck": 1.53,
+    "sanitizer:racecheck": 2.1,
+    "sanitizer:initcheck": 1.58,
+    "sanitizer:synccheck": 1.49
+   },
+   "sanitizer_wall_s": 2.119,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": false,
+     "reason": "mismatch",
+     "message": "511 of 516 outputs exceed tolerance (max abs err 0.00272, max rel err 0.0139)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": false,
+     "reason": "mismatch",
+     "message": "4000 of 4000 outputs exceed tolerance (max abs err 0.00254, max rel err 0.133)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "softmax_txl_bug_offbyone",
+   "group": "injected",
+   "workload": "softmax",
+   "path": "/u/mfang/521/workloads/softmax/tirx/bugs/softmax_txl_bug_offbyone.py",
+   "bug": {
+    "category": "indexing",
+    "change": "sum loop guard col <= n"
+   },
+   "expect_volta": [
+    {
+     "if": "N % 128 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 10.69,
+   "kinds": [
+    "out_of_bounds"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": true,
+     "kinds": [
+      "out_of_bounds"
+     ],
+     "n_reports": 1,
+     "by_severity": {
+      "error": 1,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.34,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_offbyone_4a1674f196/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 4,
+     "api_errors": [
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuModuleUnload."
+     ],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.65,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_offbyone_4a1674f196/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.3,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_offbyone_4a1674f196/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.3,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_offbyone_4a1674f196/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.657,
+    "trace": 0.174,
+    "ir_contract": 0.0044,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.7371,
+    "static_child_wall": 7.255,
+    "nvcc_cubin": 0.735,
+    "inputs": 0.027,
+    "sanitizer:memcheck": 2.34,
+    "sanitizer:racecheck": 2.65,
+    "sanitizer:initcheck": 2.3,
+    "sanitizer:synccheck": 2.3
+   },
+   "sanitizer_wall_s": 2.667,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": false,
+     "reason": "unwritten",
+     "message": "33 of 516 output elements were never written"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": false,
+     "reason": "unwritten",
+     "message": "232 of 4000 output elements were never written"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "out_of_bounds",
+     "severity": "error",
+     "message": "[rows=4,N=129] compute-sanitizer memcheck found an out-of-bounds or misaligned memory access: 1 report(s); e.g. Invalid __global__ read of size 4 bytes",
+     "location": "generated CUDA line 174",
+     "cuda": "tvm_builtin_ptx_ld_global_f32(v_ptr_1[0], (&(x_ptr[(((((int)blockIdx.x) * 129) + (v_2 * 128)) + ((int)threadIdx.x))])));",
+     "tool": "memcheck"
+    }
+   ]
+  },
+  {
+   "label": "softmax_txl_bug_nomax",
+   "group": "injected",
+   "workload": "softmax",
+   "path": "/u/mfang/521/workloads/softmax/tirx/bugs/softmax_txl_bug_nomax.py",
+   "bug": {
+    "category": "numerical",
+    "change": "no max subtraction before exp"
+   },
+   "expect_volta": "EQUIV",
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 10.38,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.7,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_nomax_a96c441af4/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.26,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_nomax_a96c441af4/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.7,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_nomax_a96c441af4/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.69,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_bug_nomax_a96c441af4/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.654,
+    "trace": 0.1725,
+    "ir_contract": 0.0045,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.7504,
+    "static_child_wall": 7.316,
+    "nvcc_cubin": 0.738,
+    "inputs": 0.025,
+    "sanitizer:memcheck": 1.7,
+    "sanitizer:racecheck": 2.26,
+    "sanitizer:initcheck": 1.7,
+    "sanitizer:synccheck": 1.69
+   },
+   "sanitizer_wall_s": 2.279,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 1.25e-08)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.28e-09)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "layernorm_txl_bug_nosync",
+   "group": "injected",
+   "workload": "layernorm",
+   "path": "/u/mfang/521/workloads/layernorm/tirx/bugs/layernorm_txl_bug_nosync.py",
+   "bug": {
+    "category": "sync",
+    "change": "removed the CTA barrier between reading the sum from red[0] and reusing red"
+   },
+   "expect_volta": "RACE",
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 11.19,
+   "kinds": [
+    "race"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_nosync_ac46d8ef32/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": true,
+     "kinds": [
+      "race"
+     ],
+     "n_reports": 2,
+     "by_severity": {
+      "error": 2,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.1,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_nosync_ac46d8ef32/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_nosync_ac46d8ef32/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.54,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_nosync_ac46d8ef32/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.761,
+    "trace": 0.177,
+    "ir_contract": 0.0047,
+    "well_formed": 0.0007,
+    "verify_memory": 0.0,
+    "compile": 2.7472,
+    "static_child_wall": 8.263,
+    "nvcc_cubin": 0.752,
+    "inputs": 0.05,
+    "sanitizer:memcheck": 1.59,
+    "sanitizer:racecheck": 2.1,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.54
+   },
+   "sanitizer_wall_s": 2.119,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 3.93e-07)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 3.43e-07)"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "race",
+     "severity": "error",
+     "message": "[rows=4,N=129; rows=4,N=1000] compute-sanitizer racecheck found a data race on shared memory: 2 report(s), 36 hazards; e.g. Error: Race reported between Read access",
+     "location": "generated CUDA line 155 (read) and line 166 (write)",
+     "cuda": "tvm_builtin_ptx_ld_shared_f32(v_ptr_8[0], tvm_builtin_cuda_cvta_generic_to_shared((&(v[0]))));",
+     "tool": "racecheck"
+    }
+   ]
+  },
+  {
+   "label": "layernorm_txl_bug_tail",
+   "group": "injected",
+   "workload": "layernorm",
+   "path": "/u/mfang/521/workloads/layernorm/tirx/bugs/layernorm_txl_bug_tail.py",
+   "bug": {
+    "category": "tiling",
+    "change": "mean/variance loops run n // 128 tiles (tail dropped)"
+   },
+   "expect_volta": [
+    {
+     "if": "N % 128 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 10.45,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_tail_cc7e1318d1/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.16,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_tail_cc7e1318d1/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_tail_cc7e1318d1/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.54,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_tail_cc7e1318d1/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.7,
+    "trace": 0.1787,
+    "ir_contract": 0.0047,
+    "well_formed": 0.0007,
+    "verify_memory": 0.0,
+    "compile": 2.7624,
+    "static_child_wall": 7.514,
+    "nvcc_cubin": 0.717,
+    "inputs": 0.044,
+    "sanitizer:memcheck": 1.59,
+    "sanitizer:racecheck": 2.16,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.54
+   },
+   "sanitizer_wall_s": 2.175,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": false,
+     "reason": "mismatch",
+     "message": "391 of 516 outputs exceed tolerance (max abs err 0.0358, max rel err 3.43)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": false,
+     "reason": "mismatch",
+     "message": "3988 of 4000 outputs exceed tolerance (max abs err 0.257, max rel err 23.9)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "layernorm_txl_bug_offbyone",
+   "group": "injected",
+   "workload": "layernorm",
+   "path": "/u/mfang/521/workloads/layernorm/tirx/bugs/layernorm_txl_bug_offbyone.py",
+   "bug": {
+    "category": "indexing",
+    "change": "variance loop covers col = 0..n (i <= N: one element of the next row)"
+   },
+   "expect_volta": "NOT_EQUIV",
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 10.81,
+   "kinds": [
+    "out_of_bounds"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": true,
+     "kinds": [
+      "out_of_bounds"
+     ],
+     "n_reports": 1,
+     "by_severity": {
+      "error": 1,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.33,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_offbyone_cc13e84d52/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 6,
+     "api_errors": [
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2."
+     ],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.66,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_offbyone_cc13e84d52/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.29,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_offbyone_cc13e84d52/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.29,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_offbyone_cc13e84d52/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.692,
+    "trace": 0.179,
+    "ir_contract": 0.0046,
+    "well_formed": 0.0007,
+    "verify_memory": 0.0,
+    "compile": 2.7422,
+    "static_child_wall": 7.364,
+    "nvcc_cubin": 0.72,
+    "inputs": 0.043,
+    "sanitizer:memcheck": 2.33,
+    "sanitizer:racecheck": 2.66,
+    "sanitizer:initcheck": 2.29,
+    "sanitizer:synccheck": 2.29
+   },
+   "sanitizer_wall_s": 2.671,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": false,
+     "reason": "unwritten",
+     "message": "33 of 516 output elements were never written"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": false,
+     "reason": "unwritten",
+     "message": "232 of 4000 output elements were never written"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "out_of_bounds",
+     "severity": "error",
+     "message": "[rows=4,N=129] compute-sanitizer memcheck found an out-of-bounds or misaligned memory access: 1 report(s); e.g. Invalid __global__ read of size 4 bytes",
+     "location": "generated CUDA line 162",
+     "cuda": "tvm_builtin_ptx_ld_global_f32(v_ptr_1[0], (&(x_ptr[(((((int)blockIdx.x) * 129) + (v_2 * 128)) + ((int)threadIdx.x))])));",
+     "tool": "memcheck"
+    }
+   ]
+  },
+  {
+   "label": "layernorm_txl_bug_onepass",
+   "group": "injected",
+   "workload": "layernorm",
+   "path": "/u/mfang/521/workloads/layernorm/tirx/bugs/layernorm_txl_bug_onepass.py",
+   "bug": {
+    "category": "numerical",
+    "change": "one-pass variance E[x^2] - mean^2 (catastrophic cancellation)"
+   },
+   "expect_volta": "EQUIV",
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 10.37,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_onepass_2776c0b6f2/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.09,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_onepass_2776c0b6f2/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_onepass_2776c0b6f2/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_bug_onepass_2776c0b6f2/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.698,
+    "trace": 0.1788,
+    "ir_contract": 0.0046,
+    "well_formed": 0.0007,
+    "verify_memory": 0.0,
+    "compile": 2.6904,
+    "static_child_wall": 7.497,
+    "nvcc_cubin": 0.717,
+    "inputs": 0.041,
+    "sanitizer:memcheck": 1.59,
+    "sanitizer:racecheck": 2.09,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.59
+   },
+   "sanitizer_wall_s": 2.108,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 3.22e-07)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 3.84e-07)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "gemm_txl_bug_nosync",
+   "group": "injected",
+   "workload": "gemm",
+   "path": "/u/mfang/521/workloads/gemm/tirx/bugs/gemm_txl_bug_nosync.py",
+   "bug": {
+    "category": "sync",
+    "change": "removed the CTA barrier after the inner-product loop"
+   },
+   "expect_volta": [
+    {
+     "if": "K > 16",
+     "then": "RACE"
+    },
+    {
+     "then": "EQUIV"
+    }
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 9.94,
+   "kinds": [
+    "race"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.6,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_nosync_50eae036e6/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": true,
+     "kinds": [
+      "race"
+     ],
+     "n_reports": 10,
+     "by_severity": {
+      "error": 5,
+      "warning": 5,
+      "info": 0
+     },
+     "seconds": 2.26,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_nosync_50eae036e6/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_nosync_50eae036e6/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.5,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_nosync_50eae036e6/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.675,
+    "trace": 0.1649,
+    "ir_contract": 0.004,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.2915,
+    "static_child_wall": 6.91,
+    "nvcc_cubin": 0.717,
+    "inputs": 0.03,
+    "sanitizer:memcheck": 1.6,
+    "sanitizer:racecheck": 2.26,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.5
+   },
+   "sanitizer_wall_s": 2.272,
+   "shapes": [
+    {
+     "M": 33,
+     "N": 33,
+     "K": 40
+    },
+    {
+     "M": 64,
+     "N": 64,
+     "K": 64
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 40
+     },
+     "passed": false,
+     "reason": "mismatch",
+     "message": "33 of 1089 outputs exceed tolerance (max abs err 2.06, max rel err 10.7)"
+    },
+    {
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4096 outputs within tolerance (max abs err 7.46e-06)"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "race",
+     "severity": "error",
+     "message": "[M=33,N=33,K=40; M=64,N=64,K=64] compute-sanitizer racecheck found a data race on shared memory: 10 report(s), 148096 hazards; e.g. Error: Race reported between Write access",
+     "location": "generated CUDA line 109 (write) and line 119 (read)",
+     "cuda": "tvm_builtin_ptx_st_shared_f32(tvm_builtin_cuda_cvta_generic_to_shared((&(v[((int)threadIdx.x)]))), v_ptr_1[0]);",
+     "tool": "racecheck"
+    }
+   ]
+  },
+  {
+   "label": "gemm_txl_bug_ktail",
+   "group": "injected",
+   "workload": "gemm",
+   "path": "/u/mfang/521/workloads/gemm/tirx/bugs/gemm_txl_bug_ktail.py",
+   "bug": {
+    "category": "tiling",
+    "change": "ntiles = k // 16 instead of ceil(k / 16)"
+   },
+   "expect_volta": [
+    {
+     "if": "K % 16 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 9.86,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.65,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_ktail_be42c6ff53/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.2,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_ktail_be42c6ff53/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.64,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_ktail_be42c6ff53/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_ktail_be42c6ff53/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.691,
+    "trace": 0.165,
+    "ir_contract": 0.0042,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.2771,
+    "static_child_wall": 6.904,
+    "nvcc_cubin": 0.687,
+    "inputs": 0.041,
+    "sanitizer:memcheck": 1.65,
+    "sanitizer:racecheck": 2.2,
+    "sanitizer:initcheck": 1.64,
+    "sanitizer:synccheck": 1.59
+   },
+   "sanitizer_wall_s": 2.225,
+   "shapes": [
+    {
+     "M": 33,
+     "N": 33,
+     "K": 40
+    },
+    {
+     "M": 64,
+     "N": 64,
+     "K": 64
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 40
+     },
+     "passed": false,
+     "reason": "mismatch",
+     "message": "1089 of 1089 outputs exceed tolerance (max abs err 13.5, max rel err 7.94e+03)"
+    },
+    {
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4096 outputs within tolerance (max abs err 7.46e-06)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "gemm_txl_bug_guard",
+   "group": "injected",
+   "workload": "gemm",
+   "path": "/u/mfang/521/workloads/gemm/tirx/bugs/gemm_txl_bug_guard.py",
+   "bug": {
+    "category": "indexing",
+    "change": "output guard row <= m, col <= n (off-by-one)"
+   },
+   "expect_volta": [
+    {
+     "if": "M < 16 or N < 16",
+     "then": [
+      "RACE",
+      "OUT_OF_BOUNDS",
+      "FOOTPRINT",
+      "NOT_EQUIV"
+     ]
+    },
+    {
+     "then": "EQUIV"
+    }
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 10.51,
+   "kinds": [
+    "out_of_bounds"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": true,
+     "kinds": [
+      "out_of_bounds"
+     ],
+     "n_reports": 30,
+     "by_severity": {
+      "error": 30,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.14,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_guard_21a6d630ed/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.44,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_guard_21a6d630ed/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.05,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_guard_21a6d630ed/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.84,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_bug_guard_21a6d630ed/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.74,
+    "trace": 0.163,
+    "ir_contract": 0.0041,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.3035,
+    "static_child_wall": 7.278,
+    "nvcc_cubin": 0.691,
+    "inputs": 0.077,
+    "sanitizer:memcheck": 2.14,
+    "sanitizer:racecheck": 2.44,
+    "sanitizer:initcheck": 2.05,
+    "sanitizer:synccheck": 1.84
+   },
+   "sanitizer_wall_s": 2.455,
+   "shapes": [
+    {
+     "M": 33,
+     "N": 33,
+     "K": 40
+    },
+    {
+     "M": 64,
+     "N": 64,
+     "K": 64
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 40
+     },
+     "passed": false,
+     "reason": "unwritten",
+     "message": "32 of 1089 output elements were never written"
+    },
+    {
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4096 outputs within tolerance (max abs err 7.46e-06)"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "out_of_bounds",
+     "severity": "error",
+     "message": "[M=33,N=33,K=40] compute-sanitizer memcheck found an out-of-bounds or misaligned memory access: 30 report(s); e.g. Invalid __global__ write of size 4 bytes",
+     "location": "generated CUDA line 170",
+     "cuda": "tvm_builtin_ptx_st_global_f32((&(C_ptr[((((((int)blockIdx.y) * 528) + ((((int)threadIdx.x) >> 4) * 33)) + (((int)blockIdx.x) * 16)) + (((int)threadIdx.x) & 15))])), v_ptr_3[0]);",
+     "tool": "memcheck"
+    }
+   ]
+  },
+  {
+   "label": "softmax_txl_ref_cmp_L30",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "softmax_txl_ref",
+   "op": "cmp",
+   "line": 30,
+   "desc": "< -> <=",
+   "volta": [
+    "OUT_OF_BOUNDS"
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 10.31,
+   "kinds": [
+    "race",
+    "uninitialized"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.5,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_cmp_L30_5ee10f80c4/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": true,
+     "kinds": [
+      "race"
+     ],
+     "n_reports": 28,
+     "by_severity": {
+      "error": 8,
+      "warning": 20,
+      "info": 0
+     },
+     "seconds": 2.05,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_cmp_L30_5ee10f80c4/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": true,
+     "kinds": [
+      "uninitialized"
+     ],
+     "n_reports": 16,
+     "by_severity": {
+      "error": 16,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.64,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_cmp_L30_5ee10f80c4/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.55,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_cmp_L30_5ee10f80c4/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.689,
+    "trace": 0.1744,
+    "ir_contract": 0.0045,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.7406,
+    "static_child_wall": 7.425,
+    "nvcc_cubin": 0.736,
+    "inputs": 0.054,
+    "sanitizer:memcheck": 1.5,
+    "sanitizer:racecheck": 2.05,
+    "sanitizer:initcheck": 1.64,
+    "sanitizer:synccheck": 1.55
+   },
+   "sanitizer_wall_s": 2.082,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 7.62e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.23e-09)"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "race",
+     "severity": "error",
+     "message": "[rows=4,N=129; rows=4,N=1000] compute-sanitizer racecheck found a data race on shared memory: 28 report(s), 444 hazards; e.g. Error: Race reported between Read access",
+     "location": "generated CUDA line 112 (read) and line 116 (write)",
+     "cuda": "tvm_builtin_ptx_ld_shared_f32(v_ptr_2[0], tvm_builtin_cuda_cvta_generic_to_shared((&(v[((int)threadIdx.x)]))));",
+     "tool": "racecheck"
+    },
+    {
+     "kind": "uninitialized",
+     "severity": "error",
+     "message": "[rows=4,N=129; rows=4,N=1000] compute-sanitizer initcheck found a read of uninitialized memory: 16 report(s); e.g. Uninitialized __shared__ memory read of size 4 bytes",
+     "location": "generated CUDA line 112",
+     "cuda": "tvm_builtin_ptx_ld_shared_f32(v_ptr_2[0], tvm_builtin_cuda_cvta_generic_to_shared((&(v[((int)threadIdx.x)]))));",
+     "tool": "initcheck"
+    }
+   ]
+  },
+  {
+   "label": "softmax_txl_ref_const_L8",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "softmax_txl_ref",
+   "op": "const",
+   "line": 8,
+   "desc": "128 -> 64",
+   "volta": [
+    "OUT_OF_BOUNDS"
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 10.38,
+   "kinds": [
+    "uninitialized"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.58,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_const_L8_a18bdd18dc/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.25,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_const_L8_a18bdd18dc/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": true,
+     "kinds": [
+      "uninitialized"
+     ],
+     "n_reports": 30,
+     "by_severity": {
+      "error": 30,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.85,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_const_L8_a18bdd18dc/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.49,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_const_L8_a18bdd18dc/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.658,
+    "trace": 0.1745,
+    "ir_contract": 0.0044,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.7238,
+    "static_child_wall": 7.295,
+    "nvcc_cubin": 0.778,
+    "inputs": 0.025,
+    "sanitizer:memcheck": 1.58,
+    "sanitizer:racecheck": 2.25,
+    "sanitizer:initcheck": 1.85,
+    "sanitizer:synccheck": 1.49
+   },
+   "sanitizer_wall_s": 2.266,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 65
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 65
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 260 outputs within tolerance (max abs err 4.79e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.28e-09)"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "uninitialized",
+     "severity": "error",
+     "message": "[rows=4,N=65] compute-sanitizer initcheck found a read of uninitialized memory: 30 report(s); e.g. Uninitialized __shared__ memory read of size 4 bytes",
+     "location": "generated CUDA line 111",
+     "cuda": "tvm_builtin_ptx_ld_shared_f32(v_ptr_2[0], tvm_builtin_cuda_cvta_generic_to_shared((&(v[((int)threadIdx.x)]))));",
+     "tool": "initcheck"
+    }
+   ]
+  },
+  {
+   "label": "glm_txl_C_r2_idx1_L114",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_C_r2",
+   "op": "idx1",
+   "line": 114,
+   "desc": "[r, col] -> [r, col + 1]",
+   "volta": [
+    "EQUIV"
+   ],
+   "expect": "volta_equiv",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 12.33,
+   "kinds": [
+    "out_of_bounds"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": true,
+     "kinds": [
+      "out_of_bounds"
+     ],
+     "n_reports": 1,
+     "by_severity": {
+      "error": 1,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.09,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_idx1_L114_b711c1bd38/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 4,
+     "api_errors": [
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuModuleUnload."
+     ],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.4,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_idx1_L114_b711c1bd38/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.04,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_idx1_L114_b711c1bd38/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.04,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_idx1_L114_b711c1bd38/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.671,
+    "trace": 0.2654,
+    "ir_contract": 0.009,
+    "well_formed": 0.0011,
+    "verify_memory": 0.0,
+    "compile": 4.3295,
+    "static_child_wall": 9.089,
+    "nvcc_cubin": 0.769,
+    "inputs": 0.049,
+    "sanitizer:memcheck": 2.09,
+    "sanitizer:racecheck": 2.4,
+    "sanitizer:initcheck": 2.04,
+    "sanitizer:synccheck": 2.04
+   },
+   "sanitizer_wall_s": 2.411,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12285
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 7.62e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.28e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12285
+     },
+     "passed": null,
+     "reason": "not available",
+     "message": "[Errno 2] No such file or directory: '/u/mfang/521/build/gate/softmax/glm_txl_C_r2_idx1_L114_b711c1bd38/io/rows2_N12285/y.out.npy'"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "out_of_bounds",
+     "severity": "error",
+     "message": "[rows=2,N=12285] compute-sanitizer memcheck found an out-of-bounds or misaligned memory access: 1 report(s); e.g. Invalid __global__ read of size 4 bytes",
+     "location": "generated CUDA line 197 and line 194",
+     "cuda": "tvm_builtin_ptx_ld_global_f32(v_ptr_1[0], (&(x_ptr[((((((int)blockIdx.x) * 12285) + (v_2 * 512)) + ((int)threadIdx.x)) + 129)])));",
+     "tool": "memcheck"
+    }
+   ]
+  },
+  {
+   "label": "glm_txl_C_r2_const_L9",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_C_r2",
+   "op": "const",
+   "line": 9,
+   "desc": "128 -> 64",
+   "volta": [
+    "EQUIV"
+   ],
+   "expect": "volta_equiv",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 11.94,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.6,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_const_L9_51b6815703/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.1,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_const_L9_51b6815703/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_const_L9_51b6815703/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.53,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_const_L9_51b6815703/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.689,
+    "trace": 0.2673,
+    "ir_contract": 0.0086,
+    "well_formed": 0.0011,
+    "verify_memory": 0.0,
+    "compile": 4.3012,
+    "static_child_wall": 9.027,
+    "nvcc_cubin": 0.754,
+    "inputs": 0.035,
+    "sanitizer:memcheck": 1.6,
+    "sanitizer:racecheck": 2.1,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.53
+   },
+   "sanitizer_wall_s": 2.114,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 65
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12287
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 65
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 260 outputs within tolerance (max abs err 1.34e-08)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.27e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12287
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24574 outputs within tolerance (max abs err 2.1e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_C_r2_define_L9",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_C_r2",
+   "op": "define",
+   "line": 9,
+   "desc": "128 -> 256",
+   "volta": [
+    "EQUIV"
+   ],
+   "expect": "volta_equiv",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 12.2,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.69,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_define_L9_c86eacedd7/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.21,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_define_L9_c86eacedd7/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.64,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_define_L9_c86eacedd7/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.64,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_define_L9_c86eacedd7/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.697,
+    "trace": 0.2699,
+    "ir_contract": 0.0087,
+    "well_formed": 0.0011,
+    "verify_memory": 0.0,
+    "compile": 4.3027,
+    "static_child_wall": 9.116,
+    "nvcc_cubin": 0.802,
+    "inputs": 0.043,
+    "sanitizer:memcheck": 1.69,
+    "sanitizer:racecheck": 2.21,
+    "sanitizer:initcheck": 1.64,
+    "sanitizer:synccheck": 1.64
+   },
+   "sanitizer_wall_s": 2.229,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 257
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12281
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 257
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 1028 outputs within tolerance (max abs err 7.56e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.08e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12281
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24562 outputs within tolerance (max abs err 2.11e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_C_r2_negate_L70",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_C_r2",
+   "op": "negate",
+   "line": 70,
+   "desc": "if (lane == 0) negated",
+   "volta": [
+    "RACE"
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 12.72,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.58,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_negate_L70_5be8a094d2/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.1,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_negate_L70_5be8a094d2/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.54,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_negate_L70_5be8a094d2/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.54,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_negate_L70_5be8a094d2/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.783,
+    "trace": 0.2703,
+    "ir_contract": 0.0091,
+    "well_formed": 0.0012,
+    "verify_memory": 0.0,
+    "compile": 4.4,
+    "static_child_wall": 9.779,
+    "nvcc_cubin": 0.772,
+    "inputs": 0.038,
+    "sanitizer:memcheck": 1.58,
+    "sanitizer:racecheck": 2.1,
+    "sanitizer:initcheck": 1.54,
+    "sanitizer:synccheck": 1.54
+   },
+   "sanitizer_wall_s": 2.115,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12285
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 7.62e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.28e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12285
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24570 outputs within tolerance (max abs err 1.35e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_C_r2_negate_L81",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_C_r2",
+   "op": "negate",
+   "line": 81,
+   "desc": "if (lane == 0) negated",
+   "volta": [
+    "RACE"
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 12.52,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.7,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_negate_L81_d52e4b732a/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.19,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_negate_L81_d52e4b732a/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.7,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_negate_L81_d52e4b732a/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.7,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_negate_L81_d52e4b732a/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.671,
+    "trace": 0.2664,
+    "ir_contract": 0.0087,
+    "well_formed": 0.0012,
+    "verify_memory": 0.0,
+    "compile": 4.4331,
+    "static_child_wall": 9.483,
+    "nvcc_cubin": 0.775,
+    "inputs": 0.042,
+    "sanitizer:memcheck": 1.7,
+    "sanitizer:racecheck": 2.19,
+    "sanitizer:initcheck": 1.7,
+    "sanitizer:synccheck": 1.7
+   },
+   "sanitizer_wall_s": 2.212,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12285
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 7.62e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.28e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12285
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24570 outputs within tolerance (max abs err 1.35e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_C_r2_dtype_L40",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_C_r2",
+   "op": "dtype",
+   "line": 40,
+   "desc": "\"float32\" -> \"float16\"",
+   "volta": [
+    "EQUIV"
+   ],
+   "expect": "volta_equiv",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 12.33,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_dtype_L40_9e621f487e/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.11,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_dtype_L40_9e621f487e/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_dtype_L40_9e621f487e/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.49,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_C_r2_dtype_L40_9e621f487e/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.732,
+    "trace": 0.2647,
+    "ir_contract": 0.0088,
+    "well_formed": 0.0013,
+    "verify_memory": 0.0,
+    "compile": 4.4337,
+    "static_child_wall": 9.286,
+    "nvcc_cubin": 0.871,
+    "inputs": 0.045,
+    "sanitizer:memcheck": 1.59,
+    "sanitizer:racecheck": 2.11,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.49
+   },
+   "sanitizer_wall_s": 2.122,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12285
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 6.18e-06)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 7e-07)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12285
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24570 outputs within tolerance (max abs err 9.06e-08)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_D1_r2_negate_L63",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_D1_r2",
+   "op": "negate",
+   "line": 63,
+   "desc": "if (lane == 0) negated",
+   "volta": [
+    "RACE"
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 11.75,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.64,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D1_r2_negate_L63_c308b4e048/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.14,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D1_r2_negate_L63_c308b4e048/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.64,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D1_r2_negate_L63_c308b4e048/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.55,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D1_r2_negate_L63_c308b4e048/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.691,
+    "trace": 0.4384,
+    "ir_contract": 0.0065,
+    "well_formed": 0.001,
+    "verify_memory": 0.0,
+    "compile": 3.973,
+    "static_child_wall": 8.796,
+    "nvcc_cubin": 0.747,
+    "inputs": 0.036,
+    "sanitizer:memcheck": 1.64,
+    "sanitizer:racecheck": 2.14,
+    "sanitizer:initcheck": 1.64,
+    "sanitizer:synccheck": 1.55
+   },
+   "sanitizer_wall_s": 2.154,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12285
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 7.62e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.38e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12285
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24570 outputs within tolerance (max abs err 2.99e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_D2_r1_cmp_L151",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_D2_r1",
+   "op": "cmp",
+   "line": 151,
+   "desc": "< -> <=",
+   "volta": [
+    "RACE"
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 11.62,
+   "kinds": [
+    "out_of_bounds",
+    "race"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": true,
+     "kinds": [
+      "out_of_bounds"
+     ],
+     "n_reports": 1,
+     "by_severity": {
+      "error": 1,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.34,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_cmp_L151_8fddefdee1/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 4,
+     "api_errors": [
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuModuleUnload."
+     ],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": true,
+     "kinds": [
+      "race"
+     ],
+     "n_reports": 2,
+     "by_severity": {
+      "error": 1,
+      "warning": 1,
+      "info": 0
+     },
+     "seconds": 2.64,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_cmp_L151_8fddefdee1/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.34,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_cmp_L151_8fddefdee1/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.25,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_cmp_L151_8fddefdee1/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.682,
+    "trace": 0.2316,
+    "ir_contract": 0.0052,
+    "well_formed": 0.0008,
+    "verify_memory": 0.0,
+    "compile": 3.5405,
+    "static_child_wall": 8.193,
+    "nvcc_cubin": 0.723,
+    "inputs": 0.034,
+    "sanitizer:memcheck": 2.34,
+    "sanitizer:racecheck": 2.64,
+    "sanitizer:initcheck": 2.34,
+    "sanitizer:synccheck": 2.25
+   },
+   "sanitizer_wall_s": 2.66,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12269
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": null,
+     "reason": "not available",
+     "message": "[Errno 2] No such file or directory: '/u/mfang/521/build/gate/softmax/glm_txl_D2_r1_cmp_L151_8fddefdee1/io/rows4_N129/y.out.npy'"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": null,
+     "reason": "not available",
+     "message": "[Errno 2] No such file or directory: '/u/mfang/521/build/gate/softmax/glm_txl_D2_r1_cmp_L151_8fddefdee1/io/rows4_N1000/y.out.npy'"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12269
+     },
+     "passed": null,
+     "reason": "not available",
+     "message": "[Errno 2] No such file or directory: '/u/mfang/521/build/gate/softmax/glm_txl_D2_r1_cmp_L151_8fddefdee1/io/rows2_N12269/y.out.npy'"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "out_of_bounds",
+     "severity": "error",
+     "message": "[rows=4,N=129] compute-sanitizer memcheck found an out-of-bounds or misaligned memory access: 1 report(s); e.g. Invalid __global__ read of size 4 bytes",
+     "location": "generated CUDA line 113",
+     "cuda": "tvm_builtin_ptx_ld_global_f32(v_ptr_1[0], (&(x_ptr[(((((int)blockIdx.x) * 129) + (v_2 * 128)) + ((int)threadIdx.x))])));",
+     "tool": "memcheck"
+    },
+    {
+     "kind": "race",
+     "severity": "error",
+     "message": "[rows=4,N=129; rows=4,N=1000] compute-sanitizer racecheck found a data race on shared memory: 2 report(s), 80 hazards; e.g. Warning: Race reported between Write access",
+     "location": "generated CUDA line 114 (write) and line 140 (write)",
+     "cuda": "tvm_builtin_ptx_st_shared_f32(tvm_builtin_cuda_cvta_generic_to_shared((&(v[((v_2 * 128) + ((int)threadIdx.x))]))), v_ptr_1[0]);",
+     "tool": "racecheck"
+    }
+   ]
+  },
+  {
+   "label": "glm_txl_D2_r1_const_L19",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_D2_r1",
+   "op": "const",
+   "line": 19,
+   "desc": "128 -> 64",
+   "volta": [
+    "EQUIV"
+   ],
+   "expect": "volta_equiv",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 11.57,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_const_L19_e2d9820e85/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.18,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_const_L19_e2d9820e85/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_const_L19_e2d9820e85/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.58,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_const_L19_e2d9820e85/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.744,
+    "trace": 0.4124,
+    "ir_contract": 0.0043,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 3.592,
+    "static_child_wall": 8.599,
+    "nvcc_cubin": 0.722,
+    "inputs": 0.036,
+    "sanitizer:memcheck": 1.59,
+    "sanitizer:racecheck": 2.18,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.58
+   },
+   "sanitizer_wall_s": 2.202,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 65
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12271
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 65
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 260 outputs within tolerance (max abs err 1.34e-08)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 2.54e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12271
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24542 outputs within tolerance (max abs err 1.91e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_D2_r1_define_L19",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_D2_r1",
+   "op": "define",
+   "line": 19,
+   "desc": "128 -> 256",
+   "volta": [
+    "EQUIV"
+   ],
+   "expect": "volta_equiv",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 11.12,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.6,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_define_L19_14528d1866/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.08,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_define_L19_14528d1866/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.59,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_define_L19_14528d1866/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.54,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_define_L19_14528d1866/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.665,
+    "trace": 0.4066,
+    "ir_contract": 0.0065,
+    "well_formed": 0.0009,
+    "verify_memory": 0.0,
+    "compile": 3.6099,
+    "static_child_wall": 8.223,
+    "nvcc_cubin": 0.754,
+    "inputs": 0.036,
+    "sanitizer:memcheck": 1.6,
+    "sanitizer:racecheck": 2.08,
+    "sanitizer:initcheck": 1.59,
+    "sanitizer:synccheck": 1.54
+   },
+   "sanitizer_wall_s": 2.099,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 257
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12265
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 257
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 1028 outputs within tolerance (max abs err 8.5e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.08e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12265
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24530 outputs within tolerance (max abs err 2.31e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_D2_r1_negate_L127",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_D2_r1",
+   "op": "negate",
+   "line": 127,
+   "desc": "if (lane == 0) negated",
+   "volta": [
+    "RACE"
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": false,
+   "decided": true,
+   "seconds": 11.02,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.58,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_negate_L127_dc7e780040/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.14,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_negate_L127_dc7e780040/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.64,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_negate_L127_dc7e780040/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.55,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D2_r1_negate_L127_dc7e780040/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.682,
+    "trace": 0.2294,
+    "ir_contract": 0.0051,
+    "well_formed": 0.0008,
+    "verify_memory": 0.0,
+    "compile": 3.4642,
+    "static_child_wall": 8.092,
+    "nvcc_cubin": 0.724,
+    "inputs": 0.041,
+    "sanitizer:memcheck": 1.58,
+    "sanitizer:racecheck": 2.14,
+    "sanitizer:initcheck": 1.64,
+    "sanitizer:synccheck": 1.55
+   },
+   "sanitizer_wall_s": 2.152,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12269
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 8.24e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.27e-09)"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12269
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 24538 outputs within tolerance (max abs err 2.13e-10)"
+    }
+   ],
+   "findings": []
+  },
+  {
+   "label": "glm_txl_D3_r1_cmp_L97",
+   "group": "mutant",
+   "workload": "softmax",
+   "path": null,
+   "base": "glm_txl_D3_r1",
+   "op": "cmp",
+   "line": 97,
+   "desc": "< -> <=",
+   "volta": [
+    "RACE"
+   ],
+   "expect": "bug",
+   "device": "gpu",
+   "parallel": true,
+   "caught": true,
+   "decided": true,
+   "seconds": 11.6,
+   "kinds": [
+    "out_of_bounds",
+    "race"
+   ],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": true,
+     "kinds": [
+      "out_of_bounds"
+     ],
+     "n_reports": 1,
+     "by_severity": {
+      "error": 1,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.29,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D3_r1_cmp_L97_4a63015637/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 4,
+     "api_errors": [
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuCtxSynchronize.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuMemFree_v2.",
+      "Program hit CUDA_ERROR_LAUNCH_FAILED (error 719) due to \"unspecified launch failure\" on CUDA API call to cuModuleUnload."
+     ],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": true,
+     "kinds": [
+      "race"
+     ],
+     "n_reports": 2,
+     "by_severity": {
+      "error": 1,
+      "warning": 1,
+      "info": 0
+     },
+     "seconds": 2.61,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D3_r1_cmp_L97_4a63015637/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.29,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D3_r1_cmp_L97_4a63015637/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 2.29,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/glm_txl_D3_r1_cmp_L97_4a63015637/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.682,
+    "trace": 0.413,
+    "ir_contract": 0.0055,
+    "well_formed": 0.0009,
+    "verify_memory": 0.0,
+    "compile": 3.5788,
+    "static_child_wall": 8.228,
+    "nvcc_cubin": 0.708,
+    "inputs": 0.033,
+    "sanitizer:memcheck": 2.29,
+    "sanitizer:racecheck": 2.61,
+    "sanitizer:initcheck": 2.29,
+    "sanitizer:synccheck": 2.29
+   },
+   "sanitizer_wall_s": 2.62,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    },
+    {
+     "rows": 2,
+     "N": 12289
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": null,
+     "reason": "not available",
+     "message": "[Errno 2] No such file or directory: '/u/mfang/521/build/gate/softmax/glm_txl_D3_r1_cmp_L97_4a63015637/io/rows4_N129/y.out.npy'"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": null,
+     "reason": "not available",
+     "message": "[Errno 2] No such file or directory: '/u/mfang/521/build/gate/softmax/glm_txl_D3_r1_cmp_L97_4a63015637/io/rows4_N1000/y.out.npy'"
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 12289
+     },
+     "passed": null,
+     "reason": "not available",
+     "message": "[Errno 2] No such file or directory: '/u/mfang/521/build/gate/softmax/glm_txl_D3_r1_cmp_L97_4a63015637/io/rows2_N12289/y.out.npy'"
+    }
+   ],
+   "findings": [
+    {
+     "kind": "out_of_bounds",
+     "severity": "error",
+     "message": "[rows=4,N=129] compute-sanitizer memcheck found an out-of-bounds or misaligned memory access: 1 report(s); e.g. Invalid __global__ read of size 4 bytes",
+     "location": "generated CUDA line 118",
+     "cuda": "tvm_builtin_ptx_ld_global_f32(v_ptr_1[0], (&(x_ptr[(((((int)blockIdx.x) * 129) + (v_3 * 128)) + ((int)threadIdx.x))])));",
+     "tool": "memcheck"
+    },
+    {
+     "kind": "race",
+     "severity": "error",
+     "message": "[rows=4,N=129; rows=4,N=1000] compute-sanitizer racecheck found a data race on shared memory: 2 report(s), 80 hazards; e.g. Warning: Race reported between Write access",
+     "location": "generated CUDA line 119 (write) and line 145 (write)",
+     "cuda": "tvm_builtin_ptx_st_shared_f32(tvm_builtin_cuda_cvta_generic_to_shared((&(v[((v_3 * 128) + ((int)threadIdx.x))]))), v_ptr_1[0]);",
+     "tool": "racecheck"
+    }
+   ]
+  },
+  {
+   "label": "softmax_txl_ref",
+   "group": "ref_opt",
+   "workload": "softmax",
+   "path": "/u/mfang/521/workloads/softmax/tirx/softmax_txl_ref.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": false,
+   "caught": false,
+   "decided": true,
+   "seconds": 12.69,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 0.95,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_eff7ecca30/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.54,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_eff7ecca30/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.01,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_eff7ecca30/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.01,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/softmax/softmax_txl_ref_eff7ecca30/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.692,
+    "trace": 0.1753,
+    "ir_contract": 0.0044,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.7481,
+    "static_child_wall": 7.382,
+    "nvcc_cubin": 0.728,
+    "inputs": 0.018,
+    "sanitizer:memcheck": 0.95,
+    "sanitizer:racecheck": 1.54,
+    "sanitizer:initcheck": 1.01,
+    "sanitizer:synccheck": 1.01
+   },
+   "sanitizer_wall_s": 4.56,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 7.62e-09)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 1.23e-09)"
+    }
+   ],
+   "findings": [],
+   "sequential_rerun": true
+  },
+  {
+   "label": "layernorm_txl_opt",
+   "group": "ref_opt",
+   "workload": "layernorm",
+   "path": "/u/mfang/521/workloads/layernorm/tirx/layernorm_txl_opt.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": false,
+   "caught": false,
+   "decided": true,
+   "seconds": 12.63,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 0.97,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_opt_da978fe20d/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.6,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_opt_da978fe20d/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 0.94,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_opt_da978fe20d/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 0.94,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/layernorm/layernorm_txl_opt_da978fe20d/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.684,
+    "trace": 0.1828,
+    "ir_contract": 0.0046,
+    "well_formed": 0.0007,
+    "verify_memory": 0.0,
+    "compile": 2.7572,
+    "static_child_wall": 7.392,
+    "nvcc_cubin": 0.708,
+    "inputs": 0.031,
+    "sanitizer:memcheck": 0.97,
+    "sanitizer:racecheck": 1.6,
+    "sanitizer:initcheck": 0.94,
+    "sanitizer:synccheck": 0.94
+   },
+   "sanitizer_wall_s": 4.492,
+   "shapes": [
+    {
+     "rows": 4,
+     "N": 129
+    },
+    {
+     "rows": 4,
+     "N": 1000
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "rows": 4,
+      "N": 129
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 516 outputs within tolerance (max abs err 3.93e-07)"
+    },
+    {
+     "shape": {
+      "rows": 4,
+      "N": 1000
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4000 outputs within tolerance (max abs err 3.43e-07)"
+    }
+   ],
+   "findings": [],
+   "sequential_rerun": true
+  },
+  {
+   "label": "gemm_txl_opt",
+   "group": "ref_opt",
+   "workload": "gemm",
+   "path": "/u/mfang/521/workloads/gemm/tirx/gemm_txl_opt.py",
+   "expect": "clean",
+   "device": "gpu",
+   "parallel": false,
+   "caught": false,
+   "decided": true,
+   "seconds": 12.55,
+   "kinds": [],
+   "static_error": false,
+   "tools": {
+    "memcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 0.94,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_opt_68f2346011/memcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "racecheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.62,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_opt_68f2346011/racecheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "initcheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.02,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_opt_68f2346011/initcheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    },
+    "synccheck": {
+     "caught": false,
+     "kinds": [],
+     "n_reports": 0,
+     "by_severity": {
+      "error": 0,
+      "warning": 0,
+      "info": 0
+     },
+     "seconds": 1.08,
+     "exit": 0,
+     "log": "/u/mfang/521/logs/gate/gemm/gemm_txl_opt_68f2346011/synccheck.log",
+     "completed": true,
+     "verdict": null,
+     "not_ours": 0,
+     "api_errors": [],
+     "kernel_fault": false
+    }
+   },
+   "stages": {
+    "safety_scan+import": 1.714,
+    "trace": 0.1634,
+    "ir_contract": 0.004,
+    "well_formed": 0.0006,
+    "verify_memory": 0.0,
+    "compile": 2.2357,
+    "static_child_wall": 7.09,
+    "nvcc_cubin": 0.691,
+    "inputs": 0.056,
+    "sanitizer:memcheck": 0.94,
+    "sanitizer:racecheck": 1.62,
+    "sanitizer:initcheck": 1.02,
+    "sanitizer:synccheck": 1.08
+   },
+   "sanitizer_wall_s": 4.708,
+   "shapes": [
+    {
+     "M": 33,
+     "N": 33,
+     "K": 40
+    },
+    {
+     "M": 64,
+     "N": 64,
+     "K": 64
+    }
+   ],
+   "value_check": [
+    {
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 40
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 1089 outputs within tolerance (max abs err 4.25e-06)"
+    },
+    {
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "passed": true,
+     "reason": "ok",
+     "message": "all 4096 outputs within tolerance (max abs err 7.46e-06)"
+    }
+   ],
+   "findings": [],
+   "sequential_rerun": true
+  }
+ ],
+ "summary": {
+  "ref_opt": {
+   "n": 5,
+   "any": 0,
+   "ids": [],
+   "tools": {
+    "memcheck": {
+     "caught": 0,
+     "median_s": 1.59
+    },
+    "racecheck": {
+     "caught": 0,
+     "median_s": 2.09
+    },
+    "initcheck": {
+     "caught": 0,
+     "median_s": 1.59
+    },
+    "synccheck": {
+     "caught": 0,
+     "median_s": 1.53
+    }
+   }
+  },
+  "glm": {
+   "n": 4,
+   "any": 0,
+   "ids": [],
+   "tools": {
+    "memcheck": {
+     "caught": 0,
+     "median_s": 1.6
+    },
+    "racecheck": {
+     "caught": 0,
+     "median_s": 2.1
+    },
+    "initcheck": {
+     "caught": 0,
+     "median_s": 1.59
+    },
+    "synccheck": {
+     "caught": 0,
+     "median_s": 1.52
+    }
+   }
+  },
+  "injected": {
+   "n": 11,
+   "any": 6,
+   "ids": [
+    "softmax_txl_bug_nosync",
+    "softmax_txl_bug_offbyone",
+    "layernorm_txl_bug_nosync",
+    "layernorm_txl_bug_offbyone",
+    "gemm_txl_bug_nosync",
+    "gemm_txl_bug_guard"
+   ],
+   "tools": {
+    "memcheck": {
+     "caught": 3,
+     "median_s": 1.6
+    },
+    "racecheck": {
+     "caught": 3,
+     "median_s": 2.2
+    },
+    "initcheck": {
+     "caught": 0,
+     "median_s": 1.59
+    },
+    "synccheck": {
+     "caught": 0,
+     "median_s": 1.59
+    }
+   }
+  },
+  "mutant/bug": {
+   "n": 8,
+   "any": 4,
+   "ids": [
+    "softmax_txl_ref_cmp_L30",
+    "softmax_txl_ref_const_L8",
+    "glm_txl_D2_r1_cmp_L151",
+    "glm_txl_D3_r1_cmp_L97"
+   ],
+   "tools": {
+    "memcheck": {
+     "caught": 2,
+     "median_s": 1.61
+    },
+    "racecheck": {
+     "caught": 3,
+     "median_s": 2.17
+    },
+    "initcheck": {
+     "caught": 2,
+     "median_s": 1.67
+    },
+    "synccheck": {
+     "caught": 0,
+     "median_s": 1.55
+    }
+   }
+  },
+  "mutant/volta_equiv": {
+   "n": 6,
+   "any": 1,
+   "ids": [
+    "glm_txl_C_r2_idx1_L114"
+   ],
+   "tools": {
+    "memcheck": {
+     "caught": 1,
+     "median_s": 1.6
+    },
+    "racecheck": {
+     "caught": 0,
+     "median_s": 2.15
+    },
+    "initcheck": {
+     "caught": 0,
+     "median_s": 1.59
+    },
+    "synccheck": {
+     "caught": 0,
+     "median_s": 1.56
+    }
+   }
+  },
+  "cost": {
+   "gate_seconds_median": 10.91,
+   "gate_seconds_max": 12.72,
+   "stage_seconds_median": {
+    "safety_scan+import": 1.686,
+    "trace": 0.18,
+    "ir_contract": 0.005,
+    "well_formed": 0.001,
+    "verify_memory": 0.0,
+    "compile": 2.782,
+    "static_child_wall": 7.803,
+    "nvcc_cubin": 0.732,
+    "inputs": 0.036,
+    "sanitizer:memcheck": 1.6,
+    "sanitizer:racecheck": 2.14,
+    "sanitizer:initcheck": 1.595,
+    "sanitizer:synccheck": 1.55
+   },
+   "sanitizer_wall_median": 2.15,
+   "sequential_vs_parallel": [
+    {
+     "label": "softmax_txl_ref",
+     "sequential_sanitizer_s": 4.56,
+     "parallel_sanitizer_s": 2.211,
+     "same_verdict": true
+    },
+    {
+     "label": "layernorm_txl_opt",
+     "sequential_sanitizer_s": 4.492,
+     "parallel_sanitizer_s": 2.047,
+     "same_verdict": true
+    },
+    {
+     "label": "gemm_txl_opt",
+     "sequential_sanitizer_s": 4.708,
+     "parallel_sanitizer_s": 2.105,
+     "same_verdict": true
+    }
+   ]
+  },
+  "false_alarms": 0
+ }
+}

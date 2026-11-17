@@ -713,3 +713,162 @@ Before this, only softmax had tirx kernels.
   bases, since the classifier rules were never tuned on them.
 
 GPU-job time: 2 jobs, about 10 min 15 s (24061076: 4 min 56 s; 24061108: 5 min 19 s).
+
+## D2: compiler-checks gate (2026-11-17)
+The proposal: "Candidates that pass CAKE's existing compiler checks will be checked by VOLTA." tirx-lite is our CAKE
+substitute, so its own checks are the static half of the gate. The CAKE paper also feeds conventional sanitizer
+output back to the agent, so compute-sanitizer is the dynamic half.
+
+**Configurations** (`akc/validation/pipeline.py`):
+- A0 = fixed tests only (the ablation; the same validator and context as the old A);
+- A = compiler-checks gate + fixed tests;
+- B = A + VOLTA (default shape);
+- C = B + change-aware tests (VOLTA at the change-aware shapes);
+- order in C: compiler_checks, fixed_tests, changeaware, volta.
+
+**New building blocks** (`akc/validation/compiler_checks/`):
+- `tirx_static.gate_shapes(workload, src)`:
+  - row ops: rows = 4 with N ∈ {T+1, 1000} (T = the candidate's tile), plus rows = 2, N = v+1 for each
+    `extract_thresholds` value v;
+  - gemm: 33×33×40 and 64×64×64;
+  - clipped to and filtered by the manifest domain.
+- `tirx_static.run_static(workload, module, shapes, out_dir, numsim=None)`:
+  - one child process (`python -m akc.validation.compiler_checks.tirx_static`); the parent safety-scans first;
+    SIGALRM of 60 s per shape;
+  - per shape: trace (`check_ir=True`, so `LowLevelIRContractError` is raised while tracing),
+    `inspect_low_level_ir` again (catches `@txl.kernel(check_ir=False)`), `check_well_formed`, `verify_memory`,
+    `compile_sm80`;
+  - the generated CUDA is read from the compile result (`ex.mod.imports[0].inspect_source("cuda")`, identical to
+    `Kernel.source()`), so each shape compiles once; entry name, tensor order, grid, block and dynamic shared bytes
+    come from `volta.tirx` (`kernel_tensor_params`, new, factored out of `build_tirx_ptx`; `launch_info`);
+  - contract violations are located at Python lines: trace again with the check switched to record-only, then match
+    the violating statements with `irdiff.flatten` (the violation itself has no span);
+  - optional NumSim stage (CPU-only node): racecheck + synccheck at `numsim_shape` (rows = 2, N = T+1; gemm
+    12×12×20) on .npy arrays from the parent; each finding keeps the Python lines of both accesses and the call site.
+- `sanitizer.py`:
+  - `build_cubin`: `nvcc -cubin -arch=sm_80 -lineinfo` of the generated CUDA;
+  - `write_inputs`: OpSpec inputs and sentinel-filled outputs as .npy, in kernel-parameter order;
+  - `run_tools`: memcheck, racecheck, initcheck, synccheck, one compute-sanitizer process each, in parallel; each
+    runs every gate shape; 60 s limit per tool;
+  - `parse_sanitizer`: the trial's block parser plus kind, locations, PCs and attribution by file name;
+  - `sass_line_map`: `nvdisasm -gi` of the cubin, SASS offset → line of the generated CUDA in the kernel body.
+- `launcher.py`: the child every tool wraps; run by path, imports only numpy and cuda.bindings (importing anything
+  under `akc.validation` pulls in torch). Exact-size `cuMemAlloc` per tensor; outputs left uninitialized under
+  initcheck; outputs of the memcheck run are saved for a value check in the parent.
+- `validator.py`: `CompilerChecksValidator` ("compiler_checks"):
+  - static error → `compile_error` (error) with the Python line; the dynamic stage does not run;
+  - sanitizer report of ours → race / out_of_bounds / uninitialized / deadlock (error), racecheck INFO hazards →
+    info; a kernel fault no report explains → `runtime_error`; a tool crash / timeout → `harness_error` (warning);
+  - NumSim error → error, review → warning, incomplete → info `unsupported`;
+  - artifacts: stages (seconds + status), shapes, tools, per-tool result, logs, value check;
+  - legacy CUDA: one info finding "not part of A/B/C".
+
+**Pipeline** (`run_pipeline(cand, config, ctx, cache=None, skip=())`):
+- a `compile_error` always stops; any other failure stops unless `ctx.extra["run_all"]`;
+- with the gate in the configuration, the test validators get `ctx.extra["numsim_racecheck"] = False`, and the
+  NumSim test runner skips Racecheck (the gate ran it on the CPU);
+- `cache`: a validator with the same inputs in two configurations of one candidate runs once (key: validator,
+  candidate and parent source, device, VOLTA shapes, the NumSim switch for tirx on the CPU, relevant extra keys);
+- `PipelineResult`: `per_validator` (caught / seconds / decided / kinds / cached), `stopped_after`, `skipped`,
+  `cached`, `validation_seconds`.
+
+**Other changes:**
+- `evaluation/bugset.py`: `evaluate(cand, ctx, configs)` runs A0 / A / B / C through `run_pipeline` with `run_all`
+  and one cache per bug; per configuration caught + seconds + per-validator numbers; `--configs`; saves after every
+  bug.
+- `evaluation/mutants.py`:
+  - `_detect` uses `evaluate` (A0 / A / C, plus B with `--volta`; without `--volta` VOLTA is skipped);
+  - `_base_ok` also requires the gate to pass;
+  - new set `fresh` (`FRESH`: layernorm_txl_ref / opt, gemm_txl_ref / opt), `all` = bases + heldout + fresh;
+    `--lang all|cuda|tirx`; each row records its set;
+  - generation gaps fixed: `const` no longer edits the exponent of a float literal (`EPS = 1e-5` → `1e-6` was
+    labelled as a structural edit); the fresh set also gets `init` on `txl.float32(<value>)` initializers and `smem`
+    on allocations sized by a named constant (`alloc([BLOCK])` → `alloc([BLOCK // 2])`). The extended operators are
+    off for bases / heldout: their mutants are byte-identical to before (64 fingerprints checked, per_op 1, 2, 3, 20).
+- `feedback/render.py`: a `location:` line for every finding that has one; gate hints for race / out_of_bounds /
+  uninitialized / deadlock / runtime_error; for tirx without a Python line it says "in the CUDA that TIRx generated
+  from your module (no Python line is known)" and quotes the line (and the other access of a race).
+- `cli.py`: `akc validate --config A0|A|B|C [--run-all]`; `akc check --lang tirx`; `akc volta --lang tirx`
+  (`evaluation/volta_matrix.py`, through VoltaValidator's tirx path).
+- `runners/numsim.py`, `runners/__init__.py`: the Racecheck switch.
+
+**Steps that did not work at first** (GPU smoke job 24061664 and full job 24061708):
+1. racecheck reported the softmax and LayerNorm nosync races, but the gate dropped them: the reports name the
+   inlined TIRx helper (`tvm_builtin_ptx_st_shared_f32(unsigned int, float)+0x260`), not the kernel, and the trial's
+   parser keeps only reports that name the kernel. Fix: a report is ours if it names the kernel or a line of one of
+   our generated .cu files.
+2. The reported lines were the helpers' `asm` lines. Fix: `nvdisasm -gi` maps the reported offset to the call site
+   in the kernel body. Checked on the saved log: all 10 offsets land on the STS / LDS of the reported accesses, and
+   the race becomes "line 116 (write) and line 112 (read)", two steps of the tree reduction.
+3. memcheck with the trial's `--destroy-on-device-error kernel` reported the out-of-bounds read of two GLM mutants
+   and then hung until the 180 s timeout. Fix: `--destroy-on-device-error context` (later shapes of that run are
+   skipped) and a 60 s tool limit. Job 24061708 was cancelled after 33 of 34 kernels to re-run with the fix.
+
+**GPU results** (job 24061793, `results/eval/gate_tirx.json`; tables also in `notes/gpu_results.md`):
+
+| kernels | memcheck | racecheck | initcheck | synccheck | gate (any) |
+|---|---|---|---|---|---|
+| 5 tirx refs / opts (false alarms) | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 |
+| 4 GLM tirx kernels (false alarms) | 0/4 | 0/4 | 0/4 | 0/4 | 0/4 |
+| 11 injected tirx bugs | 3/11 | 3/11 | 0/11 | 0/11 | 6/11 |
+| 8 tirx mutants with VOLTA RACE / OUT_OF_BOUNDS | 2/8 | 3/8 | 2/8 | 0/8 | 4/8 |
+| 6 tirx mutants with VOLTA EQUIV | 1/6 | 0/6 | 0/6 | 0/6 | 1/6 |
+
+- The memcheck run's outputs match the float64 reference on all 9 correct kernels at every gate shape: the launcher
+  (argument order, grid, block, dynamic shared bytes) is right.
+- Same detection as the CUDA trial on the injected bugs (6/11; the 5 value bugs need tests or VOLTA), and again
+  `layernorm_txl_bug_nosync`, which every GPU test misses, is caught by racecheck.
+- The 4 missed race mutants are `if (lane == 0)` negations: same-value writes, harmless (as in the CUDA trial).
+- One catch VOLTA cannot make: glm C idx1 L114 reads one element past `x` on the N > 12284 path (gate shape
+  N = 12285 from the size-regime rule); VOLTA checks CTA 0 at N ≤ 584 and said EQUIV.
+- Cost per revision (median of 34): 10.9 s (max 12.7 s): static child 7.8 s (tvm import 1.7 s, two sm_80 compiles
+  2.8 s), nvcc 0.7 s, the four tools in parallel 2.1 s (sequential 4.5–4.7 s on 3 kernels, same verdicts).
+- CPU-only path (smoke job 24061664): gemm nosync → race at Python lines 50 and 42, gemm guard → out_of_bounds at
+  line 56, gemm opt clean; 12 s per kernel after a 44 s first NumSim engine build.
+
+**A0 / A / B / C on the 11 injected tirx bugs** (`akc eval-bugs --lang tirx --device gpu`, job 24061793,
+`results/eval/bugset_tirx_gpu_20261117-045938.json`):
+- detected: A0 3/11, A 6/11, B 6/11, C 11/11;
+- validation seconds per bug (mean): A0 8.6, A 18.6, B 21.4, C 41.8;
+- per validator in C: gate 6/11 (10.0 s), fixed tests 3/11 (8.6 s), change-aware tests 11/11 (20.9 s), VOLTA 4/11
+  (2.2 s);
+- the report cache works as intended: in C the gate and fixed-test reports are reused from A (`cached`).
+- **Found: VOLTA in C runs at B's default shape for tirx.** `changeaware.plan()` returns VOLTA shapes only for CUDA
+  (`volta_shapes(...) if lang == "cuda" else []`, unchanged since the restructure), so `suggested_volta_shapes` is
+  empty for every tirx candidate. C's detection is unaffected here (the change-aware tests catch all 11), but VOLTA's
+  column in C is understated. Not fixed (Task 2 code, outside D2).
+- A CPU run of `eval-bugs --lang tirx --workloads gemm --configs A0,A` before the GPU job: A0 0/3 (the gemm fixed
+  suite exceeds NumSim's caps, so "n/a"), A 2/3 (NumSim race on nosync, out_of_bounds on guard). Not kept.
+
+**Fresh mutation set, CPU** (`akc mutants --set fresh --classifier ir`, `results/eval/mutants_rules_ir_fresh.json`):
+- 85 mutants of the 4 fresh kernels in 70 s; 73/73 semantic edits get a right category, 0 wrong, 0 without a
+  category; 0/12 no-op edits labelled;
+- 79 on the IR path, 6 AST fallbacks: 5 `float32 → float16` edits and BLOCK 32 → 16 in layernorm_txl_ref, which
+  TIRx refuses to trace (the gate reports such edits as compile errors);
+- detection on the GPU (`--set fresh --detect`) was not run.
+
+**Tests.**
+- New `tests/validation/test_compiler_checks.py` (28): parser on saved logs (fixtures in `tests/data/sanitizer/`,
+  plus every trial log in `logs/sanitizer_trial/` when present: same verdicts as the trial on all of them); a real
+  TIRx racecheck log mapped to kernel lines 116 / 112 through a rebuilt cubin; finding kinds; NumSim and static
+  mappings; feedback text; gate shapes; pipeline order, stop rules, run_all, cache, skip (fake validators); A0 = the
+  old A; static checks on the 5 refs / opts and 11 bugs pass and an IR-contract violation fails at its line (with
+  and without `check_ir`); 3 GPU tests.
+- `test_mutants.py` +3 (fresh set, extended operators, float exponents), `test_bugset.py` +1 (evaluate),
+  `test_interface.py`: C's report list now starts with compiler_checks.
+- Login node: 228 run, all pass, 11 skipped. A100: 46 run in job 24061708 (all pass, 1 skipped), the 3 GPU gate tests
+  again in job 24061793 after the memcheck change.
+
+**Verified vs assumed.**
+- Verified on the A100: the gate's verdicts and costs above; the value check of every correct kernel; no hang with
+  `--destroy-on-device-error context` on the two kernels that hung before.
+- Verified on the CPU: static checks on all 16 tirx variants, contract violations, NumSim stage on softmax (login
+  node) and gemm (job 24061664); `akc check --lang tirx` and `akc volta --lang tirx` (one small run each, outputs
+  deleted); fresh-set generation and classification; existing mutant sets unchanged.
+- Assumed: that running the 4 tools at the same time on one GPU does not change what they report (3 kernels gave the
+  same verdicts both ways; the CUDA trial ran 6 at a time).
+- Not done: `akc mutants --set fresh --detect` on the GPU; the CUDA sanitizer path inside the gate (legacy CUDA gets
+  an info finding only).
+
+GPU-job time for D2: 3 jobs, 31 min 37 s (24061664: 1 min 32 s; 24061708: 13 min 54 s, cancelled; 24061793:
+16 min 11 s).

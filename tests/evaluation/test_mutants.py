@@ -7,7 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from akc.evaluation.mutants import BASES, HELDOUT, classify_mutant, mutants, summarize  # noqa: E402
+from akc.evaluation.mutants import BASES, FRESH, HELDOUT, SETS, classify_mutant, mutants, summarize  # noqa: E402
 from akc.paths import ROOT  # noqa: E402
 from akc.validation.changeaware.diff import diff_sources  # noqa: E402
 
@@ -38,6 +38,37 @@ class MutantTests(unittest.TestCase):
         path = ROOT / "workloads" / "softmax" / "tirx" / "softmax_txl_ref.py"
         for m in mutants(path.read_text(), "tirx"):
             ast.parse(m.src)
+
+    def test_fresh_set_loads(self):
+        self.assertEqual([lab for lab, _, _ in FRESH], ["layernorm_txl_ref", "layernorm_txl_opt", "gemm_txl_ref",
+                                                        "gemm_txl_opt"])
+        self.assertEqual(SETS["all"], BASES + HELDOUT + FRESH)
+        self.assertFalse({lab for lab, _, _ in FRESH} & {lab for lab, _, _ in BASES + HELDOUT})
+        import ast
+        for label, workload, rel in FRESH:
+            path = ROOT / rel
+            self.assertTrue(path.exists(), rel)
+            ms = mutants(path.read_text(), "tirx", extended=True)
+            self.assertGreaterEqual(len(ms), 15, label)
+            for m in ms:
+                ast.parse(m.src)
+                self.assertNotEqual(m.src, path.read_text(), (label, m.op, m.line))
+            self.assertIn("init", {m.op for m in ms}, label)                 # txl.float32(0.0) initial values
+
+    def test_extended_operators_only_where_asked(self):
+        opt = (ROOT / "workloads/gemm/tirx/gemm_txl_opt.py").read_text()
+        ext = mutants(opt, "tirx", extended=True)
+        self.assertEqual({m.desc for m in ext if m.op == "smem"}, {"shared size TILE -> TILE // 2"})
+        self.assertFalse([m for m in mutants(opt, "tirx") if m.op in ("smem", "init")])
+        ref = (ROOT / "workloads/softmax/tirx/softmax_txl_ref.py").read_text()   # a bases kernel: unchanged
+        self.assertEqual([(m.op, m.line, m.desc) for m in mutants(ref, "tirx")],
+                         [(m.op, m.line, m.desc) for m in mutants(ref, "tirx", extended=False)])
+
+    def test_const_never_edits_a_float_exponent(self):
+        src = (ROOT / "workloads/layernorm/tirx/layernorm_txl_opt.py").read_text()       # EPS = 1e-5
+        self.assertFalse([m for m in mutants(src, "tirx", per_op=50) if m.op == "const" and "EPS" in
+                          m.src.splitlines()[m.line - 1] and "1e-" in m.src.splitlines()[m.line - 1] and
+                          m.src.splitlines()[m.line - 1] != src.splitlines()[m.line - 1]])
 
     def test_classifier_regression_guard(self):
         rows = []

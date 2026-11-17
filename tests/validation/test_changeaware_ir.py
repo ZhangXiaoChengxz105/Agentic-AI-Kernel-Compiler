@@ -78,6 +78,9 @@ class IrPathTests(unittest.TestCase):
         self.assertIn("×14", p.hunks[0].old[0][1])                  # 7 unrolled steps x 2 block_reduce calls
         self.assertEqual(p.hunks[0].old[0][0], 34)
         self.assertTrue(all(n == 14 for n in p.analysis["hunks"]["ir_per_shape"].values()))
+        # C hands VOLTA the default shape plus a sync shape (tirx-lite too, not only CUDA)
+        self.assertEqual(p.volta[0], {"N": 256})
+        self.assertIn({"N": 264}, p.volta)
 
     def test_nomax_is_numerical(self):
         p = self.plan(BUG["nomax"])

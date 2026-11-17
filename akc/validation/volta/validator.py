@@ -59,8 +59,9 @@ def result_finding(validator: str, r: VoltaResult, s: dict, lang: str = "cuda") 
 class VoltaValidator:
     name = "volta"
 
-    def __init__(self, timeout_s: float = 300.0, tirx_rewrites: tuple[str, ...] = REWRITES):
+    def __init__(self, timeout_s: float = 300.0, tirx_rewrites: tuple[str, ...] = REWRITES, build_root: Path | None = None):
         self.timeout_s = timeout_s
+        self.build_root = build_root or BUILD / "volta_tirx"     # parallel workers each pass their own (no shared files)
         self.tirx_rewrites = tuple(tirx_rewrites)
 
     def validate(self, cand: Candidate, ctx: ValidationContext) -> ValidationReport:
@@ -131,7 +132,7 @@ class VoltaValidator:
             return ValidationReport.build(self.name, [f], True, t0)
         ref = wl.reference("tirx")
         ref_mod = load_module(ref.file, f"volta_ref_{ref.name}")
-        out = BUILD / "volta_tirx" / cand.workload
+        out = self.build_root / cand.workload
         shapes = wl.cap_volta_shapes(ctx.volta_shapes or [wl.volta["default"]])
         findings, runs, decided = [], [], True
         for s in shapes:

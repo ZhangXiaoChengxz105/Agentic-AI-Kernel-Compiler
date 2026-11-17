@@ -68,12 +68,12 @@ class Candidate:
 
 @dataclass
 class ValidationContext:
-    config: str = "C"                      # "A" | "B" | "C" (informational for single validators)
+    config: str = "C"                      # "A0" | "A" | "B" | "C" (informational for single validators)
     test_cases: list | None = None         # TestCases to run (None: validator's default)
     volta_shapes: list | None = None       # shapes for VOLTA (None: workload default)
     device: str = "auto"                   # "auto" | "gpu" | "cpu"
     time_budget_s: float = 600.0
-    extra: dict = field(default_factory=dict)
+    extra: dict = field(default_factory=dict)  # e.g. run_all (pipeline), classifier, budget, gate_shapes, gate_tools
 
     def with_(self, **kw) -> "ValidationContext":
         return replace(self, **kw)

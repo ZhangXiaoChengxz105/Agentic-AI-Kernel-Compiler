@@ -12,7 +12,8 @@ verification and change-aware testing (proposal sections 1 and 2).
    reference,                    │ feedback.render(reports)               │ Candidate
    constraints)                  │                                        ▼
                  ┌───────────────┴──────────────── validation ─────────────────────────────┐
-                 │ pipeline(config A | B | C)                                              │
+                 │ pipeline(config A0 | A | B | C)                                         │
+                 │   compiler_checks (gate: static checks + sanitizer / NumSim)             │
                  │   fixed_tests ─┐                                                         │
                  │   changeaware ─┼─► runners (GPU harness / TIRx NumSim) ─┐                │
                  │   volta ───────┴────────────────────────────────────────┴► ValidationReport │
@@ -28,7 +29,7 @@ verification and change-aware testing (proposal sections 1 and 2).
 | `llm/` | the model | `lumen.py`: OpenAI-compatible client, budget guard, retries, JSONL call log |
 | `agent/` | the agent itself | `pilot.py` (working prototype). Task 4 adds `prompts/`, `context.py`, `loop.py`, `trajectory.py` |
 | `backend/` | executes actions | `ptx.py` (CUDA → PTX, VOLTA/GPU modes), `launch.py` (driver-API launch), `bench.py`, `tirx.py` (safety scan, load, sm_80 compile) |
-| `validation/` | the critics | `interface.py`, `pipeline.py`, `fixed_tests/`, `volta/`, `changeaware/`, `runners/` |
+| `validation/` | the critics | `interface.py`, `pipeline.py`, `compiler_checks/`, `fixed_tests/`, `volta/`, `changeaware/`, `runners/` |
 | `perf/` | the objective (speed) | `measure.py` (GPU timing in a child process), `report.py` (`PerfReport`, roofline `analyze`), `hardware.py` (GPU peaks) |
 | `feedback/` | observations | `render.py`: findings → concise text with hints, examples, related change lines; `render_perf` (speed), `render_observation` (both) |
 | `evaluation/` | experiments | `bugset.py` (A/B/C on injected bugs), `volta_matrix.py`, `gpu_tirx.py` |
@@ -60,7 +61,8 @@ Every validator implements `validate(cand: Candidate, ctx: ValidationContext) ->
 ### Validators
 | validator | input it uses | what it does | output specifics |
 |---|---|---|---|
-| `fixed_tests/` (baseline, A) | manifest `fixed_suite` | runs power-of-two N(0,1) tests ×3 | one finding per failing test |
+| `compiler_checks/` (the gate, A/B/C; D2) | the tirx-lite candidate | static checks in a child process (`tirx_static.py`: safety scan, trace with the IR contract check, `inspect_low_level_ir`, `check_well_formed`, `verify_memory`, compile for sm_80) at small gate shapes; then on a GPU compute-sanitizer memcheck / racecheck / initcheck / synccheck on cubins built from the generated CUDA (`sanitizer.py`, torch-free `launcher.py`), on a CPU-only node NumSim racecheck / synccheck at one small shape | static error → `compile_error` (Python line when known); sanitizer report naming our kernel → race / out_of_bounds / uninitialized / deadlock with the generated-CUDA line; tool crash → `harness_error` warning; NumSim error / review / incomplete → error / warning / info. `artifacts.stages` (seconds + status), `sanitizer` (per tool), `value_check`, logs |
+| `fixed_tests/` (baseline, A0 / A) | manifest `fixed_suite` | runs power-of-two N(0,1) tests ×3 | one finding per failing test |
 | `volta/` (mechanism 1, Task 3) | `ctx.volta_shapes` or manifest default | `volta compare` vs the workload reference: equivalence over ℝ + races/deadlocks, CTA 0 | per-shape verdicts in `artifacts.runs`; `hint` in evidence; tirx: traced per shape, generated CUDA rewritten for VOLTA (`volta/tirx.py`), compared with `references.tirx` |
 | `changeaware/` (mechanism 2, Task 2) | `parent` vs candidate | diff (tirx-lite: the traced IR, `irdiff.py` in a child process via `ir_worker.py`; CUDA: normalized text; reformat / rename = no change) → classify (tiling / indexing / memory / sync / numerical; tirx by the IR op that changed, `classify_ir.py`) → targeted tests + always-on floor tests + VOLTA shapes → run tests; optional LLM second opinion (`ctx.extra["llm_classifier"]`: extra labels + risky sizes, union only) | `artifacts.categories`, `labels`, `suggested_volta_shapes`, `llm`, `analysis` (ir / ast-fallback / cuda-text, traced shapes, fallback reason, `ir_blind`); findings carry `related_change` |
 
@@ -84,11 +86,39 @@ sentinel + canaries + repeats; each candidate in a child process) and `numsim.py
 
 ### Configurations (`validation/pipeline.py`)
 ```
-A: fixed_tests
-B: fixed_tests + volta(default shape)
-C: fixed_tests + changeaware + volta(change-aware shapes)
+A0: fixed_tests                                                   (ablation: no gate; = the old A)
+A : compiler_checks + fixed_tests                                 (CAKE's existing checks + tests)
+B : compiler_checks + fixed_tests + volta(default shape)
+C : compiler_checks + fixed_tests + changeaware + volta(change-aware shapes)
 ```
-A compile error stops the pipeline. `run_pipeline(cand, "C", ctx)` returns a `PipelineResult`.
+`run_pipeline(cand, "C", ctx, cache=None, skip=())` returns a `PipelineResult` (`per_validator`: caught / seconds /
+decided / kinds / cached; `stopped_after`, `skipped`, `cached`, `validation_seconds`).
+- A `compile_error` (a static error of the gate, or a build failure) always stops the pipeline.
+- Any other failure also stops it by default (the agent loop gets the first failure fast). With
+  `ctx.extra["run_all"]` the later validators still run; the evaluation sets it to count per validator.
+- With the gate in the configuration, the NumSim test runner skips Racecheck (`ctx.extra["numsim_racecheck"]`):
+  on a CPU-only node the gate already ran NumSim racecheck / synccheck.
+- `cache` (one dict per candidate): a validator with identical inputs in two configurations runs once; the
+  evaluation (`evaluation/bugset.evaluate`, `mutants._detect`) runs A0 / A / B / C this way.
+
+### The compiler-checks gate (`validation/compiler_checks/`, D2)
+The proposal: "Candidates that pass CAKE's existing compiler checks will be checked by VOLTA." tirx-lite is our CAKE
+substitute, so its own checks are the static half of the gate. The CAKE paper also feeds conventional sanitizer
+output back to the agent, so compute-sanitizer is the dynamic half.
+- **Shapes** (`tirx_static.gate_shapes`, inside the manifest domain): row ops rows=4 × N ∈ {T+1, 1000}, plus
+  rows=2 × N=v+1 for each size-regime value v of the candidate; GEMM 33×33×40 and 64×64×64.
+- **Static stage** (one child process; tvm import ~2–5 s, then per shape: trace ~0.1 s, the 4 IR checks ~3 ms,
+  compile 1.5–2 s): `txl.kernel(check_ir=True)` raises `LowLevelIRContractError` while tracing;
+  `inspect_low_level_ir` runs again explicitly (so `check_ir=False` does not bypass it); violations are located at
+  Python lines by re-tracing with the check in record-only mode and matching statements (`irdiff.flatten`).
+- **Sanitizer stage (GPU)**: the generated CUDA (`Kernel.source()`, read from the sm_80 compile) → `nvcc -cubin
+  -lineinfo`; parent writes inputs as .npy; `launcher.py` (numpy + cuda.bindings only, run by path so torch is never
+  imported) allocates every tensor exactly, launches with the traced grid / block / dynamic shared bytes. The 4
+  tools run in parallel, one process each; each runs every gate shape. Reports are filtered by kernel name and
+  attributed to a shape by the generated file name. Locations are lines of the generated CUDA: TIRx emits no Python
+  line info, so the feedback says so and quotes the line.
+- **NumSim stage (CPU-only node)**: racecheck + synccheck at one small shape (`numsim_shape`: rows=2 × N=T+1;
+  GEMM 12×12×20); findings carry the Python lines of both accesses.
 
 ## Speed: the objective, not a validator (`perf/`)
 Validation is a pass/fail gate and is what configurations A/B/C vary. Speed has no pass/fail and must be

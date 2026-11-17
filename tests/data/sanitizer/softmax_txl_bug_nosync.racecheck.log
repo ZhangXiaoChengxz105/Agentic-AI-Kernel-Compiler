@@ -1,0 +1,10 @@
+========= COMPUTE-SANITIZER
+========= Error: Race reported between Write access at tvm_builtin_ptx_st_shared_f32(unsigned int, float)+0x260 in softmax_txl_bug_nosync_rows4_N129.cu:78
+=========     and Read access at tvm_builtin_ptx_ld_shared_f32(float &, unsigned int)+0x210 in softmax_txl_bug_nosync_rows4_N129.cu:75 [512 hazards]
+=========     and Read access at tvm_builtin_ptx_ld_shared_f32(float &, unsigned int)+0x2c0 in softmax_txl_bug_nosync_rows4_N129.cu:75 [256 hazards]
+=========     and Read access at tvm_builtin_ptx_ld_shared_f32(float &, unsigned int)+0x530 in softmax_txl_bug_nosync_rows4_N129.cu:75 [28 hazards]
+========= 
+========= Error: Race reported between Write access at tvm_builtin_ptx_st_shared_f32(unsigned int, float)+0x750 in softmax_txl_bug_nosync_rows4_N129.cu:78
+=========     and Read access at tvm_builtin_ptx_ld_shared_f32(float &, unsigned int)+0x740 in softmax_txl_bug_nosync_rows4_N129.cu:75 [512 hazards]
+=========     and Read access at tvm_builtin_ptx_ld_shared_f32(float &, unsigned int)+0x790 in softmax_txl_bug_nosync_rows4_N129.cu:75 [256 hazards]
+========= RACECHECK SUMMARY: 27 hazards displayed (9 errors, 18 warnings)

@@ -1,0 +1,14 @@
+========= COMPUTE-SANITIZER
+========= Error: Race reported between Write access at softmax_bug_nosync+0x920 in softmax_bug_nosync.cu:26
+=========     and Read access at softmax_bug_nosync+0x910 in softmax_bug_nosync.cu:26 [8192 hazards]
+=========     and Read access at softmax_bug_nosync+0x950 in softmax_bug_nosync.cu:26 [4096 hazards]
+=========     and Read access at softmax_bug_nosync+0xac0 in softmax_bug_nosync.cu:29 [432 hazards]
+========= 
+========= Warning: Race reported between Write access at softmax_bug_nosync+0x970 in softmax_bug_nosync.cu:26
+=========     and Read access at softmax_bug_nosync+0x950 in softmax_bug_nosync.cu:26 [4096 hazards]
+=========     and Read access at softmax_bug_nosync+0x9a0 in softmax_bug_nosync.cu:26 [2048 hazards]
+========= 
+========= Warning: Race reported between Write access at softmax_bug_nosync+0x9b0 in softmax_bug_nosync.cu:26
+=========     and Read access at softmax_bug_nosync+0x9a0 in softmax_bug_nosync.cu:26 [2048 hazards]
+========= 
+========= RACECHECK SUMMARY: 18 hazards displayed (4 errors, 14 warnings)

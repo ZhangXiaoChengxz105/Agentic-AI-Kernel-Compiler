@@ -253,6 +253,30 @@ def launch_info(kernel) -> tuple[tuple[int, ...], tuple[int, ...], int]:
     return _dims(launch.grid), _dims(launch.block), int(smem or 0)
 
 
+def kernel_tensor_params(kernel, src: str, tensors: list[str]) -> tuple[str, list[str]]:
+    """(entry name, manifest tensor names in kernel-parameter order) for TIRx's generated CUDA `src` of a traced
+    txl.Kernel. TIRx orders parameters by name, so each one is mapped through the traced function's parameter
+    position to the manifest's `tirx.tensors`. Raises TirxBuildError("entry") for scalar parameters (only static-shape
+    kernels that take tensor pointers are supported) or a parameter that matches no tensor.
+    Shared by the VOLTA build and the compiler-checks gate (compute-sanitizer launch)."""
+    name, params = parse_entry(src)
+    scalars = [p for kind, p in params if kind != "ptr"]
+    if scalars:
+        raise TirxBuildError("entry", f"kernel {name} takes non-pointer parameters {scalars}; this path "
+                                      "supports static-shape tirx-lite kernels (tensor pointers only)")
+    tensors = list(tensors)
+    fparams = [str(getattr(p, "name", p)) for p in kernel.func.params]
+    names = []
+    for _, p in params:                 # kernel parameter -> the factory function's parameter position -> tensor
+        if p in fparams and len(fparams) == len(tensors):
+            names.append(tensors[fparams.index(p)])
+        elif p in tensors:
+            names.append(p)
+        else:
+            raise TirxBuildError("entry", f"kernel parameter {p!r} matches none of the tensors {tensors}")
+    return name, names
+
+
 def build_tirx_ptx(mod, workload_meta: dict, shape: dict, out_dir: Path, label: str,
                    rewrites=REWRITES) -> TirxPtx:
     """Trace `mod` at `shape`, rewrite its CUDA for VOLTA and compile it to PTX (see module docstring)."""
@@ -266,21 +290,7 @@ def build_tirx_ptx(mod, workload_meta: dict, shape: dict, out_dir: Path, label: 
         src = kernel.source()
     except Exception as e:  # noqa: BLE001
         raise TirxBuildError("codegen", f"{type(e).__name__}: {str(e).strip()[:1500]}") from e
-    name, params = parse_entry(src)
-    scalars = [p for kind, p in params if kind != "ptr"]
-    if scalars:
-        raise TirxBuildError("entry", f"kernel {name} takes non-pointer parameters {scalars}; the VOLTA path "
-                                      "supports static-shape tirx-lite kernels (tensor pointers only)")
-    tensors = list(workload_meta["tirx"]["tensors"])
-    fparams = [str(getattr(p, "name", p)) for p in kernel.func.params]
-    names = []
-    for _, p in params:                 # kernel parameter -> the factory function's parameter position -> tensor
-        if p in fparams and len(fparams) == len(tensors):
-            names.append(tensors[fparams.index(p)])
-        elif p in tensors:
-            names.append(p)
-        else:
-            raise TirxBuildError("entry", f"kernel parameter {p!r} matches none of the tensors {tensors}")
+    name, names = kernel_tensor_params(kernel, src, workload_meta["tirx"]["tensors"])
     grid, block, smem = launch_info(kernel)
     nthreads = 1
     for b in block:

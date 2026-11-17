@@ -3,7 +3,8 @@
 run(cand, tests, device) -> list[outcome dict]     picks the executor:
     cuda + gpu  -> runners.gpu (driver-API launch of the candidate's PTX)
     tirx + gpu  -> runners.gpu (TIRx compile per shape)
-    tirx + cpu  -> runners.numsim (CPU simulation + Racecheck)
+    tirx + cpu  -> runners.numsim (CPU simulation + Racecheck; numsim_racecheck=False skips Racecheck when the
+                   compiler-checks gate already ran it)
     cuda + cpu  -> nothing can execute: every test returns "skipped" (info)
 outcome_to_finding(outcome, validator) -> Finding | None   (None = test passed)
 build_for_gpu(cand) -> (kernel file, CUDA entry | None, block)   raises BuildError (also used by perf.measure)
@@ -57,14 +58,14 @@ def build_for_gpu(cand: Candidate) -> tuple:
     return b.ptx, entry, block
 
 
-def run(cand: Candidate, tests: list, device: str) -> list[dict]:
+def run(cand: Candidate, tests: list, device: str, numsim_racecheck: bool = True) -> list[dict]:
     if not tests:
         return []
     if device != "gpu":
         if cand.lang == "cuda":
             return _skip_all(tests, "no GPU here: dynamic tests not executed (run on a GPU node)")
         from .numsim import run_tests_numsim_isolated
-        return run_tests_numsim_isolated(cand.workload, cand.materialize(), tests)
+        return run_tests_numsim_isolated(cand.workload, cand.materialize(), tests, racecheck=numsim_racecheck)
     try:
         kernel_file, entry, block = build_for_gpu(cand)
     except BuildError as e:

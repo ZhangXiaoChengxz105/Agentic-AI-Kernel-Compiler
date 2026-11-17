@@ -106,7 +106,8 @@ class PipelineTests(unittest.TestCase):
         self.assertTrue(b.passed)                       # fixed tests skipped (no GPU) + VOLTA default shape misses
         self.assertFalse(c.passed)
         self.assertIn("not_equivalent", {f.kind for f in c.findings})
-        self.assertEqual([r.validator for r in c.reports], ["fixed_tests", "changeaware", "volta"])
+        # D2: C = compiler-checks gate (info only for legacy CUDA) + fixed tests + change-aware tests + VOLTA
+        self.assertEqual([r.validator for r in c.reports], ["compiler_checks", "fixed_tests", "changeaware", "volta"])
 
     def test_volta_race_and_hint_rendering(self):
         r = VoltaValidator().validate(_cand("softmax", "softmax_bug_nosync"), CPU)

@@ -45,7 +45,7 @@ class ChangeAwareValidator:
         old, parent_label = parent_source(cand)
         p = plan(cand.workload, old, cand.source, cand.lang, ctx.extra.get("budget", 16),
                  llm=ctx.extra.get("llm_classifier"), classifier=ctx.extra.get("classifier", "auto"))
-        outcomes = run(cand, p.tests, ctx.resolved_device())
+        outcomes = run(cand, p.tests, ctx.resolved_device(), ctx.extra.get("numsim_racecheck", True))
         findings = []
         for o in outcomes:
             f = outcome_to_finding(o, self.name)

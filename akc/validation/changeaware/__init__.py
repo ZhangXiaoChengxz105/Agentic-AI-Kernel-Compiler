@@ -81,7 +81,7 @@ def plan(workload: str, old_src: str | None, new_src: str, lang: str | None = No
     tests = generate_tests(workload, cats, tiles, budget, regimes)
     if llm_res is not None:
         tests += _llm_tests(workload, llm_res, tests)
-    shapes = volta_shapes(workload, cats, tiles) if lang == "cuda" else []
+    shapes = volta_shapes(workload, cats, tiles)          # both languages: VOLTA runs on CUDA and tirx-lite
     return ChangePlan(hunks, labels, cats, tests, shapes, tiles, llm_res.info() if llm_res is not None else None,
                       regimes, analysis)
 

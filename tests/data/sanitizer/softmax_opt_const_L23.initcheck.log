@@ -1,0 +1,13 @@
+========= COMPUTE-SANITIZER
+========= Uninitialized __shared__ memory read of size 4 bytes
+=========     at softmax_opt+0x8f0 in softmax_opt_const_L23.cu:24
+=========     by thread (32,0,0) in block (44,0,0)
+=========     Address 0x280
+========= 
+========= Uninitialized __shared__ memory read of size 4 bytes
+=========     at softmax_opt+0x8f0 in softmax_opt_const_L23.cu:24
+=========     by thread (33,0,0) in block (44,0,0)
+=========     Address 0x284
+========= 
+========= 
+========= 16128 errors were skipped (error buffer overflow).

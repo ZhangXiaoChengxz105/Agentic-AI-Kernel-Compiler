@@ -8,7 +8,9 @@ tirx-harness's artifact lookup) and CARGO_BUILD_JOBS=4 (be gentle on the login n
 Costs: every distinct shape is transpiled to a native artifact (~0.5-1 min first time, cached), so the runner
 caps work: at most `max_shapes` distinct shapes, rows <= `max_rows`, N <= `max_n` and, for matrix ops (gemm),
 M <= `max_m`, K <= `max_k` (a 1-CTA gemm at M = N = 12, K = 40 takes ~1 min to build + ~1.5 min of Racecheck);
-other tests come back "skipped" (an info finding, never a pass). Racecheck runs on the first shape and on tests tagged "sync".
+other tests come back "skipped" (an info finding, never a pass). Racecheck runs on the first shape and on tests tagged "sync",
+unless racecheck=False: configurations with the compiler-checks gate already ran NumSim racecheck / synccheck on the
+CPU (compiler_checks/tirx_static.py), so the pipeline turns it off here (ctx.extra["numsim_racecheck"]).
 The output buffer is sentinel-filled before simulation, so unwritten elements are still detected; NumSim
 itself reports out-of-bounds accesses (exact byte range), which become "out_of_bounds" outcomes.
 """
@@ -34,7 +36,7 @@ def size_caps(max_rows: int = 4, max_n: int = 2048, max_m: int = 64, max_k: int 
 
 
 def _evaluate(workload_name: str, module_path: str, tests: list, max_shapes: int, max_rows: int, max_n: int,
-              max_m: int = 64, max_k: int = 512) -> list:
+              max_m: int = 64, max_k: int = 512, racecheck_on: bool = True) -> list:
     import numpy as np
     import torch
 
@@ -76,7 +78,7 @@ def _evaluate(workload_name: str, module_path: str, tests: list, max_shapes: int
             r = compare(buf, y, op.golden(inputs), atol=op.atol, rtol=op.rtol,
                         scale=op.magnitude(inputs) if op.magnitude else None)
             rec = {**tc.to_dict(), **r.to_dict(), "kernel_ms": None, "sim_seconds": time.perf_counter() - t0}
-            if (i == 0 or tc.tag.startswith("sync")) and key not in raced:
+            if racecheck_on and (i == 0 or tc.tag.startswith("sync")) and key not in raced:
                 raced.add(key)
                 arrays2 = {n: (inputs[n].numpy() if n in inputs else np.zeros(op.out_shape(tc.shape), np.float32)) for n in names}
                 rc = racecheck(k.func, inputs=arrays2).native_payload
@@ -94,7 +96,7 @@ def _evaluate(workload_name: str, module_path: str, tests: list, max_shapes: int
 
 def run_tests_numsim_isolated(workload_name: str, module_path: str | Path, tests: list, max_shapes: int = 4,
                               max_rows: int = 4, max_n: int = 2048, timeout_s: float = 2400.0,
-                              max_m: int = 64, max_k: int = 512) -> list[dict]:
+                              max_m: int = 64, max_k: int = 512, racecheck: bool = True) -> list[dict]:
     problems = safety_scan(Path(module_path).read_text())
     if problems:
         return [{**t.to_dict(), **CheckResult(False, "compile_error", message="refused to import: " + "; ".join(problems)).to_dict()}
@@ -104,7 +106,7 @@ def run_tests_numsim_isolated(workload_name: str, module_path: str | Path, tests
         job, res_file = Path(tmp) / "job.json", Path(tmp) / "out.json"
         job.write_text(json.dumps({"workload": workload_name, "module": str(module_path), "tests": [t.to_dict() for t in tests],
                                    "max_shapes": max_shapes, "max_rows": max_rows, "max_n": max_n,
-                                   "max_m": max_m, "max_k": max_k}))
+                                   "max_m": max_m, "max_k": max_k, "racecheck": racecheck}))
         env = {**os.environ, "RUSTUP_TOOLCHAIN": "1.95.0", "CARGO_BUILD_JOBS": "4"}
         cmd = [sys.executable, "-m", "akc.validation.runners.numsim", str(job), str(res_file)]
         try:
@@ -123,5 +125,6 @@ if __name__ == "__main__":
     from ...task.testcase import TestCase
     j = json.loads(Path(sys.argv[1]).read_text())
     res = _evaluate(j["workload"], j["module"], [TestCase.from_dict(t) for t in j["tests"]],
-                    j["max_shapes"], j["max_rows"], j["max_n"], j.get("max_m", 64), j.get("max_k", 512))
+                    j["max_shapes"], j["max_rows"], j["max_n"], j.get("max_m", 64), j.get("max_k", 512),
+                    j.get("racecheck", True))
     Path(sys.argv[2]).write_text(json.dumps(res, default=str))

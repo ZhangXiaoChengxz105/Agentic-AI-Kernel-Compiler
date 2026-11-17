@@ -1,0 +1,2059 @@
+{
+ "rows": [
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 36,
+   "desc": "[r, 0] -> [r, 0 + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 42,
+   "desc": "[r, i] -> [r, i + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 47,
+   "desc": "[i] -> [i + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "const",
+   "line": 15,
+   "desc": "32 -> 16",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: tirx-lite block must be a static multiple of 32 between 32 and 1024"
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 39,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 40,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 43,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "init",
+   "line": 30,
+   "desc": "txl.float32(0.0) -> txl.float32(1.0)",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "init",
+   "line": 31,
+   "desc": "txl.float32(0.0) -> txl.float32(1.0)",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 35,
+   "desc": "if (tid == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 21,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 15,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 28,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  ld_proxy_readonly: ld_proxy_readonly: missing required modifier(s):"
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 31,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical",
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 21,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "v -> v_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "bv -> bv_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "x0 -> x0_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 36,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 50,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 60,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 33,
+   "desc": "[tid] -> [tid + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 39,
+   "desc": "[tid] -> [tid + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 70,
+   "desc": "[r, col] -> [r, col + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "const",
+   "line": 11,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "tiling",
+    "numerical",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "const",
+   "line": 35,
+   "desc": "64 -> 32",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "define",
+   "line": 11,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "tiling",
+    "numerical",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "nosync",
+   "line": 34,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "nosync",
+   "line": 40,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "nosync",
+   "line": 43,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 52,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 62,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 64,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "init",
+   "line": 47,
+   "desc": "txl.float32(0.0) -> txl.float32(1.0)",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "init",
+   "line": 57,
+   "desc": "txl.float32(0.0) -> txl.float32(1.0)",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 36,
+   "desc": "if (tid < k) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 50,
+   "desc": "if (col < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 60,
+   "desc": "if (col < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "smem",
+   "line": 25,
+   "desc": "shared size BLOCK -> BLOCK // 2",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 19,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 15,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 27,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  ld_proxy_readonly: ld_proxy_readonly: missing required modifier(s):"
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 41,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  ld: ld: destination 'd' must have dtype float32 / uint32 / int32 / "
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "v -> v_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "a -> a_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "s -> s_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 27,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 28,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 30,
+   "desc": "[row, kk] -> [row, kk + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 31,
+   "desc": "[kk, col] -> [kk, col + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 33,
+   "desc": "[row, col] -> [row, col + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "const",
+   "line": 10,
+   "desc": "16 -> 8",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical",
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "define",
+   "line": 10,
+   "desc": "16 -> 32",
+   "accept": [
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical",
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 32,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "init",
+   "line": 26,
+   "desc": "txl.float32(0.0) -> txl.float32(1.0)",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 27,
+   "desc": "if (row < m) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 28,
+   "desc": "if (col < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 15,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 16,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 25,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at M=1024,N=1024,K=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  ld_proxy_readonly: ld_proxy_readonly: missing required modif"
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "a -> a_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 4,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "b -> b_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 4,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "acc -> acc_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 4,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 39,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 44,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 54,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 41,
+   "desc": "[row, ka] -> [row, ka + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 46,
+   "desc": "[kb, col] -> [kb, col + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 50,
+   "desc": "[ty, kk] -> [ty, kk + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "const",
+   "line": 11,
+   "desc": "16 -> 8",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "memory",
+    "tiling",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 19,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "define",
+   "line": 11,
+   "desc": "16 -> 32",
+   "accept": [
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "memory",
+    "tiling",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "nosync",
+   "line": 48,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "nosync",
+   "line": 53,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 52,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "init",
+   "line": 34,
+   "desc": "txl.float32(0.0) -> txl.float32(1.0)",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "init",
+   "line": 38,
+   "desc": "txl.float32(0.0) -> txl.float32(1.0)",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "init",
+   "line": 43,
+   "desc": "txl.float32(0.0) -> txl.float32(1.0)",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 39,
+   "desc": "if (row < m) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 44,
+   "desc": "if (kb < k) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 54,
+   "desc": "if (row < m) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "smem",
+   "line": 30,
+   "desc": "shared size TILE -> TILE // 2",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "tiling",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "smem",
+   "line": 31,
+   "desc": "shared size TILE -> TILE // 2",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 18,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 30,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "tiling",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 32,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at M=1024,N=1024,K=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  ld_proxy_readonly: ld_proxy_readonly: missing required modif"
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "a -> a_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 4,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "b -> b_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 4,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "acc -> acc_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 4,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  }
+ ],
+ "seconds": 69.56484565907158,
+ "llm_model": null,
+ "classifier": "ir",
+ "set": "fresh",
+ "lang": "all",
+ "detect_configs": null,
+ "complete": true
+}

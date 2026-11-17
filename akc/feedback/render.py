@@ -12,6 +12,10 @@ render_perf(perf, best=None) -> str        speed of a candidate that passed: tim
                                            (memory- or compute-bound, % of the GPU's peak, practical floor),
                                            and how it compares with the best correct version so far
 render_observation(reports, perf=None, best=None) -> str   both, in the order the agent should read them
+
+Findings of the compiler-checks gate (race / out_of_bounds / uninitialized / deadlock / runtime_error) get a hint
+(GATE_HINTS) and their location: a line of the agent's module when one is known (static checks, NumSim), otherwise
+the line of TIRx's generated CUDA, said as such, with that line's code.
 """
 from __future__ import annotations
 
@@ -25,6 +29,50 @@ def _example(ev: dict) -> str:
         return ""
     idx, got, want = ex[0]
     return f" e.g. output{idx}: got {got:.6g}, expected {want:.6g}"
+
+
+GATE_HINTS = {
+    "race": "two threads access the same shared-memory element without a barrier between them and at least one of "
+            "them writes. Put txl.cuda.cta_sync() between the writes and the reads that depend on them, and after "
+            "the last read of a buffer before it is written again; every thread of the CTA must reach each barrier.",
+    "out_of_bounds": "an access falls outside its buffer. Check the guard of every global load / store (row < m, "
+                     "col < n: the strict comparison) and every shared-memory index against the allocation size; "
+                     "sizes that are not multiples of the tile are where this shows.",
+    "uninitialized": "a value is read before anything wrote it (shared memory, or an output buffer the kernel reads). "
+                     "Make sure every element that is read was stored first, e.g. zero-fill tile elements past the "
+                     "edge, and keep reads of a partial tile inside the part that was written.",
+    "deadlock": "a barrier is not reached by every thread of the CTA (it sits inside a branch that depends on the "
+                "thread id or on data) or has invalid arguments. Move txl.cuda.cta_sync() out of thread-dependent "
+                "branches.",
+    "runtime_error": "the kernel faulted while running (illegal address or similar); look for an index that can "
+                     "leave its buffer.",
+}
+
+
+def _hint(f) -> str | None:
+    if f.evidence.get("hint"):
+        return f.evidence["hint"]
+    if f.validator == "compiler_checks":
+        return GATE_HINTS.get(f.kind)
+    return None
+
+
+def _location(f) -> str | None:
+    ev = f.evidence
+    if ev.get("python_lines") and f.location:
+        return f"{f.location} of your kernel module"
+    c = ev.get("cuda")
+    if c:
+        def one(x):
+            t = f"line {x['line']}" + (f" ({x['access']})" if x.get("access") else "")
+            if x.get("helper") and not x.get("in_kernel"):
+                t += f", inside TIRx helper {x['helper']}"
+            return t + (f": {x['code'][:160].rstrip(';')}" if x.get("code") else "")
+        where = f"in the CUDA that TIRx generated from your module (no Python line is known), {one(c)}"
+        if ev.get("cuda_other"):
+            where += f"; other access at {one(ev['cuda_other'])}"
+        return where
+    return f.location
 
 
 def render(reports: list[ValidationReport], max_findings: int = 8) -> str:
@@ -48,10 +96,14 @@ def render(reports: list[ValidationReport], max_findings: int = 8) -> str:
             lines.append(f"- [{f.validator}] {f.kind}: {f.message}{_example(f.evidence)}")
             if f.evidence.get("tag"):
                 lines.append(f"  test purpose: {f.evidence['tag']}")
+            loc = _location(f)
+            if loc:
+                lines.append(f"  location: {loc}")
             for rc in f.evidence.get("related_change", [])[:2]:
                 lines.append(f"  related change: {rc}")
-            if f.evidence.get("hint"):
-                lines.append(f"  hint: {f.evidence['hint']}")
+            hint = _hint(f)
+            if hint:
+                lines.append(f"  hint: {hint}")
             if f.evidence.get("stderr"):
                 lines.append("  compiler output:\n" + f.evidence["stderr"][-1200:])
     for f in warnings[:3]:

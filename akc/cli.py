@@ -1,12 +1,14 @@
 """akc command line.  Usage: akc <command> [options]   (or: python -m akc <command> ...)
 
-  validate   run configuration A/B/C on one kernel file and print the feedback the agent would get
+  validate   run configuration A0/A/B/C on one kernel file and print the feedback the agent would get
              (--perf: if it passes, also measure its speed on the GPU and add the speed feedback)
   hottest    change-aware check of a kernel revision: what changed, targeted tests, problems found
-  check      run tests (fixed suite or a JSON list) on workload variants and/or extra kernel files (GPU)
+  check      run tests (fixed suite or a JSON list) on workload variants and/or extra kernel files
+             (GPU; --lang tirx: the tirx-lite variants, also on the CPU through NumSim)
   bench      speed of kernels on the GPU: time, x PyTorch, roofline (% of peak), practical floor
-  volta      VOLTA on every CUDA variant of a workload, checked against manifest expectations (CPU)
-  eval-bugs  configurations A/B/C on the injected bugs (detection, coverage, overhead)
+  volta      VOLTA on every candidate variant of a workload (--lang cuda|tirx), checked against manifest
+             expectations (CPU)
+  eval-bugs  configurations A0/A/B/C on the injected bugs (detection, coverage, overhead per validator)
   mutants    mutation benchmark: is each generated edit classified right (CPU), caught by A / C (GPU)?
              (--classifier ir|ast: tirx-lite rows use the IR change analysis or the Python-AST rules)
   tirx-gpu   tirx-lite kernels on the GPU (correctness + speed)
@@ -44,7 +46,10 @@ def cmd_validate(argv):
     ap.add_argument("--workload", required=True)
     ap.add_argument("--kernel", required=True)
     ap.add_argument("--parent", help="last accepted version (default: workload reference)")
-    ap.add_argument("--config", default="C", choices=["A", "B", "C"])
+    ap.add_argument("--config", default="C", choices=["A0", "A", "B", "C"],
+                    help="A0 fixed tests; A + compiler-checks gate; B + VOLTA; C + change-aware tests")
+    ap.add_argument("--run-all", action="store_true",
+                    help="run every validator of the configuration even after a failure (default: stop at the first)")
     ap.add_argument("--device", default="auto", choices=["auto", "gpu", "cpu"])
     ap.add_argument("--perf", action="store_true", help="if validation passes, measure speed too (GPU)")
     ap.add_argument("--llm-classify", action="store_true",
@@ -57,7 +62,7 @@ def cmd_validate(argv):
     from .validation import Candidate, ValidationContext, run_pipeline
     parent = Candidate.from_file(a.workload, a.parent, label="parent") if a.parent else None
     cand = Candidate.from_file(a.workload, a.kernel, parent=parent)
-    extra = {}
+    extra = {"run_all": True} if a.run_all else {}
     if a.llm_classify:
         from .validation.changeaware.llm_classify import LlmClassifier
         extra["llm_classifier"] = LlmClassifier(model=a.llm_model)
@@ -80,7 +85,8 @@ def cmd_validate(argv):
 def cmd_check(argv):
     ap = argparse.ArgumentParser(prog="akc check")
     ap.add_argument("--workload", required=True)
-    ap.add_argument("--variants", help="comma-separated manifest variants (default: all CUDA variants)")
+    ap.add_argument("--lang", default="cuda", choices=["cuda", "tirx"], help="which manifest variants (default cuda)")
+    ap.add_argument("--variants", help="comma-separated manifest variants (default: all variants of --lang)")
     ap.add_argument("--extra", action="append", help="extra kernel LABEL=PATH[:BLOCK] (repeatable)")
     ap.add_argument("--tests", help="'fixed' (default) or a JSON file with a list of TestCase dicts")
     ap.add_argument("--repeat", type=int)
@@ -95,7 +101,7 @@ def cmd_check(argv):
     if a.repeat:
         tests = [TestCase(t.op, t.shape, t.dist, t.seed, a.repeat, t.tag, t.misalign) for t in tests]
     rows = []
-    for c in _candidates(a.workload, a.variants, a.extra):
+    for c in _candidates(a.workload, a.variants, a.extra, a.lang):
         outs = run(c, tests, a.device)
         reasons = sorted({o["reason"] for o in outs if not o["passed"]})
         print(f"{c.label:26s} {sum(o['passed'] for o in outs):3d}/{len(outs):<3d} passed   {', '.join(reasons)}")
@@ -105,8 +111,9 @@ def cmd_check(argv):
         rows += [{"variant": c.label, **o} for o in outs]
     d = RESULTS / "harness"
     d.mkdir(parents=True, exist_ok=True)
-    f = d / f"check_{a.workload}_{datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
-    f.write_text(json.dumps({"workload": a.workload, "tests": [t.to_dict() for t in tests], "results": rows}, indent=2, default=str))
+    tag = "" if a.lang == "cuda" else f"_{a.lang}"
+    f = d / f"check_{a.workload}{tag}_{datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
+    f.write_text(json.dumps({"workload": a.workload, "lang": a.lang, "tests": [t.to_dict() for t in tests], "results": rows}, indent=2, default=str))
     print(f"saved {f}")
     return 0
 

@@ -364,3 +364,68 @@ NumSim runs 2 tests: LayerNorm rows = 2, N = 200; GEMM 12 x 12 x 40. The first t
 - Unit tests `tests.validation.test_tirx_kernels` on the A100: 13 run, all pass (GPU tests included), in both jobs.
 
 GPU-job time for Task 1: 2 jobs, about 10 min 15 s.
+
+# D2: compiler-checks gate on tirx-lite (2026-11-17, jobs 24061664, 24061708, 24061793)
+**Question.** Does the gate (tirx-lite static checks + compute-sanitizer on the CUDA TIRx generates) catch the
+race / out-of-bounds bugs without false alarms on correct kernels? This is the first time compute-sanitizer runs on
+TIRx-generated code. Code: `akc/validation/compiler_checks/`; details in `notes/build_log.md` (D2).
+
+**Jobs** (all on one A100-SXM4-40GB, driver 595.71.05, compute-sanitizer 2026.1.1):
+
+| job | what | elapsed |
+|---|---|---|
+| 24061664 | smoke: the gate on 6 kernels (GPU) + NumSim path on 3 gemm kernels (CPU, same node) | 1 min 32 s |
+| 24061708 | GPU unit tests (46 pass) + the gate on 33 of 34 kernels; cancelled: memcheck hung 180 s twice | 13 min 54 s |
+| 24061793 | GPU gate tests (3 pass) + the gate on all 34 kernels + `akc eval-bugs --lang tirx` (A0/A/B/C) | 16 min 11 s |
+
+**Results** (`results/eval/gate_tirx.json`, job 24061793):
+
+| kernels | memcheck | racecheck | initcheck | synccheck | gate (any) |
+|---|---|---|---|---|---|
+| 5 tirx refs / opts (false alarms) | 0/5 | 0/5 | 0/5 | 0/5 | 0/5 |
+| 4 GLM tirx kernels (false alarms) | 0/4 | 0/4 | 0/4 | 0/4 | 0/4 |
+| 11 injected tirx bugs | 3/11 | 3/11 | 0/11 | 0/11 | 6/11 |
+| 8 tirx mutants with VOLTA RACE / OUT_OF_BOUNDS | 2/8 | 3/8 | 2/8 | 0/8 | 4/8 |
+| 6 tirx mutants with VOLTA EQUIV | 1/6 | 0/6 | 0/6 | 0/6 | 1/6 |
+
+- Caught injected bugs: softmax / layernorm / gemm nosync (racecheck), softmax / layernorm offbyone and gemm guard
+  (memcheck). Missed: the 3 tail bugs, nomax and onepass (value bugs).
+- Caught mutants: softmax_txl_ref cmp L30 (race + uninitialized), const L8 (uninitialized), glm D2 cmp L151 and
+  D3 cmp L97 (out_of_bounds + race), and glm C idx1 L114 (out_of_bounds; VOLTA EQUIV: the read is on the N > 12284
+  path, VOLTA checks N ≤ 584). Missed: the 4 `if (lane == 0)` negations (same-value writes).
+- The value check of the memcheck run passes on all 9 correct kernels at every shape, so the launcher's argument
+  order, grid, block and shared-memory size are right.
+- Seconds per revision, median of 34: gate 10.9 (max 12.7); static child 7.8; nvcc 0.7; sanitizer wall 2.1 with
+  the 4 tools in parallel, 4.5–4.7 one after another (3 kernels, same verdicts); per tool 1.5–2.7.
+- CPU-only path (job 24061664, `build/tmp`, not kept as a result file): gemm nosync → race (Python lines 50 and 42),
+  gemm guard → out_of_bounds (line 56), gemm opt clean; 12 s per kernel, 57 s for the first (NumSim engine build).
+
+**Problems.**
+- racecheck reports name TIRx's inlined helpers, not the kernel; the first parser dropped them (fixed by file-name
+  attribution; lines mapped to call sites with `nvdisasm -gi`).
+- memcheck with `--destroy-on-device-error kernel` (the CUDA trial's flag) hung until the 180 s timeout after
+  reporting the out-of-bounds read of glm C idx1 L114 and glm D2 cmp L151 (job 24061708). With `context` both take
+  ~12 s (job 24061793).
+
+**`akc eval-bugs --lang tirx`, A0 / A / B / C** (job 24061793, `results/eval/bugset_tirx_gpu_20261117-045938.json`;
+every configuration through `run_pipeline` with `run_all`, one report cache per bug; parent = the bug-free tirx
+version: layernorm / gemm opt, softmax reference):
+
+| | A0 | A | B | C |
+|---|---|---|---|---|
+| detected (of 11) | 3 | 6 | 6 | 11 |
+| validation seconds per bug (mean) | 8.6 | 18.6 | 21.4 | 41.8 |
+
+- Per validator (in C): gate 6/11 (10.0 s per bug), fixed tests 3/11 (8.6 s), change-aware tests 11/11 (20.9 s),
+  VOLTA 4/11 (2.2 s).
+- A0 → A: the gate adds layernorm nosync (racecheck), gemm guard and softmax offbyone (memcheck).
+- B adds nothing over A here: VOLTA at the default shape catches the 3 nosync bugs and layernorm offbyone, all
+  already caught by the gate.
+- **VOLTA in C ran at B's default shape, not at change-aware shapes.** `changeaware.plan()` returns VOLTA shapes for
+  CUDA only (`volta_shapes(...) if lang == "cuda" else []`, unchanged since the restructure), so for tirx the
+  pipeline's "suggested shapes" are empty and VOLTA falls back to the default. C's detection is not affected here
+  (the change-aware tests catch all 11), but VOLTA's own column in C is understated (Task 3 measured the tail /
+  guard / offbyone bugs as caught at change-aware shapes). Not fixed in D2 (Task 2 code); see the build log.
+
+GPU-job time for D2: 3 jobs, 31 min 37 s (24061664: 1 min 32 s; 24061708: 13 min 54 s, cancelled; 24061793:
+16 min 11 s).

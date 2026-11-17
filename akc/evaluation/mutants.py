@@ -27,15 +27,19 @@ Operators (accept = categories that count as a correct classification):
 
 Mutant.bug = False marks edits that cannot change any output (an array declared 1 larger, float -> double): they
 still test the classifier but are not counted for detection. With --detect, each base kernel is first run through
-the fixed tests and the change-aware floor tests; a base that fails by itself is not used for detection (3 of the
-GLM held-out drafts are wrong already), and when A already catches a mutant C is not re-run (C includes A's tests).
+the compiler-checks gate, the fixed tests and the change-aware floor tests; a base that fails by itself is not used
+for detection (3 of the GLM held-out drafts are wrong already). Each configuration then runs through run_pipeline
+with run_all and a per-mutant report cache (every validator runs once), recording caught / seconds per validator.
+Fresh-set mutants (FRESH) also use the extended tirx operators: init on txl.float32(<value>) and smem on
+allocations sized by a named constant.
 
-CLI:  akc mutants [--set bases|heldout|all] [--llm-classify [--llm-model M]] [--per-op 3]   (CPU; LLM spends coins)
+CLI:  akc mutants [--set bases|heldout|fresh|all] [--lang all|cuda|tirx] [--llm-classify [--llm-model M]] [--per-op 3]
+          (CPU; LLM spends coins). fresh = the tirx-lite LayerNorm / GEMM kernels (FRESH), never used for tuning.
       akc mutants --classifier ast|ir [--only LABELS] [--compare-with OTHER.json]
           ir (default): tirx-lite rows use the IR change analysis (changeaware.irdiff / classify_ir; CUDA rows keep
           the text classifier); ast: tirx-lite rows use the Python-AST classifier as before. --compare-with prints
           an agreement matrix (verdict here vs verdict there, matched by base / operator / line / edit).
-      akc mutants --set all --per-op 1 --detect --device gpu                (GPU: is each mutant caught by A / C?)
+      akc mutants --set all --per-op 1 --detect --device gpu [--volta]      (GPU: caught by A0 / A / (B) / C?)
       e.g. sbatch --time=00:55:00 scripts/slurm/gpu_job.sbatch akc mutants --set all --per-op 1 --detect --device gpu
 """
 from __future__ import annotations
@@ -75,6 +79,17 @@ HELDOUT = [
     ("glm_txl_D2_r1", "softmax", "results/pilot/20261115-205635/softmax_txl_r1.py"),
     ("glm_txl_D3_r1", "softmax", "results/pilot/20261115-205831/softmax_txl_r1.py"),
 ]
+# Fresh (2026-11-17, D2): the tirx-lite LayerNorm and GEMM kernels written for Task 1. Neither the classifier rules
+# (revised 2026-11-16 on BASES) nor the IR change analysis (D3, checked on softmax only) were tuned on them, so this is
+# the cleanest held-out set. Its mutants also use the extended tirx operators (see mutants(extended=True)).
+FRESH = [
+    ("layernorm_txl_ref", "layernorm", "workloads/layernorm/tirx/layernorm_txl_ref.py"),
+    ("layernorm_txl_opt", "layernorm", "workloads/layernorm/tirx/layernorm_txl_opt.py"),
+    ("gemm_txl_ref", "gemm", "workloads/gemm/tirx/gemm_txl_ref.py"),
+    ("gemm_txl_opt", "gemm", "workloads/gemm/tirx/gemm_txl_opt.py"),
+]
+FRESH_LABELS = {lab for lab, _, _ in FRESH}
+SETS = {"bases": BASES, "heldout": HELDOUT, "fresh": FRESH, "all": BASES + HELDOUT + FRESH}
 
 
 @dataclass
@@ -142,6 +157,11 @@ _ASSIGN = {"cuda": re.compile(r"(?<![=!<>+\-*/])=(?!=)|\+=|-=|\*=|/="), "tirx": 
 _MATH = {"cuda": re.compile(r"\bfmaxf\b|\bfminf\b"), "tirx": re.compile(r"txl\.max\b|txl\.min\b")}
 _INIT = re.compile(r"-INFINITY|-FLT_MAX|-3\.4028\d*e\+?38f?|(?<![\w.])0\.0f?(?![\w.])")
 _DECL = re.compile(r"\b(?:float|int)\s+(\w+)\s*(?:=|;)")
+_EXPONENT = re.compile(r"(?<![\w.])\d+(?:\.\d*)?[eE][+-]?$")        # "1e-" before an int: it is a float's exponent
+# extended tirx operators (the fresh set): initial values written as txl.float32(<value>) and shared-memory
+# allocations sized by a named constant (alloc([BLOCK]) / alloc([TILE, TILE]))
+_TXL_INIT = re.compile(r"(?:\binit\s*=\s*|txl\.assign\(\s*\w+\s*,\s*)txl\.float32\(\s*(-?[\d.]+(?:[eE][+-]?\d+)?|[A-Z_][A-Z0-9_]*)\s*\)")
+_TXL_SMEM_NAMED = re.compile(r"\.alloc\(\[\s*([A-Z_][A-Z0-9_]*)\s*(?=[,\]])")
 
 
 def _after_headers(line: str) -> int:
@@ -160,7 +180,11 @@ def _after_headers(line: str) -> int:
         off = j
 
 
-def mutants(src: str, lang: str = "cuda", per_op: int = PER_OP) -> list[Mutant]:
+def mutants(src: str, lang: str = "cuda", per_op: int = PER_OP, extended: bool = False) -> list[Mutant]:
+    """extended (tirx only; used for the fresh set): also edit initial values written as txl.float32(<value>) (init) and
+    shared-memory allocations sized by a named constant (smem: alloc([BLOCK]) -> alloc([BLOCK // 2])). The original
+    patterns miss both in tirx-lite; they stay off for bases / heldout so those mutants are identical to earlier runs."""
+    ext = extended and lang == "tirx"
     lines = src.splitlines()
     code = _code_lines(src, lang)
     out: list[Mutant] = []
@@ -200,7 +224,7 @@ def mutants(src: str, lang: str = "cuda", per_op: int = PER_OP) -> list[Mutant]:
             continue
         for m in _INT.finditer(part):
             v = int(m.group(1))
-            if v < 2 or v > 100000:
+            if v < 2 or v > 100000 or _EXPONENT.search(part[:m.start()]):
                 continue
             nv = v // 2 if v & (v - 1) == 0 else v + 1
             c.append((i, lines[i][:m.start()] + str(nv) + lines[i][m.end():], f"{v} -> {nv}"))
@@ -278,6 +302,12 @@ def mutants(src: str, lang: str = "cuda", per_op: int = PER_OP) -> list[Mutant]:
             zero, one = ("0.0f", "1.0f") if lang == "cuda" else ("0.0", "1.0")
             new = zero if m.group(0) not in ("0.0f", "0.0") else one
             c.append((i, lines[i][:m.start()] + new + lines[i][m.end():], f"{m.group(0)} -> {new}"))
+        elif ext:
+            m = _TXL_INIT.search(part)
+            if m:
+                v = m.group(1)
+                new = "1.0" if v in ("0.0", "0", "0.") else "0.0"
+                c.append((i, lines[i][:m.start(1)] + new + lines[i][m.end(1):], f"txl.float32({v}) -> txl.float32({new})"))
     add("init", ("numerical",), c)
     # --- operators added AFTER the rule revision (held out) ---
     # negate: an if-condition negated                                          indexing
@@ -304,6 +334,9 @@ def mutants(src: str, lang: str = "cuda", per_op: int = PER_OP) -> list[Mutant]:
         if m and int(m.group(1)) >= 2:
             v = int(m.group(1))
             c.append((i, lines[i][:m.start(1)] + str(v // 2) + lines[i][m.end(1):], f"shared size {v} -> {v // 2}"))
+        elif ext and (m := _TXL_SMEM_NAMED.search(part)):
+            name = m.group(1)
+            c.append((i, lines[i][:m.end(1)] + " // 2" + lines[i][m.end(1):], f"shared size {name} -> {name} // 2"))
     add("smem", ("memory", "tiling"), c)
     # dtype: a float local made double (CUDA) / float16 (tirx)                numerical
     c = []
@@ -359,42 +392,49 @@ def classify_mutant(workload: str, base_src: str, m: Mutant, lang: str, llm=None
                          "fallback_reason": (an.get("fallback_reason") or None) and str(an["fallback_reason"])[:200]}}
 
 
-def _detect(workload: str, base_label: str, base_src: str, lang: str, m: Mutant, device: str, volta: bool,
-            llm=None, classifier: str = "auto") -> dict:
-    """Is the mutant caught by A (fixed tests) and by C (fixed + change-aware tests [+ VOLTA])?"""
-    from ..validation.changeaware.validator import ChangeAwareValidator
-    from ..validation.fixed_tests.validator import FixedTestsValidator
-    from ..validation.interface import Candidate, ValidationContext
-    from ..validation.pipeline import run_pipeline
+def _cands(workload: str, base_label: str, base_src: str, lang: str, m: Mutant):
+    from ..validation.interface import Candidate
     parent = Candidate(workload, lang, base_src, label=base_label)
-    cand = Candidate(workload, lang, m.src, parent=parent, label=f"{base_label}_{m.op}_{m.line}")
+    return Candidate(workload, lang, m.src, parent=parent, label=f"{base_label}_{m.op}_{m.line}")
+
+
+def _detect(workload: str, base_label: str, base_src: str, lang: str, m: Mutant, device: str, volta: bool,
+            llm=None, classifier: str = "auto", pool=None) -> dict:
+    """Is the mutant caught by each configuration? Every configuration runs through validation.pipeline.run_pipeline
+    (evaluation.bugset.evaluate: run_all, one report cache per mutant, so each validator runs once):
+      A0 fixed tests | A + compiler-checks gate | B + VOLTA | C + change-aware tests.
+    Without `volta`, VOLTA is skipped: B is not reported and C is "C without VOLTA" (C["skipped"] says so).
+    Returns {config: {"caught", "seconds", "per_validator": {name: caught / seconds / decided / kinds / cached}}}
+    plus "seconds" (wall). `pool` (evaluation.volta_pool.VoltaPool, tirx only): VOLTA reports come from its parallel
+    CPU workers; per-validator VOLTA seconds are then the workers' own times, not part of the wall time here."""
+    from ..validation.interface import ValidationContext
+    from .bugset import evaluate
+    cand = _cands(workload, base_label, base_src, lang, m)
     ctx = ValidationContext(device=device, extra={"classifier": classifier, **({"llm_classifier": llm} if llm else {})})
     t0 = time.perf_counter()
-    fixed = FixedTestsValidator().validate(cand, ctx)
-    out = {"A": {"caught": not fixed.passed, "seconds": fixed.seconds}}
-    if volta:
-        r = run_pipeline(cand, "C", ctx)
-        out["C"] = {"caught": not r.passed, "seconds": r.seconds}
-    elif not fixed.passed:                                 # C runs the fixed tests too: already caught
-        out["C"] = {"caught": True, "seconds": fixed.seconds, "changeaware_only": False}
-    else:
-        ca = ChangeAwareValidator().validate(cand, ctx)
-        out["C"] = {"caught": not ca.passed, "seconds": fixed.seconds + ca.seconds, "changeaware_only": not ca.passed,
-                    "failed_tests": [f.evidence.get("tag", f.message)[:120] for f in ca.findings if f.severity == "error"][:5]}
+    configs = ("A0", "A", "B", "C") if volta else ("A0", "A", "C")
+    res = evaluate(cand, ctx, configs, skip=() if volta else ("volta",),
+                   cache=pool.cache(cand) if (pool is not None and volta) else None)
+    out = {c: {"caught": r["caught"], "seconds": r["seconds"], "per_validator": r["per_validator"],
+               "skipped": r["skipped"]} for c, r in res.items()}
+    ca = res["C"]["validators"].get("changeaware")
+    if ca and not ca["passed"]:
+        out["C"]["changeaware_errors"] = ca["kinds"]
     out["seconds"] = time.perf_counter() - t0
     return out
 
 
 def _base_ok(workload: str, base_label: str, base_src: str, lang: str, device: str) -> tuple[bool, str]:
     """A mutant of a kernel that is already wrong is "caught" by anything, so detection only counts kernels that
-    pass the fixed tests and the always-on change-aware floor tests themselves."""
+    pass the compiler-checks gate, the fixed tests and the always-on change-aware floor tests themselves."""
     from ..validation.changeaware.validator import ChangeAwareValidator
+    from ..validation.compiler_checks.validator import CompilerChecksValidator
     from ..validation.fixed_tests.validator import FixedTestsValidator
     from ..validation.interface import Candidate, ValidationContext
     ctx = ValidationContext(device=device)
     parent = Candidate(workload, lang, base_src, label=base_label)
     cand = Candidate(workload, lang, base_src, parent=parent, label=base_label)     # no change: floor tests only
-    for v in (FixedTestsValidator(), ChangeAwareValidator()):
+    for v in (CompilerChecksValidator(), FixedTestsValidator(), ChangeAwareValidator()):
         r = v.validate(cand, ctx)
         if not r.passed:
             errs = [f.message for f in r.findings if f.severity == "error"]
@@ -406,13 +446,19 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="akc mutants", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--per-op", type=int, default=PER_OP)
     ap.add_argument("--only", help="comma-separated base labels")
-    ap.add_argument("--set", default="bases", choices=["bases", "heldout", "all"],
-                    help="bases: kernels the rules were revised on; heldout: kernels never looked at while revising")
+    ap.add_argument("--set", default="bases", choices=list(SETS),
+                    help="bases: kernels the rules were revised on; heldout: kernels never looked at while revising; "
+                         "fresh: the tirx-lite LayerNorm / GEMM kernels (nothing was tuned on them); all: the three")
+    ap.add_argument("--lang", default="all", choices=["all", "cuda", "tirx"],
+                    help="only bases in this language (tirx: the main experiment, the agent writes tirx-lite)")
     ap.add_argument("--llm-classify", action="store_true", help="also ask an LLM to classify (spends Lumen coins)")
     ap.add_argument("--llm-model", default=None)
-    ap.add_argument("--detect", action="store_true", help="run configurations A and C on every mutant (GPU)")
+    ap.add_argument("--detect", action="store_true", help="run configurations A0 / A / (B) / C on every mutant (GPU)")
     ap.add_argument("--device", default="auto", choices=["auto", "gpu", "cpu"])
-    ap.add_argument("--volta", action="store_true", help="with --detect: include VOLTA in C (slow)")
+    ap.add_argument("--volta", action="store_true", help="with --detect: include VOLTA (configurations B and C; slow)")
+    ap.add_argument("--volta-workers", type=int, default=0,
+                    help="with --detect --volta, tirx-lite only: run VOLTA in this many parallel CPU processes while the "
+                         "GPU validators run serially (0: VOLTA runs inline)")
     ap.add_argument("--classifier", default="ir", choices=["ir", "ast"],
                     help="tirx-lite rows: IR change analysis (default) or the Python-AST classifier")
     ap.add_argument("--compare-with", default=None, help="another mutants JSON: print an agreement matrix")
@@ -423,13 +469,19 @@ def main(argv: list[str] | None = None) -> int:
         from ..validation.changeaware.llm_classify import LlmClassifier
         llm = LlmClassifier(**({"model": a.llm_model} if a.llm_model else {}))
     rows, t0 = [], time.perf_counter()
+    pool = None
+    if a.detect and a.volta and a.volta_workers > 0:
+        from .volta_pool import VoltaPool
+        pool = VoltaPool(a.volta_workers)
     out = Path(a.out) if a.out else RESULTS / "eval" / f"mutants_{'llm_' if llm else ''}{datetime.now():%Y%m%d-%H%M%S}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     save = lambda done: out.write_text(json.dumps({"rows": rows, "seconds": time.perf_counter() - t0,  # noqa: E731
                                                    "llm_model": getattr(llm, "model", None), "classifier": a.classifier,
+                                                   "set": a.set, "lang": a.lang, "detect_configs": (
+                                                       ["A0", "A", "B", "C"] if a.volta else ["A0", "A", "C"])
+                                                   if a.detect else None, "volta_workers": a.volta_workers,
                                                    "complete": done}, indent=1))
-    sets = {"bases": BASES, "heldout": HELDOUT, "all": BASES + HELDOUT}[a.set]
-    for label, workload, rel in sets:
+    for label, workload, rel in SETS[a.set]:
         if a.only and label not in a.only.split(","):
             continue
         path = ROOT / rel
@@ -437,25 +489,34 @@ def main(argv: list[str] | None = None) -> int:
             print(f"skip {label}: {rel} not found")
             continue
         src, lang = path.read_text(), ("tirx" if path.suffix == ".py" else "cuda")
+        if a.lang != "all" and lang != a.lang:
+            continue
         ok, why = _base_ok(workload, label, src, lang, a.device) if a.detect else (True, "")
         if not ok:
             print(f"  {label}: the base kernel itself fails ({why}); its mutants are classified but not run", flush=True)
-        muts = mutants(src, lang, a.per_op)
+        muts = mutants(src, lang, a.per_op, extended=label in FRESH_LABELS)
         if lang == "tirx" and a.classifier == "ir":          # trace all mutants of this base in one child process
             from ..validation.changeaware import ir_worker
             ir_worker.prefetch(workload, [(src, m.src, ir_worker.trace_shapes(workload, src, m.src)) for m in muts
                                           if src != m.src], timeout_s=ir_worker.TIMEOUT_S)
+        use_pool = pool is not None and ok and lang == "tirx"
+        if use_pool:                                       # VOLTA for all of this base's mutants starts now, on CPUs
+            for m in muts:
+                pool.submit(_cands(workload, label, src, lang, m))
         for m in muts:
-            r = {"base": label, "workload": workload, "lang": lang,
+            r = {"base": label, "set": next(n for n in ("bases", "heldout", "fresh") if label in
+                                            {x[0] for x in SETS[n]}), "workload": workload, "lang": lang,
                  **classify_mutant(workload, src, m, lang, llm, "ast" if a.classifier == "ast" else "auto")}
             if a.detect:
                 r["base_ok"] = ok
                 if ok:
                     r["detect"] = _detect(workload, label, src, lang, m, a.device, a.volta, llm,
-                                          "ast" if a.classifier == "ast" else "auto")
+                                          "ast" if a.classifier == "ast" else "auto", pool if use_pool else None)
             rows.append(r)
         save(False)                                   # partial results survive a Slurm time limit
         print(f"  {label}: done ({len(rows)} mutants so far, {time.perf_counter() - t0:.0f}s)", flush=True)
+    if pool is not None:
+        pool.shutdown()
     _report(rows, a.llm_classify)
     save(True)
     print(f"saved {out}")
@@ -530,17 +591,23 @@ def _report(rows: list[dict], llm: bool) -> None:
           f"no-op mutants: {t['spurious']}/{t['noop']} spurious")
     if any("detect" in r for r in rows):
         det = [r for r in rows if "detect" in r and r["accept"] and r.get("bug", True)]
-        a = sum(r["detect"]["A"]["caught"] for r in det)
-        c = sum(r["detect"]["C"]["caught"] for r in det)
         fa = [r for r in rows if "detect" in r and not r["accept"]]
+        cfgs = [c for c in ("A0", "A", "B", "C") if any(c in r["detect"] for r in det + fa)]
         skipped = sorted({r["base"] for r in rows if r.get("base_ok") is False})
-        print(f"detection (mutants that can change outputs; some may still be equivalent): A {a}/{len(det)}, "
-              f"C {c}/{len(det)}; false alarms on no-op edits: A {sum(r['detect']['A']['caught'] for r in fa)}/{len(fa)}, "
-              f"C {sum(r['detect']['C']['caught'] for r in fa)}/{len(fa)}"
+        caught = lambda rs, c: sum(r["detect"].get(c, {}).get("caught", False) for r in rs)  # noqa: E731
+        print("detection (mutants that can change outputs; some may still be equivalent): "
+              + ", ".join(f"{c} {caught(det, c)}/{len(det)}" for c in cfgs)
+              + "; false alarms on no-op edits: " + ", ".join(f"{c} {caught(fa, c)}/{len(fa)}" for c in cfgs)
               + (f"; bases that fail by themselves (not run): {', '.join(skipped)}" if skipped else ""))
+        names = sorted({v for r in det for c in cfgs for v in r["detect"].get(c, {}).get("per_validator", {})})
+        if names:
+            print("  per validator (caught / mutants): " + ", ".join(
+                f"{v} {sum(any(r['detect'].get(c, {}).get('per_validator', {}).get(v, {}).get('caught') for c in cfgs) for r in det)}"
+                f"/{len(det)}" for v in names))
+        last = cfgs[-1] if cfgs else "C"
         for r in det:
-            if not r["detect"]["C"]["caught"]:
-                print(f"  C missed: {r['base']} {r['op']} L{r['line']} {r['desc']} (categories {r['categories']})")
+            if not r["detect"].get(last, {}).get("caught"):
+                print(f"  {last} missed: {r['base']} {r['op']} L{r['line']} {r['desc']} (categories {r['categories']})")
     if llm:
         cost = sum((r.get("llm") or {}).get("cost", 0) for r in rows)
         print(f"LLM cost: {cost:.4f} coins")

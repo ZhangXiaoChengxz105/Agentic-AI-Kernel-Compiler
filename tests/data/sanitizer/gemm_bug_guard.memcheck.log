@@ -1,0 +1,15 @@
+========= COMPUTE-SANITIZER
+========= Invalid __global__ write of size 4 bytes
+=========     at gemm_bug_guard+0x5f0 in gemm_bug_guard.cu:36
+=========     by thread (0,1,0) in block (1,2,0)
+=========     Access to 0x7fe3ff203d44 is out of bounds
+=========     and is 65 bytes after the nearest allocation at 0x7fe3ff202c00 of size 4356 bytes
+========= 
+========= Invalid __global__ write of size 4 bytes
+=========     at gemm_bug_guard+0x5f0 in gemm_bug_guard.cu:36
+=========     by thread (1,1,0) in block (1,2,0)
+=========     Access to 0x7fe3ff203d48 is out of bounds
+=========     and is 69 bytes after the nearest allocation at 0x7fe3ff202c00 of size 4356 bytes
+========= 
+========= ERROR SUMMARY: 35 errors
+========= ERROR SUMMARY: 5 errors were not printed. Use --print-limit option to adjust the number of printed errors
