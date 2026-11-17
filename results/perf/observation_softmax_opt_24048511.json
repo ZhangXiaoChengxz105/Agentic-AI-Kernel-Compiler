@@ -1,0 +1,975 @@
+{
+ "config": "C",
+ "passed": true,
+ "seconds": 7.195624837884679,
+ "reports": [
+  {
+   "validator": "fixed_tests",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.081506571965292,
+   "artifacts": {
+    "outcomes": [
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 64,
+       "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.728170346721353e-09,
+      "max_rel_err": 4.2808202167243937e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 7.73e-09)",
+      "kernel_ms": 0.26323203928768635
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 64,
+       "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.996493553813039e-09,
+      "max_rel_err": 4.25040799731312e-07,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 2e-09)",
+      "kernel_ms": 0.1294619869440794
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 64,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.542094505013196e-10,
+      "max_rel_err": 4.792877498765618e-07,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 6.54e-10)",
+      "kernel_ms": 0.08043996058404446
+     }
+    ],
+    "n_tests": 3
+   }
+  },
+  {
+   "validator": "changeaware",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.091147294966504,
+   "artifacts": {
+    "parent": "reference softmax_ref",
+    "categories": [
+     "sync",
+     "numerical",
+     "tiling",
+     "indexing",
+     "memory"
+    ],
+    "labels": [
+     {
+      "category": "tiling",
+      "rule": "tile-constant",
+      "line": 9,
+      "evidence": "#define BLOCK 128"
+     },
+     {
+      "category": "tiling",
+      "rule": "compile-constant",
+      "line": 9,
+      "evidence": "#define BLOCK 128"
+     },
+     {
+      "category": "memory",
+      "rule": "shared-decl",
+      "line": 13,
+      "evidence": "__shared__ float red[BLOCK];"
+     },
+     {
+      "category": "indexing",
+      "rule": "loop-step",
+      "line": 13,
+      "evidence": "for (int i = 0; i < N; ++i) m = fmaxf(m, xr[i]);  ->  for (int i = tid; i < N; i += BLOCK) m = fmaxf(m, xr[i]);"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 16,
+      "evidence": "for (int i = 0; i < N; ++i) s += EXP(xr[i] - m);"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 18,
+      "evidence": "for (int i = 0; i < N; ++i) yr[i] = EXP(xr[i] - m) / s;"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 22,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 24,
+      "evidence": "if (tid < s) red[tid] = fmaxf(red[tid], red[tid + s]);"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 25,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 28,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 32,
+      "evidence": "for (int i = tid; i < N; i += BLOCK) sum += EXP(xr[i] - m);"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 34,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 37,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 42,
+      "evidence": "for (int i = tid; i < N; i += BLOCK) yr[i] = EXP(xr[i] - m) * inv;"
+     }
+    ],
+    "tiles": [
+     128
+    ],
+    "tests": [
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 256,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 111643224,
+      "repeat": 5,
+      "tag": "sync: many iterations, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "large",
+      "seed": 1559049094,
+      "repeat": 1,
+      "tag": "numerical: value range 'large'",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 554941860,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 1658832606,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 1933224424,
+      "repeat": 1,
+      "tag": "memory: N=127 (N % 4 = 3)",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 256,
+       "N": 4099
+      },
+      "dist": "normal",
+      "seed": 384834132,
+      "repeat": 5,
+      "tag": "sync: ragged, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "neg_large",
+      "seed": 1660105881,
+      "repeat": 1,
+      "tag": "numerical: value range 'neg_large'",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 4365191,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 351227034,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1001
+      },
+      "dist": "normal",
+      "seed": 33810228,
+      "repeat": 1,
+      "tag": "memory: N=1001 (N % 4 = 1)",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 1,
+       "N": 8192
+      },
+      "dist": "normal",
+      "seed": 170514788,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, many iterations, x10",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "mixed",
+      "seed": 2008154178,
+      "repeat": 1,
+      "tag": "numerical: value range 'mixed'",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1200776342,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1396683659,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1023
+      },
+      "dist": "normal",
+      "seed": 120556038,
+      "repeat": 1,
+      "tag": "memory: N=1023 (N % 4 = 3)",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2048,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 371838106,
+      "repeat": 5,
+      "tag": "sync: grid sweep: many CTAs, 2 iterations, x5",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1256559826,
+      "repeat": 1,
+      "tag": "floor: {'rows': 2, 'N': 1000} normal (runs every revision)",
+      "misalign": 0
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 1000
+      },
+      "dist": "large",
+      "seed": 1388768238,
+      "repeat": 1,
+      "tag": "floor: {'rows': 2, 'N': 1000} large (runs every revision)",
+      "misalign": 0
+     }
+    ],
+    "suggested_volta_shapes": [
+     {
+      "N": 256
+     },
+     {
+      "N": 584
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     },
+     {
+      "N": 264
+     }
+    ],
+    "outcomes": [
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 256,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 111643224,
+      "repeat": 5,
+      "tag": "sync: many iterations, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1048576,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.2480526299929462e-09,
+      "max_rel_err": 5.647359968237103e-07,
+      "examples": [],
+      "message": "all 1048576 outputs within tolerance (max abs err 1.25e-09)",
+      "kernel_ms": 0.2739918418228626
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "large",
+      "seed": 1559049094,
+      "repeat": 1,
+      "tag": "numerical: value range 'large'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.996200091480276e-09,
+      "max_rel_err": 8.829891051874446e-08,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 7e-09)",
+      "kernel_ms": 0.13484200462698936
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 554941860,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 2,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 2 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.07551186718046665
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 1658832606,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 3 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.07140287198126316
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 1933224424,
+      "repeat": 1,
+      "tag": "memory: N=127 (N % 4 = 3)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 381,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.625667265363177e-09,
+      "max_rel_err": 2.919776051855676e-07,
+      "examples": [],
+      "message": "all 381 outputs within tolerance (max abs err 5.63e-09)",
+      "kernel_ms": 0.07191509939730167
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 256,
+       "N": 4099
+      },
+      "dist": "normal",
+      "seed": 384834132,
+      "repeat": 5,
+      "tag": "sync: ragged, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.1847986584878623e-09,
+      "max_rel_err": 5.750900027970191e-07,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.18e-09)",
+      "kernel_ms": 0.07364805787801743
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "neg_large",
+      "seed": 1660105881,
+      "repeat": 1,
+      "tag": "numerical: value range 'neg_large'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.9044570845626616e-09,
+      "max_rel_err": 2.2481446386848925e-07,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 2.9e-09)",
+      "kernel_ms": 0.13183685950934887
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 4365191,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 254,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.189066869583982e-09,
+      "max_rel_err": 3.6557054262425816e-07,
+      "examples": [],
+      "message": "all 254 outputs within tolerance (max abs err 7.19e-09)",
+      "kernel_ms": 0.07367786020040512
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 351227034,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 381,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.763591685667649e-09,
+      "max_rel_err": 3.6202661155726844e-07,
+      "examples": [],
+      "message": "all 381 outputs within tolerance (max abs err 8.76e-09)",
+      "kernel_ms": 0.07055210880935192
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1001
+      },
+      "dist": "normal",
+      "seed": 33810228,
+      "repeat": 1,
+      "tag": "memory: N=1001 (N % 4 = 1)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3003,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.4458358711666452e-09,
+      "max_rel_err": 3.9847792993318965e-07,
+      "examples": [],
+      "message": "all 3003 outputs within tolerance (max abs err 1.45e-09)",
+      "kernel_ms": 0.08343602530658245
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 1,
+       "N": 8192
+      },
+      "dist": "normal",
+      "seed": 170514788,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, many iterations, x10",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8192,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.2407937636491349e-10,
+      "max_rel_err": 3.940178338709506e-07,
+      "examples": [],
+      "message": "all 8192 outputs within tolerance (max abs err 2.24e-10)",
+      "kernel_ms": 0.07038097828626633
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "mixed",
+      "seed": 2008154178,
+      "repeat": 1,
+      "tag": "numerical: value range 'mixed'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.07540103979408741
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1200776342,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 258,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.1900407811960001e-08,
+      "max_rel_err": 4.0172196002634467e-07,
+      "examples": [],
+      "message": "all 258 outputs within tolerance (max abs err 1.19e-08)",
+      "kernel_ms": 0.08021993562579155
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1396683659,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 387,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 9.537417952620864e-09,
+      "max_rel_err": 4.356735602497653e-07,
+      "examples": [],
+      "message": "all 387 outputs within tolerance (max abs err 9.54e-09)",
+      "kernel_ms": 0.07031206041574478
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 3,
+       "N": 1023
+      },
+      "dist": "normal",
+      "seed": 120556038,
+      "repeat": 1,
+      "tag": "memory: N=1023 (N % 4 = 3)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3069,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.6617347480679667e-09,
+      "max_rel_err": 4.01871378005738e-07,
+      "examples": [],
+      "message": "all 3069 outputs within tolerance (max abs err 1.66e-09)",
+      "kernel_ms": 0.06819702684879303
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2048,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 371838106,
+      "repeat": 5,
+      "tag": "sync: grid sweep: many CTAs, 2 iterations, x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 264192,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.3102232127314437e-08,
+      "max_rel_err": 4.964074298119772e-07,
+      "examples": [],
+      "message": "all 264192 outputs within tolerance (max abs err 2.31e-08)",
+      "kernel_ms": 0.07171416655182838
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 1000
+      },
+      "dist": "normal",
+      "seed": 1256559826,
+      "repeat": 1,
+      "tag": "floor: {'rows': 2, 'N': 1000} normal (runs every revision)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 2000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.499289518027696e-10,
+      "max_rel_err": 3.6786621815334273e-07,
+      "examples": [],
+      "message": "all 2000 outputs within tolerance (max abs err 6.5e-10)",
+      "kernel_ms": 0.08029001764953136
+     },
+     {
+      "op": "softmax",
+      "shape": {
+       "rows": 2,
+       "N": 1000
+      },
+      "dist": "large",
+      "seed": 1388768238,
+      "repeat": 1,
+      "tag": "floor: {'rows': 2, 'N': 1000} large (runs every revision)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 2000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.276401703393276e-13,
+      "max_rel_err": 4.715827933295485e-08,
+      "examples": [],
+      "message": "all 2000 outputs within tolerance (max abs err 7.28e-13)",
+      "kernel_ms": 0.0705118291079998
+     }
+    ],
+    "llm": null
+   }
+  },
+  {
+   "validator": "volta",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 1.0228738081641495,
+   "artifacts": {
+    "runs": [
+     {
+      "shape": {
+       "N": 256
+      },
+      "status": "EQUIV",
+      "wall_s": 0.04449996002949774,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 584
+      },
+      "status": "EQUIV",
+      "wall_s": 0.14017484593205154,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 200
+      },
+      "status": "EQUIV",
+      "wall_s": 0.02998519199900329,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 100
+      },
+      "status": "EQUIV",
+      "wall_s": 0.01715149893425405,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 264
+      },
+      "status": "EQUIV",
+      "wall_s": 0.041296728886663914,
+      "detail": ""
+     }
+    ],
+    "shapes": [
+     {
+      "N": 256
+     },
+     {
+      "N": 584
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     },
+     {
+      "N": 264
+     }
+    ]
+   }
+  }
+ ],
+ "perf": {
+  "workload": "softmax",
+  "label": "softmax_opt",
+  "lang": "cuda",
+  "shape": {
+   "rows": 4096,
+   "N": 1024
+  },
+  "measured": true,
+  "reason": "",
+  "gpu": "A100-SXM4-40GB",
+  "time_ms": 0.03332800045609474,
+  "p10_ms": 0.03296000137925148,
+  "p90_ms": 0.03392000123858452,
+  "iters": 50,
+  "torch_ms": 0.03276799991726875,
+  "copy_ms": 0.03033600002527237,
+  "flops": 20971520.0,
+  "bytes": 33554432.0,
+  "intensity": 0.625,
+  "bound": "memory",
+  "achieved_gbps": 1006.7940332695193,
+  "achieved_tflops": 0.6292462707934496,
+  "pct_peak_bw": 64.7455969948244,
+  "pct_peak_flops": 3.2269039527869214,
+  "roofline_ms": 0.021578412861736333,
+  "floor_ms": 0.03033600002527237,
+  "seconds": 3.259756220970303,
+  "spec": {
+   "name": "A100-SXM4-40GB",
+   "dram_gbps": 1555.0,
+   "fp32_tflops": 19.5,
+   "sms": 108,
+   "l2_mb": 40.0,
+   "known": true,
+   "ridge_flop_per_byte": 12.54
+  },
+  "speedup_vs_torch": 0.9831972956324303,
+  "headroom": 1.0986287061026434
+ }
+}

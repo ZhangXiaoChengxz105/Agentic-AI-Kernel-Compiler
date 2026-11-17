@@ -1,0 +1,3686 @@
+{
+ "rows": [
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 35,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 48,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 76,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 26,
+   "desc": "[4] -> [4 + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 51,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 79,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 20,
+   "desc": "5 -> 6",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 41,
+   "desc": "512 -> 256",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 71,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 52,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 80,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl",
+   "line": 49,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl",
+   "line": 77,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 48,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 76,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 68,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 72,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 77,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 40,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 44,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 49,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 33,
+   "desc": "-FLT_MAX -> 0.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 61,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 51,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 79,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "smem",
+   "line": 26,
+   "desc": "shared size 4 -> 2",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "smem",
+   "line": 27,
+   "desc": "shared size 4 -> 2",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 33,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 39,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 65,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "tid -> tid_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "v0 -> v0_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "l -> l_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_A_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "format",
+   "line": 0,
+   "desc": "statements re-wrapped (code only, comments untouched)",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 45,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 58,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 86,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 31,
+   "desc": "[4] -> [4 + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 61,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 89,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 25,
+   "desc": "5 -> 6",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 51,
+   "desc": "512 -> 256",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 81,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 62,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 90,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl",
+   "line": 59,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl",
+   "line": 87,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 58,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 86,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 78,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 82,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 87,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 50,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 54,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 59,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 71,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 61,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 89,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "smem",
+   "line": 31,
+   "desc": "shared size 4 -> 2",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "smem",
+   "line": 32,
+   "desc": "shared size 4 -> 2",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 37,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 48,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 74,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "tid -> tid_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "v0 -> v0_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "l -> l_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_A_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "format",
+   "line": 0,
+   "desc": "statements re-wrapped (code only, comments untouched)",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 39,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 61,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 92,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 28,
+   "desc": "[TPB] -> [TPB + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 54,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 85,
+   "desc": "[i] -> [i + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 20,
+   "desc": "31 -> 32",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 52,
+   "desc": "16 -> 8",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 92,
+   "desc": "16 -> 8",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "define",
+   "line": 12,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 55,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 65,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 95,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 52,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 61,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 92,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 80,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 86,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 93,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 42,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 46,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 53,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 36,
+   "desc": "-3.402823466e38f -> 0.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 75,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 38,
+   "desc": "if (use_smem) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 63,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 97,
+   "desc": "if (warp == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 36,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 59,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 84,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "tid -> tid_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "m -> m_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "t -> t_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_B1_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "format",
+   "line": 0,
+   "desc": "statements re-wrapped (code only, comments untouched)",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 50,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 73,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 106,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 37,
+   "desc": "[NWARP] -> [NWARP + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 57,
+   "desc": "[i] -> [i + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 15
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 99,
+   "desc": "[i] -> [i + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 29,
+   "desc": "31 -> 32",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 63,
+   "desc": "16 -> 8",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 106,
+   "desc": "16 -> 8",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "define",
+   "line": 21,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 66,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 77,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 109,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 63,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 73,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 106,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 94,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 100,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 107,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 53,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 57,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 64,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 47,
+   "desc": "-3.402823466e38f -> 0.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 89,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 49,
+   "desc": "if (use_smem) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 75,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 112,
+   "desc": "if (warp == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 47,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 71,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 98,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "tid -> tid_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "m -> m_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "t -> t_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_B1_r2",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "format",
+   "line": 0,
+   "desc": "statements re-wrapped (code only, comments untouched)",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 75,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 95,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 110,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 71,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 98,
+   "desc": "[col] -> [col + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 120,
+   "desc": "[col] -> [col + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 9,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 11,
+   "desc": "4 -> 2",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 28,
+   "desc": "5 -> 6",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "define",
+   "line": 9,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 121,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "init",
+   "line": 4,
+   "desc": "-3.4028234663852886e38 -> 0.0",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 70,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 75,
+   "desc": "if (lane < NWARP) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "tiling",
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 95,
+   "desc": "if (col < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 19,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 38,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 42,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "v -> v_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "s -> s_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "wv -> wv_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 67,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 148,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 187,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 64,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 167,
+   "desc": "[base] -> [base + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 190,
+   "desc": "[r, tid * vec] -> [r, tid * vec + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 19,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 48,
+   "desc": "31 -> 32",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 110,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "define",
+   "line": 19,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 63,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 67,
+   "desc": "if (lane < WARPS) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 165,
+   "desc": "if (base < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 51,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 14
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 116,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 14
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 121,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "peer -> peer_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "out -> out_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "shift -> shift_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 151,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 164,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 183,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 128,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 152,
+   "desc": "[r, base] -> [r, base + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 175,
+   "desc": "[base] -> [base + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 19,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 53,
+   "desc": "5 -> 6",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 87,
+   "desc": "2 -> 1",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "define",
+   "line": 19,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 171,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 127,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 138,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 164,
+   "desc": "if (base < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 44,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 61,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 14
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 64,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "m -> m_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "s -> s_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "peer -> peer_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 97,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 121,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 153,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 89,
+   "desc": "[r, idx] -> [r, idx + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 114,
+   "desc": "[w] -> [w + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 142,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 9,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 65,
+   "desc": "16 -> 8",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 123,
+   "desc": "4 -> 2",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 130,
+   "desc": "* -> /",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 132,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 147,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "init",
+   "line": 12,
+   "desc": "-3.4028234663852886e38 -> 0.0",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 97,
+   "desc": "if (idx < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 109,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 141,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 36,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 54,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 14
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 59,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "m -> m_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "tmp -> tmp_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "inv -> inv_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5
+  }
+ ],
+ "seconds": 5.1262177468743175,
+ "llm_model": null
+}

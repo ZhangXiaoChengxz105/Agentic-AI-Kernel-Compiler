@@ -116,8 +116,23 @@ tirx-lite GLM softmax kernels (akc tirx-gpu): 1.11–1.12× PyTorch (1.15× in r
 # Third A100 run (2026-11-16, Slurm job 24036943, 9 min 12 s): the fixes, verified
 - Unit tests on the GPU node: 105 run, all pass (2 skipped, as before).
 - CUDA injected bugs: A 4/11, B 5/11, C 11/11 (unchanged; layernorm_bug_onepass is still caught: nonfinite).
-- **tirx injected bugs now run** (`akc eval-bugs --lang tirx`): A 1/4, B 1/4, C 4/4. VOLTA is n/a for tirx (its
-  PTX is outside VOLTA's supported subset, Task 3), so B = A; the change-aware tests catch tail / off-by-one / nomax.
+- **tirx injected bugs now run** (`akc eval-bugs --lang tirx`): A 1/4, B 1/4, C 4/4. VOLTA is n/a for tirx (not wired
+  up yet, Task 3: TIRx's generated CUDA calls `expf`, which compiles to `ex2.approx`; VOLTA needs `__symexpf` as in
+  our CUDA kernels' EXP() macro. VOLTA has not been tried on tirx PTX), so B = A; the change-aware tests catch tail / off-by-one / nomax.
 - **layernorm_opt passes configuration C** (fixed tests, change-aware incl. the offset test, VOLTA) and the
   observation now ends with its speed section (1.13x PyTorch, 57% of peak bandwidth, floor 1.17x).
 - Speeds within ~2% of run 24036388 (e.g. softmax_opt 0.0377 ms, layernorm_opt 0.0381 ms, gemm_opt 0.6085 ms).
+
+## Mutation detection, A vs C (2026-11-16, jobs 24051467 / 24052255 / 24052791)
+`akc mutants --detect --per-op 2`: generated single edits of 8 tuning-set kernels and 5 correct held-out GLM
+kernels. C = fixed + change-aware tests (no VOLTA).
+- Tuning set: A 83/136, C 105/136.
+- Held out: A 45/67, C 53/67.
+- No-op edits: 0 false alarms.
+
+VOLTA was run on C's 31 CUDA misses:
+- It adds 14 catches: races and out-of-bounds shared access.
+- It proves 11 equivalent over the reals. 6 of those 11 are not harmless in float: the max reduction sees only
+  half the warp, and a CPU model gives NaN for a row with one large value.
+
+Details: notes/build_log.md §8c–8e.

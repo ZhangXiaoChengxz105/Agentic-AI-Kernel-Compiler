@@ -1,0 +1,837 @@
+{
+ "rows": [
+  {
+   "base": "softmax_opt",
+   "op": "const",
+   "line": 23,
+   "desc": "2 -> 1",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "softmax_opt",
+   "op": "const",
+   "line": 35,
+   "desc": "2 -> 1",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "softmax_opt",
+   "op": "nosync",
+   "line": 28,
+   "desc": "barrier deleted",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 264
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "layernorm_opt",
+   "op": "nosync",
+   "line": 29,
+   "desc": "barrier deleted",
+   "shapes": [
+    {
+     "N": 128
+    },
+    {
+     "N": 200
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "gemm_opt",
+   "op": "cmp",
+   "line": 24,
+   "desc": "< -> <=",
+   "shapes": [
+    {
+     "M": 32,
+     "N": 32,
+     "K": 48
+    },
+    {
+     "M": 32,
+     "N": 32,
+     "K": 72
+    },
+    {
+     "M": 32,
+     "N": 32,
+     "K": 40
+    },
+    {
+     "M": 12,
+     "N": 12,
+     "K": 40
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 1.1
+  },
+  {
+   "base": "glm_A_r1",
+   "op": "shfl",
+   "line": 66,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 264
+    }
+   ],
+   "statuses": [
+    "UNSUPPORTED",
+    "UNSUPPORTED",
+    "UNSUPPORTED"
+   ],
+   "caught": false,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_A_r1",
+   "op": "shfl",
+   "line": 80,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 264
+    }
+   ],
+   "statuses": [
+    "UNSUPPORTED",
+    "UNSUPPORTED",
+    "UNSUPPORTED"
+   ],
+   "caught": false,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_A_r1",
+   "op": "shfl_off",
+   "line": 65,
+   "desc": "shuffle offset 16 -> 8",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "UNSUPPORTED",
+    "UNSUPPORTED",
+    "UNSUPPORTED",
+    "UNSUPPORTED"
+   ],
+   "caught": false,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_A_r1",
+   "op": "init",
+   "line": 28,
+   "desc": "0.0f -> 1.0f",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    }
+   ],
+   "statuses": [
+    "UNSUPPORTED",
+    "UNSUPPORTED"
+   ],
+   "caught": false,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_A_r1",
+   "op": "negate",
+   "line": 68,
+   "desc": "if (lane == 0) negated",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_A_r1",
+   "op": "negate",
+   "line": 82,
+   "desc": "if (lane == 0) negated",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_A_r1",
+   "op": "smem",
+   "line": 58,
+   "desc": "shared size 4 -> 2",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_A_r1",
+   "op": "smem",
+   "line": 59,
+   "desc": "shared size 4 -> 2",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_B1_r3",
+   "op": "const",
+   "line": 65,
+   "desc": "16 -> 8",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 15.2
+  },
+  {
+   "base": "glm_B1_r3",
+   "op": "shfl_off",
+   "line": 65,
+   "desc": "shuffle offset 16 -> 8",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 15.2
+  },
+  {
+   "base": "glm_B2_r1",
+   "op": "const",
+   "line": 9,
+   "desc": "16 -> 8",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 15.1
+  },
+  {
+   "base": "glm_B2_r1",
+   "op": "shfl",
+   "line": 10,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 264
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 1.0
+  },
+  {
+   "base": "glm_B2_r1",
+   "op": "shfl",
+   "line": 18,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 264
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 1.0
+  },
+  {
+   "base": "glm_B2_r1",
+   "op": "shfl_off",
+   "line": 9,
+   "desc": "shuffle offset 16 -> 8",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 15.2
+  },
+  {
+   "base": "glm_B2_r1",
+   "op": "negate",
+   "line": 28,
+   "desc": "if (lane == 0) negated",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_B2_r1",
+   "op": "negate",
+   "line": 44,
+   "desc": "if (lane == 0) negated",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_B3_r1",
+   "op": "const",
+   "line": 29,
+   "desc": "16 -> 8",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 7.5
+  },
+  {
+   "base": "glm_B3_r1",
+   "op": "shfl",
+   "line": 30,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 264
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 1.0
+  },
+  {
+   "base": "glm_B3_r1",
+   "op": "shfl",
+   "line": 49,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 264
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 1.0
+  },
+  {
+   "base": "glm_B3_r1",
+   "op": "shfl_off",
+   "line": 29,
+   "desc": "shuffle offset 16 -> 8",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "EQUIV",
+    "EQUIV",
+    "EQUIV",
+    "EQUIV"
+   ],
+   "caught": false,
+   "seconds": 7.4
+  },
+  {
+   "base": "glm_B3_r1",
+   "op": "negate",
+   "line": 32,
+   "desc": "if (lane == 0) negated",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_B3_r1",
+   "op": "negate",
+   "line": 51,
+   "desc": "if (lane == 0) negated",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_B3_r1",
+   "op": "smem",
+   "line": 18,
+   "desc": "shared size 4 -> 2",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_B3_r1",
+   "op": "smem",
+   "line": 19,
+   "desc": "shared size 4 -> 2",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS",
+    "OUT_OF_BOUNDS"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_B1_r1",
+   "op": "const",
+   "line": 61,
+   "desc": "16 -> 8",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  },
+  {
+   "base": "glm_B1_r1",
+   "op": "shfl_off",
+   "line": 52,
+   "desc": "shuffle offset 16 -> 8",
+   "shapes": [
+    {
+     "N": 256
+    },
+    {
+     "N": 584
+    },
+    {
+     "N": 200
+    },
+    {
+     "N": 100
+    }
+   ],
+   "statuses": [
+    "RACE",
+    "RACE",
+    "RACE",
+    "RACE"
+   ],
+   "caught": true,
+   "seconds": 0.8
+  }
+ ],
+ "seconds": 97.29096964909695
+}

@@ -1,0 +1,3093 @@
+{
+ "rows": [
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 20,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 5.650211731903255
+    },
+    "C": {
+     "caught": true,
+     "seconds": 8.746870016911998,
+     "changeaware_only": true
+    },
+    "seconds": 8.746898781973869
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 32,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.137989894952625
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.225040530087426,
+     "changeaware_only": false
+    },
+    "seconds": 6.225060747936368
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 13,
+   "desc": "[BLOCK] -> [BLOCK + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.084410224109888
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.389505699975416,
+     "changeaware_only": false
+    },
+    "seconds": 6.389533933950588
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 32,
+   "desc": "[i] -> [i + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 15,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.2100636530667543
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.809888209216297,
+     "changeaware_only": false
+    },
+    "seconds": 6.809913306031376
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 23,
+   "desc": "2 -> 1",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.205944583984092
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.197916696080938,
+     "changeaware_only": false
+    },
+    "seconds": 6.197940740967169
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 35,
+   "desc": "2 -> 1",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.217249940847978
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.215717367827892,
+     "changeaware_only": false
+    },
+    "seconds": 6.215740191983059
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "define",
+   "line": 9,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0958417798392475
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.195327649824321,
+     "changeaware_only": false
+    },
+    "seconds": 6.195350321941078
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 22,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.228251411113888
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.421263091266155,
+     "changeaware_only": false
+    },
+    "seconds": 6.421278830850497
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 28,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.516616385895759
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.61715763178654,
+     "changeaware_only": false
+    },
+    "seconds": 6.617176537169144
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 32,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0676608909852803
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.076600195840001,
+     "changeaware_only": false
+    },
+    "seconds": 6.076620353851467
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 36,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0892968920525163
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.175614597974345,
+     "changeaware_only": false
+    },
+    "seconds": 6.175637081032619
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 20,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0428503991570324
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.045711560174823,
+     "changeaware_only": false
+    },
+    "seconds": 6.0457275989465415
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 24,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.0763646089471877
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.096828812966123,
+     "changeaware_only": true
+    },
+    "seconds": 6.096847378881648
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 19,
+   "desc": "-INFINITY -> 0.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.096369625069201
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.080352554097772,
+     "changeaware_only": true
+    },
+    "seconds": 6.080370056908578
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 31,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.1549738550093025
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.245074701029807,
+     "changeaware_only": false
+    },
+    "seconds": 6.245090150041506
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 24,
+   "desc": "if (tid < s) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1763810080010444
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.189080287935212,
+     "changeaware_only": true
+    },
+    "seconds": 6.189105725847185
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 36,
+   "desc": "if (tid < s) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.371842662105337
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.384750341996551,
+     "changeaware_only": false
+    },
+    "seconds": 6.384771320968866
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 19,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.0959421889856458
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.11737970309332,
+     "changeaware_only": false
+    },
+    "seconds": 6.117399289039895
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 31,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.0820970670320094
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.087980421027169,
+     "changeaware_only": false
+    },
+    "seconds": 6.088003355078399
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "tid -> tid_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.088676920859143
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.102125603938475,
+     "changeaware_only": false
+    },
+    "seconds": 6.102145591983572
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "s -> s_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.0819325090851635
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.478170606074855,
+     "changeaware_only": false
+    },
+    "seconds": 6.478188330074772
+   }
+  },
+  {
+   "base": "softmax_opt",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "format",
+   "line": 0,
+   "desc": "statements re-wrapped (code only, comments untouched)",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.109028138918802
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.077001605881378,
+     "changeaware_only": false
+    },
+    "seconds": 6.077020260039717
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 21,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.6169046820141375
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.644869351061061,
+     "changeaware_only": false
+    },
+    "seconds": 6.644884790061042
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 33,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.080750327091664
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.205449021188542,
+     "changeaware_only": false
+    },
+    "seconds": 6.205472916131839
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 14,
+   "desc": "[BLOCK] -> [BLOCK + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.263661090983078
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.355711360927671,
+     "changeaware_only": false
+    },
+    "seconds": 6.355735105928034
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 34,
+   "desc": "[i] -> [i + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.517996903974563
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.558325775898993,
+     "changeaware_only": false
+    },
+    "seconds": 6.558342578820884
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "const",
+   "line": 24,
+   "desc": "2 -> 1",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1731677721254528
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.249971598153934,
+     "changeaware_only": true
+    },
+    "seconds": 6.249994992045686
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "const",
+   "line": 39,
+   "desc": "2 -> 1",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.135077055078
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.165616827085614,
+     "changeaware_only": true
+    },
+    "seconds": 6.165635020937771
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "define",
+   "line": 8,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.2369798470754176
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.264112161938101,
+     "changeaware_only": false
+    },
+    "seconds": 6.264132570941001
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 23,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.102453659987077
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.207418469013646,
+     "changeaware_only": false
+    },
+    "seconds": 6.207433777861297
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 29,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.172838396159932
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.287296743132174,
+     "changeaware_only": false
+    },
+    "seconds": 6.287315828027204
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 21,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.6971174508798867
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.788907703943551,
+     "changeaware_only": false
+    },
+    "seconds": 6.788923393003643
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 35,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0994497078936547
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.151251081842929,
+     "changeaware_only": false
+    },
+    "seconds": 6.151265437947586
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "init",
+   "line": 20,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.1307205320335925
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.334688603179529,
+     "changeaware_only": false
+    },
+    "seconds": 6.334704582812265
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "init",
+   "line": 32,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.148666035151109
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.305994091089815,
+     "changeaware_only": false
+    },
+    "seconds": 6.3060137869324535
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 25,
+   "desc": "if (tid < k) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.140530467964709
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.7430246458388865,
+     "changeaware_only": false
+    },
+    "seconds": 6.743041649926454
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 40,
+   "desc": "if (tid < k) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.250364116160199
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.295768012292683,
+     "changeaware_only": false
+    },
+    "seconds": 6.29578425292857
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 20,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1977387461811304
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.315312992082909,
+     "changeaware_only": false
+    },
+    "seconds": 6.315332097932696
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 32,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1490458559710532
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.790729249129072,
+     "changeaware_only": false
+    },
+    "seconds": 6.790747873019427
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "tid -> tid_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1904101602267474
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.2686649991665035,
+     "changeaware_only": false
+    },
+    "seconds": 6.268682010937482
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "mean -> mean_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.3051374559290707
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.322817786829546,
+     "changeaware_only": false
+    },
+    "seconds": 6.322833798127249
+   }
+  },
+  {
+   "base": "layernorm_opt",
+   "workload": "layernorm",
+   "lang": "cuda",
+   "op": "format",
+   "line": 0,
+   "desc": "statements re-wrapped (code only, comments untouched)",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1315049869008362
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.1913895648904145,
+     "changeaware_only": false
+    },
+    "seconds": 6.191409313119948
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 24,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.2339728591032326
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.280713508138433,
+     "changeaware_only": false
+    },
+    "seconds": 6.280735448934138
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 30,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.422291633905843
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.534151630941778,
+     "changeaware_only": false
+    },
+    "seconds": 6.534169794991612
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 16,
+   "desc": "[TILE] -> [TILE + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 8,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.176037612138316
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.42181161721237,
+     "changeaware_only": false
+    },
+    "seconds": 6.421832344960421
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 28,
+   "desc": "[ty] -> [ty + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0636059269309044
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.0537583329714835,
+     "changeaware_only": false
+    },
+    "seconds": 6.053773981984705
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "define",
+   "line": 11,
+   "desc": "16 -> 32",
+   "accept": [
+    "tiling"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 10,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.098027902888134
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.109054557746276,
+     "changeaware_only": false
+    },
+    "seconds": 6.109073554165661
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 29,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 7,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.1177340261638165
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.195251351222396,
+     "changeaware_only": false
+    },
+    "seconds": 6.1952680218964815
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 31,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 7,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0970526279415935
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.205685009015724,
+     "changeaware_only": false
+    },
+    "seconds": 6.205700729042292
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 30,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 7,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.6010903981514275
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.604330580215901,
+     "changeaware_only": false
+    },
+    "seconds": 6.6043463500682265
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "init",
+   "line": 22,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 7,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.027429036097601
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.045683871023357,
+     "changeaware_only": false
+    },
+    "seconds": 6.045699077891186
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 33,
+   "desc": "if (row < M && col < N) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 6,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0774769589770585
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.060328540159389,
+     "changeaware_only": false
+    },
+    "seconds": 6.060344289988279
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 22,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 7,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.045993110863492
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.121969389729202,
+     "changeaware_only": false
+    },
+    "seconds": 6.121994548011571
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "tx -> tx_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 4,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1960594849660993
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.277485854923725,
+     "changeaware_only": false
+    },
+    "seconds": 6.277503008022904
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "ntiles -> ntiles_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 4,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1918430340010673
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.62632468692027,
+     "changeaware_only": false
+    },
+    "seconds": 6.626340928021818
+   }
+  },
+  {
+   "base": "gemm_opt",
+   "workload": "gemm",
+   "lang": "cuda",
+   "op": "format",
+   "line": 0,
+   "desc": "statements re-wrapped (code only, comments untouched)",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 4,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.094181925058365
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.12053343700245,
+     "changeaware_only": false
+    },
+    "seconds": 6.120551982196048
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 34,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.14791833399795
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.163866441929713,
+     "changeaware_only": true
+    },
+    "seconds": 6.163884405978024
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 79,
+   "desc": "> -> >=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 900.6256122009363
+    },
+    "C": {
+     "caught": true,
+     "seconds": 1801.3217806059401,
+     "changeaware_only": false
+    },
+    "seconds": 1801.321802015882
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 35,
+   "desc": "[i] -> [i + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.7935394218657166
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.795701467897743,
+     "changeaware_only": false
+    },
+    "seconds": 6.795718400040641
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 82,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.139201828977093
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.251882954966277,
+     "changeaware_only": false
+    },
+    "seconds": 6.251898755086586
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 14,
+   "desc": "5 -> 6",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.602530062897131
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.618270511040464,
+     "changeaware_only": false
+    },
+    "seconds": 6.618289926787838
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 72,
+   "desc": "2 -> 1",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 15,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.352196907158941
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.349698761012405,
+     "changeaware_only": true
+    },
+    "seconds": 6.349722746061161
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 69,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0799160948954523
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.2126932519022375,
+     "changeaware_only": false
+    },
+    "seconds": 6.2127129579894245
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 83,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.072902739048004
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.154990799259394,
+     "changeaware_only": false
+    },
+    "seconds": 6.155007560970262
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl",
+   "line": 66,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1149789069313556
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.201946639921516,
+     "changeaware_only": false
+    },
+    "seconds": 6.201965474989265
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl",
+   "line": 80,
+   "desc": "__shfl_xor_sync -> __shfl_down_sync",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1283010989427567
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.225202392088249,
+     "changeaware_only": false
+    },
+    "seconds": 6.225219924934208
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 65,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1893593419808894
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.235583221074194,
+     "changeaware_only": false
+    },
+    "seconds": 6.235601435182616
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 79,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.1474360700231045
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.559265867108479,
+     "changeaware_only": false
+    },
+    "seconds": 6.559286226052791
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 41,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.5197472081054
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.599666585214436,
+     "changeaware_only": false
+    },
+    "seconds": 6.599692401941866
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 80,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0681832220871
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.109414112288505,
+     "changeaware_only": false
+    },
+    "seconds": 6.109433628851548
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 40,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.093803761061281
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.203849150100723,
+     "changeaware_only": true
+    },
+    "seconds": 6.203867665026337
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 66,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.125350041082129
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.181560757104307,
+     "changeaware_only": true
+    },
+    "seconds": 6.1815824180375785
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 27,
+   "desc": "-FLT_MAX -> 0.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.110518905101344
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.126852138899267,
+     "changeaware_only": true
+    },
+    "seconds": 6.126869359984994
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 28,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1236935711931437
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.125850934302434,
+     "changeaware_only": false
+    },
+    "seconds": 6.125869339099154
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 68,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1018392199184746
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.144511396996677,
+     "changeaware_only": false
+    },
+    "seconds": 6.144533199025318
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 82,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.550950154196471
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.560327198123559,
+     "changeaware_only": false
+    },
+    "seconds": 6.5603451419156045
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "smem",
+   "line": 58,
+   "desc": "shared size 4 -> 2",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.089315921999514
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.169874524930492,
+     "changeaware_only": false
+    },
+    "seconds": 6.169893360929564
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "smem",
+   "line": 59,
+   "desc": "shared size 4 -> 2",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.279382626991719
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.686178860021755,
+     "changeaware_only": false
+    },
+    "seconds": 6.686202665092424
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 27,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.3123329509980977
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.402240992989391,
+     "changeaware_only": false
+    },
+    "seconds": 6.402264595963061
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 50,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1237186901271343
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.413871480152011,
+     "changeaware_only": false
+    },
+    "seconds": 6.41389706893824
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "tid -> tid_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1200945270247757
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.146685686893761,
+     "changeaware_only": false
+    },
+    "seconds": 6.146701927995309
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "s -> s_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.09658578899689
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.124805508181453,
+     "changeaware_only": false
+    },
+    "seconds": 6.124824834056199
+   }
+  },
+  {
+   "base": "glm_A_r1",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "format",
+   "line": 0,
+   "desc": "statements re-wrapped (code only, comments untouched)",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.297162408940494
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.310646889731288,
+     "changeaware_only": false
+    },
+    "seconds": 6.310662859817967
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 52,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.157314687035978
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.202873507048935,
+     "changeaware_only": true
+    },
+    "seconds": 6.20289296307601
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "cmp",
+   "line": 99,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1380734061822295
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.158960171043873,
+     "changeaware_only": false
+    },
+    "seconds": 6.158979295985773
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 39,
+   "desc": "[NWARP] -> [NWARP + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.193399512208998
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.259437179192901,
+     "changeaware_only": false
+    },
+    "seconds": 6.2594568049535155
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "idx1",
+   "line": 94,
+   "desc": "[i] -> [i + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 15,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0974952620454133
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.159219165099785,
+     "changeaware_only": false
+    },
+    "seconds": 6.159234133083373
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 31,
+   "desc": "31 -> 32",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.324901924934238
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.534749278798699,
+     "changeaware_only": false
+    },
+    "seconds": 6.534766090102494
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "const",
+   "line": 65,
+   "desc": "16 -> 8",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.784769234014675
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.864121189108118,
+     "changeaware_only": false
+    },
+    "seconds": 6.864140584832057
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "define",
+   "line": 23,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.123511264100671
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.151852154172957,
+     "changeaware_only": false
+    },
+    "seconds": 6.151872562011704
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 68,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.171257827896625
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.350640472956002,
+     "changeaware_only": false
+    },
+    "seconds": 6.350657633971423
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "nosync",
+   "line": 111,
+   "desc": "barrier deleted",
+   "accept": [
+    "sync"
+   ],
+   "categories": [
+    "sync"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.2186393479350954
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.312719468027353,
+     "changeaware_only": true
+    },
+    "seconds": 6.312736750114709
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 65,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1329325570259243
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.705443121027201,
+     "changeaware_only": false
+    },
+    "seconds": 6.705461865989491
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "shfl_off",
+   "line": 108,
+   "desc": "shuffle offset 16 -> 8",
+   "accept": [
+    "sync",
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.126568586099893
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.2516672210767865,
+     "changeaware_only": false
+    },
+    "seconds": 6.251686786999926
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 96,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.1358254810329527
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.251111801248044,
+     "changeaware_only": false
+    },
+    "seconds": 6.251130927121267
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "aop",
+   "line": 109,
+   "desc": "+= -> =",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.138244849862531
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.391923107905313,
+     "changeaware_only": false
+    },
+    "seconds": 6.391938797198236
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 55,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.1858335179276764
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.40349150984548,
+     "changeaware_only": false
+    },
+    "seconds": 6.403510635951534
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "math",
+   "line": 66,
+   "desc": "fmaxf -> fminf",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.2873744547832757
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.392575688660145,
+     "changeaware_only": true
+    },
+    "seconds": 6.392596808960661
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "init",
+   "line": 91,
+   "desc": "0.0f -> 1.0f",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.558239524019882
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.595821788068861,
+     "changeaware_only": false
+    },
+    "seconds": 6.595837939996272
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 51,
+   "desc": "if (use_smem) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.129637184087187
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.1473833080381155,
+     "changeaware_only": false
+    },
+    "seconds": 6.147397985914722
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "negate",
+   "line": 92,
+   "desc": "if (use_smem) negated",
+   "accept": [
+    "indexing"
+   ],
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.0892279958352447
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.1108225039206445,
+     "changeaware_only": false
+    },
+    "seconds": 6.110837873071432
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "smem",
+   "line": 41,
+   "desc": "shared size 2 -> 1",
+   "accept": [
+    "memory",
+    "tiling"
+   ],
+   "categories": [
+    "indexing",
+    "memory"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "detect": {
+    "A": {
+     "caught": true,
+     "seconds": 3.119249951094389
+    },
+    "C": {
+     "caught": true,
+     "seconds": 6.160286772064865,
+     "changeaware_only": false
+    },
+    "seconds": 6.160308292135596
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 49,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1994758390355855
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.294085778063163,
+     "changeaware_only": false
+    },
+    "seconds": 6.294107198948041
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "dtype",
+   "line": 91,
+   "desc": "float -> double",
+   "accept": [
+    "numerical"
+   ],
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 9,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.139880917966366
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.206460990943015,
+     "changeaware_only": false
+    },
+    "seconds": 6.206479215994477
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "tid -> tid_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.1330789860803634
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.201717181131244,
+     "changeaware_only": false
+    },
+    "seconds": 6.2017338739242405
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "rename",
+   "line": 0,
+   "desc": "v -> v_renamed",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.4163594050332904
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.426828668219969,
+     "changeaware_only": false
+    },
+    "seconds": 6.426844298141077
+   }
+  },
+  {
+   "base": "glm_B1_r3",
+   "workload": "softmax",
+   "lang": "cuda",
+   "op": "format",
+   "line": 0,
+   "desc": "statements re-wrapped (code only, comments untouched)",
+   "accept": [],
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 5,
+   "detect": {
+    "A": {
+     "caught": false,
+     "seconds": 3.3804269859101623
+    },
+    "C": {
+     "caught": false,
+     "seconds": 6.794506012927741,
+     "changeaware_only": false
+    },
+    "seconds": 6.794523034943268
+   }
+  }
+ ],
+ "seconds": 2480.916022575926,
+ "llm_model": null,
+ "complete": false
+}

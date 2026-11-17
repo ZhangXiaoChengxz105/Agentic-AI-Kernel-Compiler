@@ -1,0 +1,953 @@
+{
+ "config": "C",
+ "passed": true,
+ "seconds": 13.726410045055673,
+ "reports": [
+  {
+   "validator": "fixed_tests",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.06368048209697,
+   "artifacts": {
+    "outcomes": [
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 64,
+       "N": 256
+      },
+      "dist": "normal",
+      "seed": 0,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.329980107797837e-07,
+      "max_rel_err": 0.00010854680782996235,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 4.33e-07)",
+      "kernel_ms": 0.27524400502443314
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 64,
+       "N": 1024
+      },
+      "dist": "normal",
+      "seed": 1,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 65536,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.066731191329723e-07,
+      "max_rel_err": 0.00019795863844930642,
+      "examples": [],
+      "message": "all 65536 outputs within tolerance (max abs err 7.07e-07)",
+      "kernel_ms": 0.1441100612282753
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 64,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 2,
+      "repeat": 3,
+      "tag": "fixed",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 262144,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.878168004043062e-07,
+      "max_rel_err": 0.000944117734709806,
+      "examples": [],
+      "message": "all 262144 outputs within tolerance (max abs err 6.88e-07)",
+      "kernel_ms": 0.08300482295453548
+     }
+    ],
+    "n_tests": 3
+   }
+  },
+  {
+   "validator": "changeaware",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 3.2831406290642917,
+   "artifacts": {
+    "parent": "reference layernorm_ref",
+    "categories": [
+     "sync",
+     "numerical",
+     "tiling",
+     "indexing",
+     "memory"
+    ],
+    "labels": [
+     {
+      "category": "tiling",
+      "rule": "tile-constant",
+      "line": 8,
+      "evidence": "#define BLOCK 128"
+     },
+     {
+      "category": "tiling",
+      "rule": "compile-constant",
+      "line": 8,
+      "evidence": "#define BLOCK 128"
+     },
+     {
+      "category": "memory",
+      "rule": "shared-decl",
+      "line": 14,
+      "evidence": "__shared__ float red[BLOCK];"
+     },
+     {
+      "category": "indexing",
+      "rule": "loop-step",
+      "line": 15,
+      "evidence": "for (int i = 0; i < N; ++i) s += xr[i];  ->  for (int i = tid; i < N; i += BLOCK) s += xr[i];"
+     },
+     {
+      "category": "numerical",
+      "rule": "arith",
+      "line": 16,
+      "evidence": "const float mean = s / N;  ->  const float mean = red[0] / N;"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 23,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 26,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 29,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "indexing",
+      "rule": "loop-step",
+      "line": 19,
+      "evidence": "for (int i = 0; i < N; ++i) {  ->  for (int i = tid; i < N; i += BLOCK) {"
+     },
+     {
+      "category": "numerical",
+      "rule": "special-value",
+      "line": 23,
+      "evidence": "const float rstd = rsqrtf(v / N + eps);"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 23,
+      "evidence": "const float rstd = rsqrtf(v / N + eps);"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 38,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "sync",
+      "rule": "barrier",
+      "line": 41,
+      "evidence": "__syncthreads();"
+     },
+     {
+      "category": "numerical",
+      "rule": "special-value",
+      "line": 43,
+      "evidence": "const float rstd = rsqrtf(red[0] / N + eps);"
+     },
+     {
+      "category": "numerical",
+      "rule": "math-call",
+      "line": 43,
+      "evidence": "const float rstd = rsqrtf(red[0] / N + eps);"
+     }
+    ],
+    "tiles": [
+     128
+    ],
+    "tests": [
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 256,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 1988438777,
+      "repeat": 5,
+      "tag": "sync: many iterations, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "offset",
+      "seed": 1196541758,
+      "repeat": 1,
+      "tag": "numerical: value range 'offset'",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 1510022123,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 713812187,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 997099501,
+      "repeat": 1,
+      "tag": "memory: N=127 (N % 4 = 3)",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 256,
+       "N": 4099
+      },
+      "dist": "normal",
+      "seed": 1725086453,
+      "repeat": 5,
+      "tag": "sync: ragged, repeated x5",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "constant",
+      "seed": 675029298,
+      "repeat": 1,
+      "tag": "numerical: value range 'constant'",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 1209447810,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 894369092,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1001
+      },
+      "dist": "normal",
+      "seed": 1914783637,
+      "repeat": 1,
+      "tag": "memory: N=1001 (N % 4 = 1)",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 1,
+       "N": 8192
+      },
+      "dist": "normal",
+      "seed": 1815189443,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, many iterations, x10",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "tiny",
+      "seed": 1199196858,
+      "repeat": 1,
+      "tag": "numerical: value range 'tiny'",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 264653459,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1922957909,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs tiles [128]",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1023
+      },
+      "dist": "normal",
+      "seed": 1997351591,
+      "repeat": 1,
+      "tag": "memory: N=1023 (N % 4 = 3)",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2048,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1712024635,
+      "repeat": 5,
+      "tag": "sync: grid sweep: many CTAs, 2 iterations, x5",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 1000
+      },
+      "dist": "normal",
+      "seed": 838283933,
+      "repeat": 1,
+      "tag": "floor: {'rows': 2, 'N': 1000} normal (runs every revision)",
+      "misalign": 0
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 1000
+      },
+      "dist": "offset",
+      "seed": 1232638121,
+      "repeat": 1,
+      "tag": "floor: {'rows': 2, 'N': 1000} offset (runs every revision)",
+      "misalign": 0
+     }
+    ],
+    "suggested_volta_shapes": [
+     {
+      "N": 128
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     }
+    ],
+    "outcomes": [
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 256,
+       "N": 4096
+      },
+      "dist": "normal",
+      "seed": 1988438777,
+      "repeat": 5,
+      "tag": "sync: many iterations, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1048576,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.412563987647559e-07,
+      "max_rel_err": 0.005918230254905141,
+      "examples": [],
+      "message": "all 1048576 outputs within tolerance (max abs err 8.41e-07)",
+      "kernel_ms": 0.2669990062713623
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "offset",
+      "seed": 1196541758,
+      "repeat": 1,
+      "tag": "numerical: value range 'offset'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.001409114276653023,
+      "max_rel_err": 1.723875328682325,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0.00141)",
+      "kernel_ms": 0.13565411791205406
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 1510022123,
+      "repeat": 1,
+      "tag": "tiling: N=1 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 2,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 2 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.08015986531972885
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1
+      },
+      "dist": "normal",
+      "seed": 713812187,
+      "repeat": 1,
+      "tag": "indexing: N=1 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 3 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.07683318108320236
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 997099501,
+      "repeat": 1,
+      "tag": "memory: N=127 (N % 4 = 3)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 381,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.4713038460077996e-07,
+      "max_rel_err": 1.1665136054303848e-05,
+      "examples": [],
+      "message": "all 381 outputs within tolerance (max abs err 2.47e-07)",
+      "kernel_ms": 0.07580197416245937
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 256,
+       "N": 4099
+      },
+      "dist": "normal",
+      "seed": 1725086453,
+      "repeat": 5,
+      "tag": "sync: ragged, repeated x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.585740133819741e-07,
+      "max_rel_err": 0.0041805768497982345,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 7.59e-07)",
+      "kernel_ms": 0.07983995601534843
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "constant",
+      "seed": 675029298,
+      "repeat": 1,
+      "tag": "numerical: value range 'constant'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.13170577585697174
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 1209447810,
+      "repeat": 1,
+      "tag": "tiling: N=127 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 254,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.16977916803296e-07,
+      "max_rel_err": 7.964368436769601e-07,
+      "examples": [],
+      "message": "all 254 outputs within tolerance (max abs err 3.17e-07)",
+      "kernel_ms": 0.08101202547550201
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 127
+      },
+      "dist": "normal",
+      "seed": 894369092,
+      "repeat": 1,
+      "tag": "indexing: N=127 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 381,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.081125773933934e-07,
+      "max_rel_err": 6.571518446263482e-07,
+      "examples": [],
+      "message": "all 381 outputs within tolerance (max abs err 2.08e-07)",
+      "kernel_ms": 0.07663294672966003
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1001
+      },
+      "dist": "normal",
+      "seed": 1914783637,
+      "repeat": 1,
+      "tag": "memory: N=1001 (N % 4 = 1)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3003,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.8255345558013687e-07,
+      "max_rel_err": 6.037616322052195e-06,
+      "examples": [],
+      "message": "all 3003 outputs within tolerance (max abs err 3.83e-07)",
+      "kernel_ms": 0.07583200931549072
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 1,
+       "N": 8192
+      },
+      "dist": "normal",
+      "seed": 1815189443,
+      "repeat": 10,
+      "tag": "sync: grid sweep: 1 CTA, many iterations, x10",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8192,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.9572048187986866e-07,
+      "max_rel_err": 7.929094486414107e-06,
+      "examples": [],
+      "message": "all 8192 outputs within tolerance (max abs err 2.96e-07)",
+      "kernel_ms": 0.07733493112027645
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 8,
+       "N": 1000
+      },
+      "dist": "tiny",
+      "seed": 1199196858,
+      "repeat": 1,
+      "tag": "numerical: value range 'tiny'",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 8000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0,
+      "max_rel_err": 0.0,
+      "examples": [],
+      "message": "all 8000 outputs within tolerance (max abs err 0)",
+      "kernel_ms": 0.07899804040789604
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 264653459,
+      "repeat": 1,
+      "tag": "tiling: N=129 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 258,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.3831077822222824e-07,
+      "max_rel_err": 5.335852667241889e-06,
+      "examples": [],
+      "message": "all 258 outputs within tolerance (max abs err 2.38e-07)",
+      "kernel_ms": 0.0773649662733078
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1922957909,
+      "repeat": 1,
+      "tag": "indexing: N=129 vs tiles [128]",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 387,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.632963802540189e-07,
+      "max_rel_err": 5.211585067705879e-06,
+      "examples": [],
+      "message": "all 387 outputs within tolerance (max abs err 2.63e-07)",
+      "kernel_ms": 0.07470999844372272
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 3,
+       "N": 1023
+      },
+      "dist": "normal",
+      "seed": 1997351591,
+      "repeat": 1,
+      "tag": "memory: N=1023 (N % 4 = 3)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 3069,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.144873617661915e-07,
+      "max_rel_err": 1.4512328840793587e-05,
+      "examples": [],
+      "message": "all 3069 outputs within tolerance (max abs err 4.14e-07)",
+      "kernel_ms": 0.07543107494711876
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2048,
+       "N": 129
+      },
+      "dist": "normal",
+      "seed": 1712024635,
+      "repeat": 5,
+      "tag": "sync: grid sweep: many CTAs, 2 iterations, x5",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 264192,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.777701007682936e-07,
+      "max_rel_err": 0.009668354254311461,
+      "examples": [],
+      "message": "all 264192 outputs within tolerance (max abs err 7.78e-07)",
+      "kernel_ms": 0.1590170431882143
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 1000
+      },
+      "dist": "normal",
+      "seed": 838283933,
+      "repeat": 1,
+      "tag": "floor: {'rows': 2, 'N': 1000} normal (runs every revision)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 2000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.36315218177441e-07,
+      "max_rel_err": 6.009394206856566e-06,
+      "examples": [],
+      "message": "all 2000 outputs within tolerance (max abs err 4.36e-07)",
+      "kernel_ms": 0.08360599167644978
+     },
+     {
+      "op": "layernorm",
+      "shape": {
+       "rows": 2,
+       "N": 1000
+      },
+      "dist": "offset",
+      "seed": 1232638121,
+      "repeat": 1,
+      "tag": "floor: {'rows': 2, 'N': 1000} offset (runs every revision)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 2000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0007034114320091378,
+      "max_rel_err": 3.4790711279857587,
+      "examples": [],
+      "message": "all 2000 outputs within tolerance (max abs err 0.000703)",
+      "kernel_ms": 0.07874704897403717
+     }
+    ],
+    "llm": null
+   }
+  },
+  {
+   "validator": "volta",
+   "passed": true,
+   "decided": true,
+   "findings": [],
+   "seconds": 7.3794892081059515,
+   "artifacts": {
+    "runs": [
+     {
+      "shape": {
+       "N": 128
+      },
+      "status": "EQUIV",
+      "wall_s": 1.302562413038686,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 200
+      },
+      "status": "EQUIV",
+      "wall_s": 4.703299256972969,
+      "detail": ""
+     },
+     {
+      "shape": {
+       "N": 100
+      },
+      "status": "EQUIV",
+      "wall_s": 0.6179400419350713,
+      "detail": ""
+     }
+    ],
+    "shapes": [
+     {
+      "N": 128
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     }
+    ]
+   }
+  }
+ ],
+ "perf": {
+  "workload": "layernorm",
+  "label": "layernorm_opt",
+  "lang": "cuda",
+  "shape": {
+   "rows": 4096,
+   "N": 1024
+  },
+  "measured": true,
+  "reason": "",
+  "gpu": "A100-SXM4-40GB",
+  "time_ms": 0.03433600068092346,
+  "p10_ms": 0.03363199904561043,
+  "p90_ms": 0.03510399907827377,
+  "iters": 50,
+  "torch_ms": 0.03774400055408478,
+  "copy_ms": 0.030672000721096992,
+  "flops": 33554432.0,
+  "bytes": 33562624.0,
+  "intensity": 0.9997559189650964,
+  "bound": "memory",
+  "achieved_gbps": 977.4762154710367,
+  "achieved_tflops": 0.9772376320647708,
+  "pct_peak_bw": 62.86020678270332,
+  "pct_peak_flops": 5.0114750362295934,
+  "roofline_ms": 0.021583681028938907,
+  "floor_ms": 0.030672000721096992,
+  "seconds": 3.500674922950566,
+  "spec": {
+   "name": "A100-SXM4-40GB",
+   "dram_gbps": 1555.0,
+   "fp32_tflops": 19.5,
+   "sms": 108,
+   "l2_mb": 40.0,
+   "known": true,
+   "ridge_flop_per_byte": 12.54
+  },
+  "speedup_vs_torch": 1.0992544211782576,
+  "headroom": 1.1194574815364515
+ }
+}

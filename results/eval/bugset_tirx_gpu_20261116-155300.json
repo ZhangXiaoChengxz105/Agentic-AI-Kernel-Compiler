@@ -1,0 +1,213 @@
+{
+  "device": "gpu",
+  "lang": "tirx",
+  "totals": {
+    "A": 1,
+    "B": 1,
+    "C": 4
+  },
+  "n": 4,
+  "rows": [
+    {
+      "workload": "softmax",
+      "bug": "softmax_txl_bug_nosync",
+      "truth": "sync",
+      "fixed": {
+        "passed": false,
+        "decided": true,
+        "seconds": 11.972,
+        "errors": 3,
+        "kinds": [
+          "mismatch"
+        ],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": false,
+        "seconds": 0.0,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 15.615,
+        "errors": 8,
+        "kinds": [
+          "mismatch"
+        ],
+        "artifacts": {
+          "categories": [
+            "sync"
+          ],
+          "suggested_volta_shapes": []
+        }
+      },
+      "volta_C": {
+        "passed": true,
+        "decided": false,
+        "seconds": 0.0,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "detected": {
+        "A": true,
+        "B": true,
+        "C": true
+      }
+    },
+    {
+      "workload": "softmax",
+      "bug": "softmax_txl_bug_tail",
+      "truth": "tiling",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 8.798,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": false,
+        "seconds": 0.001,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 23.678,
+        "errors": 12,
+        "kinds": [
+          "mismatch",
+          "nonfinite"
+        ],
+        "artifacts": {
+          "categories": [
+            "tiling",
+            "indexing"
+          ],
+          "suggested_volta_shapes": []
+        }
+      },
+      "volta_C": {
+        "passed": true,
+        "decided": false,
+        "seconds": 0.0,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "detected": {
+        "A": false,
+        "B": false,
+        "C": true
+      }
+    },
+    {
+      "workload": "softmax",
+      "bug": "softmax_txl_bug_offbyone",
+      "truth": "indexing",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 9.331,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": false,
+        "seconds": 0.001,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 20.471,
+        "errors": 10,
+        "kinds": [
+          "mismatch",
+          "nonfinite"
+        ],
+        "artifacts": {
+          "categories": [
+            "indexing"
+          ],
+          "suggested_volta_shapes": []
+        }
+      },
+      "volta_C": {
+        "passed": true,
+        "decided": false,
+        "seconds": 0.0,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "detected": {
+        "A": false,
+        "B": false,
+        "C": true
+      }
+    },
+    {
+      "workload": "softmax",
+      "bug": "softmax_txl_bug_nomax",
+      "truth": "numerical",
+      "fixed": {
+        "passed": true,
+        "decided": true,
+        "seconds": 8.704,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "volta_B": {
+        "passed": true,
+        "decided": false,
+        "seconds": 0.001,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "changeaware": {
+        "passed": false,
+        "decided": true,
+        "seconds": 12.109,
+        "errors": 4,
+        "kinds": [
+          "nonfinite"
+        ],
+        "artifacts": {
+          "categories": [
+            "numerical"
+          ],
+          "suggested_volta_shapes": []
+        }
+      },
+      "volta_C": {
+        "passed": true,
+        "decided": false,
+        "seconds": 0.0,
+        "errors": 0,
+        "kinds": [],
+        "artifacts": {}
+      },
+      "detected": {
+        "A": false,
+        "B": false,
+        "C": true
+      }
+    }
+  ]
+}

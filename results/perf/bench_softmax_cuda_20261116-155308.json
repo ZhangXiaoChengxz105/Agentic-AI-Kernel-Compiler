@@ -1,0 +1,85 @@
+{
+ "workload": "softmax",
+ "reports": [
+  {
+   "workload": "softmax",
+   "label": "softmax_ref",
+   "lang": "cuda",
+   "shape": {
+    "rows": 4096,
+    "N": 1024
+   },
+   "measured": true,
+   "reason": "",
+   "gpu": "A100-SXM4-40GB",
+   "time_ms": 0.5098719894886017,
+   "p10_ms": 0.5074560046195984,
+   "p90_ms": 0.5124800205230713,
+   "iters": 50,
+   "torch_ms": 0.03276799991726875,
+   "copy_ms": 0.03038400039076805,
+   "flops": 20971520.0,
+   "bytes": 33554432.0,
+   "intensity": 0.625,
+   "bound": "memory",
+   "achieved_gbps": 65.80952217762517,
+   "achieved_tflops": 0.04113095136101573,
+   "pct_peak_bw": 4.232123612709014,
+   "pct_peak_flops": 0.21092795569751657,
+   "roofline_ms": 0.021578412861736333,
+   "floor_ms": 0.03038400039076805,
+   "seconds": 3.270137798972428,
+   "spec": {
+    "name": "A100-SXM4-40GB",
+    "dram_gbps": 1555.0,
+    "fp32_tflops": 19.5,
+    "sms": 108,
+    "l2_mb": 40.0,
+    "known": true,
+    "ridge_flop_per_byte": 12.54
+   },
+   "speedup_vs_torch": 0.06426711133932822,
+   "headroom": 16.780936773668632
+  },
+  {
+   "workload": "softmax",
+   "label": "softmax_opt",
+   "lang": "cuda",
+   "shape": {
+    "rows": 4096,
+    "N": 1024
+   },
+   "measured": true,
+   "reason": "",
+   "gpu": "A100-SXM4-40GB",
+   "time_ms": 0.033344000577926636,
+   "p10_ms": 0.03296000137925148,
+   "p90_ms": 0.03392000123858452,
+   "iters": 50,
+   "torch_ms": 0.032607998698949814,
+   "copy_ms": 0.03046399913728237,
+   "flops": 20971520.0,
+   "bytes": 33554432.0,
+   "intensity": 0.625,
+   "bound": "memory",
+   "achieved_gbps": 1006.3109230574051,
+   "achieved_tflops": 0.6289443269108782,
+   "pct_peak_bw": 64.71452881398103,
+   "pct_peak_flops": 3.2253555226198882,
+   "roofline_ms": 0.021578412861736333,
+   "floor_ms": 0.03046399913728237,
+   "seconds": 3.0377665599808097,
+   "spec": {
+    "name": "A100-SXM4-40GB",
+    "dram_gbps": 1555.0,
+    "fp32_tflops": 19.5,
+    "sms": 108,
+    "l2_mb": 40.0,
+    "known": true,
+    "ridge_flop_per_byte": 12.54
+   },
+   "speedup_vs_torch": 0.9779270073710338,
+   "headroom": 1.0945378650933477
+  }
+ ]
+}

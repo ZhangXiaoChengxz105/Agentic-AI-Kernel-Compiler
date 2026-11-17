@@ -36,8 +36,7 @@ cuda-bindings 13.5.0, numpy 2.5.5. Delta: A100-SXM4-40GB nodes, driver 595.71.05
 ## GPU and Slurm
 - Login nodes have no GPU: GPU tests report "skipped / not verified"; VOLTA and NumSim run on the CPU.
 - On 2026-11-15 the batch partition `gpuA100x4` had a ~13-day queue; `gpuA100x4-interactive` (≤ 1 h) started
-  within minutes, so `scripts/slurm/*.sbatch` use it. Account: `bidr-delta-gpu`. Submitting uses the shared
-  allocation: ask the team first.
+  within minutes, so `scripts/slurm/*.sbatch` use it. Account: `bidr-delta-gpu`.
 - Keep heavy CPU work (large VOLTA runs, NumSim sweeps) off the login node.
 
 ## Secrets (never committed; `.secrets/` is git-ignored)
