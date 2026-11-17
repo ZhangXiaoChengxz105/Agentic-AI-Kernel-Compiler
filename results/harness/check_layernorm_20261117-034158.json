@@ -1,0 +1,110 @@
+{
+  "workload": "layernorm",
+  "tests": [
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 1000
+      },
+      "dist": "offset",
+      "seed": 130,
+      "repeat": 1,
+      "tag": "numerical",
+      "misalign": 0
+    }
+  ],
+  "results": [
+    {
+      "variant": "layernorm_ref",
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 1000
+      },
+      "dist": "offset",
+      "seed": 130,
+      "repeat": 1,
+      "tag": "numerical",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 64000,
+      "n_bad": 3817,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.016771200206219028,
+      "max_rel_err": 50.521266428900404,
+      "examples": [
+        [
+          [
+            13,
+            0
+          ],
+          0.1634783148765564,
+          0.15477208378004984
+        ],
+        [
+          [
+            13,
+            2
+          ],
+          -0.55533766746521,
+          -0.5638838084457227
+        ],
+        [
+          [
+            13,
+            4
+          ],
+          -0.759219229221344,
+          -0.7691741189121378
+        ],
+        [
+          [
+            13,
+            5
+          ],
+          -0.7318668365478516,
+          -0.7406253656289273
+        ],
+        [
+          [
+            13,
+            6
+          ],
+          0.3768850266933441,
+          0.36853976566209035
+        ]
+      ],
+      "message": "3817 of 64000 outputs exceed tolerance (max abs err 0.0168, max rel err 50.5)",
+      "kernel_ms": 3.9782730164006352
+    },
+    {
+      "variant": "layernorm_opt",
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 1000
+      },
+      "dist": "offset",
+      "seed": 130,
+      "repeat": 1,
+      "tag": "numerical",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 64000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0018658326239955336,
+      "max_rel_err": 7.478627740091124,
+      "examples": [],
+      "message": "all 64000 outputs within tolerance (max abs err 0.00187)",
+      "kernel_ms": 0.2714679576456547
+    }
+  ]
+}

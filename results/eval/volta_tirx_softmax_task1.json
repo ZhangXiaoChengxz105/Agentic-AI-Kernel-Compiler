@@ -1,0 +1,709 @@
+{
+ "date": "2026-11-17T03:41:21",
+ "summary": {
+  "workload": "softmax",
+  "shapes": [
+   {
+    "N": 256
+   },
+   {
+    "N": 584
+   },
+   {
+    "N": 200
+   },
+   {
+    "N": 100
+   },
+   {
+    "N": 264
+   }
+  ],
+  "kernels": 5,
+  "runs": 25,
+  "decided_runs": 24,
+  "coverage_runs": 0.96,
+  "decided_kernels": 4,
+  "coverage_kernels": 0.8,
+  "as_expected": "24/25",
+  "statuses": {
+   "EQUIV": 12,
+   "NOT_EQUIV": 7,
+   "RACE": 5,
+   "UNSUPPORTED": 1
+  },
+  "focus_mutants_caught": "0/0",
+  "volta_s_total": 2.05,
+  "build_s_total": 52.51,
+  "seconds": 66.8
+ },
+ "rewrites": [
+  "exp",
+  "ex2",
+  "huge_const",
+  "bar_count",
+  "select_max"
+ ],
+ "rows": [
+  {
+   "kernel": "softmax_txl_ref",
+   "group": "reference",
+   "expect": "EQUIV",
+   "runs": [
+    {
+     "N": 256,
+     "shape": {
+      "N": 256
+     },
+     "status": "EQUIV",
+     "volta_s": 0.035,
+     "build_s": 2.089,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "shape": {
+      "N": 584
+     },
+     "status": "EQUIV",
+     "volta_s": 0.121,
+     "build_s": 2.121,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 11
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "EQUIV",
+     "volta_s": 0.028,
+     "build_s": 2.098,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "EQUIV",
+     "volta_s": 0.017,
+     "build_s": 2.088,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 7
+     },
+     "detail": ""
+    },
+    {
+     "N": 264,
+     "shape": {
+      "N": 264
+     },
+     "status": "EQUIV",
+     "volta_s": 0.038,
+     "build_s": 2.112,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 9
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 22.86,
+   "hints": []
+  },
+  {
+   "kernel": "softmax_txl_bug_nosync",
+   "group": "bug",
+   "bug": {
+    "category": "sync",
+    "change": "removed the CTA barrier after each tree-reduction step"
+   },
+   "expect": "RACE",
+   "cuda_twin": "softmax_bug_nosync",
+   "cuda_expect": "RACE",
+   "runs": [
+    {
+     "N": 256,
+     "shape": {
+      "N": 256
+     },
+     "status": "RACE",
+     "volta_s": 0.015,
+     "build_s": 2.087,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": "data race on Shared[0x4]: write by t1 at pc:38 conflicts with read by t0 at pc:93"
+    },
+    {
+     "N": 584,
+     "shape": {
+      "N": 584
+     },
+     "status": "RACE",
+     "volta_s": 0.018,
+     "build_s": 2.125,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 11
+     },
+     "detail": "data race on Shared[0x4]: write by t1 at pc:78 conflicts with read by t0 at pc:133"
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "RACE",
+     "volta_s": 0.013,
+     "build_s": 2.1,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": "data race on Shared[0x4]: write by t1 at pc:42 conflicts with read by t0 at pc:97"
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "RACE",
+     "volta_s": 0.012,
+     "build_s": 2.29,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 7
+     },
+     "detail": "data race on Shared[0x4]: write by t1 at pc:30 conflicts with read by t0 at pc:85"
+    },
+    {
+     "N": 264,
+     "shape": {
+      "N": 264
+     },
+     "status": "RACE",
+     "volta_s": 0.015,
+     "build_s": 2.303,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 9
+     },
+     "detail": "data race on Shared[0x4]: write by t1 at pc:54 conflicts with read by t0 at pc:108"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 11.0,
+   "hints": [
+    "Two threads access the same address between barriers and at least one writes: add the missing txl.cuda.cta_sync() (or make each thread touch only its own element)."
+   ]
+  },
+  {
+   "kernel": "softmax_txl_bug_tail",
+   "group": "bug",
+   "bug": {
+    "category": "tiling",
+    "change": "partial max/sum loops run n // 128 tiles (tail dropped)"
+   },
+   "expect": [
+    {
+     "if": "N % 128 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "cuda_twin": "softmax_bug_tail",
+   "cuda_expect": [
+    {
+     "if": "N % 128 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "runs": [
+    {
+     "N": 256,
+     "shape": {
+      "N": 256
+     },
+     "status": "EQUIV",
+     "volta_s": 0.036,
+     "build_s": 2.098,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "shape": {
+      "N": 584
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 0.527,
+     "build_s": 2.151,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 10
+     },
+     "detail": "NOT EQUIVALENT: 584 mismatched element"
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 0.067,
+     "build_s": 2.093,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 7
+     },
+     "detail": "NOT EQUIVALENT: 200 mismatched element"
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "UNSUPPORTED",
+     "volta_s": 0.014,
+     "build_s": 2.021,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": false,
+     "rewrites": {
+      "exp": 1,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 7
+     },
+     "detail": "equivalence check failed: non-finite constant -inf in expression"
+    },
+    {
+     "N": 264,
+     "shape": {
+      "N": 264
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 0.115,
+     "build_s": 2.08,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": "NOT EQUIVALENT: 264 mismatched element"
+    }
+   ],
+   "decided": false,
+   "caught": true,
+   "seconds": 11.22,
+   "hints": [
+    "The verifier proved that some outputs differ from the reference for these exact sizes (real-number arithmetic, so this is a logic error, not rounding).",
+    "Verifier limitation, not necessarily a bug: an infinite constant (e.g. the -inf identity of a max) reached an operation the verifier cannot simplify. It folds only max(-inf, x) = x and min(+inf, x) = x, so combine with max.f32 / min.f32 (txl.ptx[\"max.f32\"]) rather than comparisons or arithmetic on the identity."
+   ]
+  },
+  {
+   "kernel": "softmax_txl_bug_offbyone",
+   "group": "bug",
+   "bug": {
+    "category": "indexing",
+    "change": "sum loop guard col <= n"
+   },
+   "expect": [
+    {
+     "if": "N % 128 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "cuda_twin": "softmax_bug_offbyone",
+   "cuda_expect": "NOT_EQUIV",
+   "runs": [
+    {
+     "N": 256,
+     "shape": {
+      "N": 256
+     },
+     "status": "EQUIV",
+     "volta_s": 0.035,
+     "build_s": 2.087,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "shape": {
+      "N": 584
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 0.455,
+     "build_s": 2.122,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 11
+     },
+     "detail": "NOT EQUIVALENT: 584 mismatched element"
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 0.062,
+     "build_s": 2.153,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": "NOT EQUIVALENT: 200 mismatched element"
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 0.025,
+     "build_s": 2.096,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 7
+     },
+     "detail": "NOT EQUIVALENT: 100 mismatched element"
+    },
+    {
+     "N": 264,
+     "shape": {
+      "N": 264
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 0.106,
+     "build_s": 2.106,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 9
+     },
+     "detail": "NOT EQUIVALENT: 264 mismatched element"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 11.27,
+   "hints": [
+    "The verifier proved that some outputs differ from the reference for these exact sizes (real-number arithmetic, so this is a logic error, not rounding)."
+   ]
+  },
+  {
+   "kernel": "softmax_txl_bug_nomax",
+   "group": "bug",
+   "bug": {
+    "category": "numerical",
+    "change": "no max subtraction before exp"
+   },
+   "expect": "EQUIV",
+   "cuda_twin": "softmax_bug_nomax",
+   "cuda_expect": "EQUIV",
+   "runs": [
+    {
+     "N": 256,
+     "shape": {
+      "N": 256
+     },
+     "status": "EQUIV",
+     "volta_s": 0.042,
+     "build_s": 1.875,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "shape": {
+      "N": 584
+     },
+     "status": "EQUIV",
+     "volta_s": 0.157,
+     "build_s": 2.115,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 11
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "EQUIV",
+     "volta_s": 0.032,
+     "build_s": 2.104,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "EQUIV",
+     "volta_s": 0.019,
+     "build_s": 2.1,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 7
+     },
+     "detail": ""
+    },
+    {
+     "N": 264,
+     "shape": {
+      "N": 264
+     },
+     "status": "EQUIV",
+     "volta_s": 0.045,
+     "build_s": 1.9,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 9
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 10.41,
+   "hints": []
+  }
+ ]
+}

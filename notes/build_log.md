@@ -381,3 +381,335 @@ only when the next row starts far above this row's max: every exp underflows and
 **Planned fix (not done yet):** a `spike` input distribution. Each row has one value far above the rest, at a
 lane that changes from row to row. It goes in the floor set and in the numerical tests. This motivation also comes
 from looking at misses, like the size-regime fix.
+
+## D1 shape domain (2026-11-17)
+The CAKE contract: the inner loop tunes one exact shape, correctness is checked across shapes and input
+distributions, and the valid shape domain is declared before tuning. Ranges were decided by the team.
+
+**What changed.**
+- Manifests have a `domain` key (inclusive ranges):
+  - softmax, layernorm: rows in [1, 4096], N in [1, 16384];
+  - gemm: M, N, K in [1, 4096].
+- The benchmark shape is still `perf.shape`: softmax and layernorm rows=4096, N=1024; gemm 1024^3.
+- `Workload.domain`, `in_domain(shape)`, `clip(shape)`, `domain_text()` (`akc/task/workload.py`).
+- Change-aware generator (`generate.py`):
+  - a generated test or VOLTA size outside the domain is clamped to the edge; the tag says so; duplicates are dropped;
+  - a size regime whose other side is outside the domain is skipped (that code path never runs inside it);
+  - `extract_thresholds(..., domain)` searches only inside the domain; `plan()` passes the manifest's domain.
+- LLM second opinion: risky sizes are checked against the domain instead of `DIM_CAP` (rows may now go up to
+  4096 instead of 256). The prompt text changes, so earlier cached LLM replies no longer match.
+- `perf.measure` returns "outside the declared shape domain" for such a shape, before any GPU work.
+- `agent/pilot.py: contract_text(wl, lang)` states the range and "Speed is measured at <perf.shape>"; both pilot
+  prompts (tirx and CUDA) use it. The pilot was not run.
+
+**Without `domain`.** Nothing is limited; the regime search uses `REGIME_CAP` and the LLM check uses `DIM_CAP`,
+as before. Checked: 1732 generator / threshold / prompt outputs are identical to the pre-change code with the key
+removed.
+
+**Checks.**
+- Every manifest's `perf.shape`, `fixed_suite` and VOLTA default / deep shapes are inside the domain.
+- With the domain, the plans of all 16 mutation-benchmark kernels (`akc/evaluation/mutants.py`) are unchanged, so
+  earlier evaluation numbers stay valid. Only out-of-domain inputs change: gemm tiles >= 683 (e.g. M = 6T + 4) and
+  regimes beyond the max.
+- GLM size regimes are inside the range: CUDA N = 8192; tirx N = 12268, 12284, 12288 (both sides <= 16384).
+- Unit tests: 144 run, all pass (6 skipped), 15 of them new.
+
+## Task 3: VOLTA on tirx (2026-11-17)
+Goal (proposal Task 3 and Task 1): run VOLTA on the compiled tirx-lite kernels the agent writes, collect verdicts,
+counterexamples and diagnostics, turn them into feedback, and confirm the kernels are in VOLTA's scope.
+
+**What changed.**
+- New `akc/validation/volta/tirx.py`: trace a tirx-lite module at one size, take TIRx's generated CUDA, rewrite it
+  for VOLTA, compile to PTX (`backend.ptx` mode "volta"), and read grid / block / dynamic shared bytes / tensor
+  parameter order from the traced kernel.
+- `layouts.py`: `make_tirx_case` (arrays from the OpSpec and the manifest's `tirx.tensors`, pointer-only params,
+  each kernel's own grid and block, the larger dynamic shared size), `volta_shape`, `tirx_arrays`.
+- `runner.py`: `run_analyze` (`volta analyze` of the candidate alone); "non-finite constant" now maps to UNSUPPORTED
+  (it was ERROR).
+- `validator.py`: a tirx path; the CUDA path is unchanged. The verdict-to-finding mapping is shared
+  (`result_finding`), so `feedback/render.py` works unchanged.
+- `hints.py`: hints for the new limits; for tirx, the advice names txl calls (e.g. `txl.cuda.cta_sync()`).
+- `tests/validation/test_interface.py`: the old "tirx is unsupported" test now expects EQUIV for the reference.
+
+**Steps that did not work at first, and the fixes** (each checked by running VOLTA on the generated PTX):
+1. `expf` becomes `ex2.approx` + range reduction. Fix: `expf` -> `__symexpf` (the planned fix).
+2. The reference itself was then UNSUPPORTED: `NEG_BIG = -3.4e38` gives "rational coefficient overflowed i128".
+   - Rewriting the PTX constant to -inf was not enough: "non-finite constant -inf", because nvcc had already
+     turned the max into a compare + select, which VOLTA keeps as an opaque term.
+   - Rewriting the C literal to -inf works: nvcc then folds `max(-inf, x)` to `x`.
+   - The rewrite is exact only for a max identity (stated in `notes/volta_scope.md`).
+3. All 4 GLM kernels failed next:
+   - `bar.sync %r, %r` has register operands because `txl.ptx.bar.sync(0, 128)` goes through a helper function.
+     Fix: rewrite the call to `bar.sync 0` when the count equals the CTA size (exact).
+   - `ex2.approx` gives "lowering failed: Unsupported instruction: Ex2". Fix: read it as exp(t / fl32(log2 e)); a
+     modelling assumption.
+4. GLM C (`txl.Select(a > b, a, b)` with a -FLT_MAX identity in a warp reduction) gave "non-finite constant -inf".
+   Fix: a PTX peephole turns compare + select into `max.f32` / `min.f32`; exact over the reals.
+5. VOLTA uses one `--dyn-shared` value for both kernels.
+   - GLM D1 needs 16 bytes at N = 256, the reference 512, so a candidate overflow below 512 bytes would be hidden.
+   - Fix: such a candidate is first checked alone at its own size.
+   - This turned the BLOCK = 64 mutant from UNINIT into the more precise OUT_OF_BOUNDS.
+
+**Results** (Slurm job 24060621, 3 min; details and tables in `notes/volta_scope.md`, data in
+`results/eval/volta_tirx.json`):
+- 23 tirx kernels x 3 sizes (N = 256, 584, 200): 69 of 69 runs decided, so coverage is 100%.
+- Reference vs itself: EQUIV. All 4 GLM kernels: EQUIV.
+- Injected bugs: same verdicts as their CUDA twins. The one exception is the off-by-one at N = 256, where the tirx
+  version of the bug cannot trigger.
+- Of the 14 tirx mutants the tests missed, VOLTA catches 8, including all 5 named races. Two earlier
+  classifications were wrong:
+  - the BLOCK = 64 edit of the reference is a shared out-of-bounds read, not equivalent;
+  - D2 L151 / D3 L97 also overflow the staged row into the reduction scratch.
+- Ablation (job 24060724, N = 256, reference + 4 GLM kernels): with all rewrites 5/5 are decided.
+  - Without one rewrite: exp 0/5, ex2 1/5, huge_const 0/5, bar_count 1/5, select_max 4/5.
+  - So every rewrite is needed by at least one kernel.
+
+**Not done / open.**
+- `akc eval-bugs --lang tirx` and the mutant detection with VOLTA (`--volta`) were measured before this change and
+  were not re-run (they need the GPU tests). Configurations B and C now include VOLTA for tirx.
+- Only softmax has tirx kernels.
+
+**Tests.** `tests/validation/test_volta.py` has 19 new tests:
+- 13 need no tools: rewrites, PTX peephole, entry parsing, case building, analyze parsing, hint choice;
+- 6 run end to end and need nvcc, VOLTA and tvm_tirx.
+
+Login node, full suite: 163 run, all pass, 6 skipped (GPU-only).
+
+GPU-job time: 3 jobs, about 7.5 min (24060443: a first full run with older code, superseded; 24060621; 24060724).
+
+## D3: IR change analysis + outlier inputs (2026-11-17)
+The proposal: "After the agent revises a Cake IR kernel, we will inspect the modified IR operations and classify the
+change". tirx-lite is our CAKE IR, so the tirx path of Task 2 now works on the traced TIRx IR instead of Python
+text. CUDA (legacy) keeps the text path.
+
+**New building blocks** (`akc/validation/changeaware/`):
+- `irdiff.flatten(func, src_file) -> Flat`
+  - Input: a traced `txl.Kernel.func`.
+  - Output: one record per statement or header (For / If / Else / While / device_entry region), with depth, kind,
+    canonical text, source line and caller line.
+  - Canonical text comes from one TVMScript print of the whole function. Each statement is tagged with
+    `obj_to_annotate`. The free-variable preamble is dropped.
+  - Every variable is renamed in definition order (v0, v1, ...); txl calls every local `v`. Parameters and txl's
+    named values (bx, thread_id) keep their names.
+  - If printing fails, the text falls back to the statement's own `script()`, then `str()`, then type +
+    `structural_hash`.
+  - Lines come from `SourceLoc.start_line`. A helper's statement carries `CallSiteLoc(callee, caller)`; its line is
+    the helper's line, and its caller line is the call site in the kernel.
+- `irdiff.diff_records(a, b) -> hunks`
+  - difflib runs over (depth, kind, text with variable numbers removed). One inserted local therefore does not
+    renumber everything after it.
+  - Variable identity is checked separately, as a bijection built from aligned definitions. `max(a, b)` →
+    `max(b, a)` and a store into another buffer are caught that way.
+  - For each changed pair, `get_first_structural_mismatch(map_free_vars=True)` runs per field or call argument
+    and gives the exact changed node, e.g. `If.condition: LT → LE`.
+  - Shifts in unrolled loops: a deleted and an added record from the same source line, kind and op are paired
+    and diffed. A pure iteration shift of a non-sync statement is dropped.
+- `irdiff.merge(per_shape)`
+  - Groups hunks by (tag, source lines, kinds). Repeats collapse: nosync gives one hunk "×14".
+  - Each merged hunk records the shapes where it appears.
+- `classify_ir.classify_ir(hunks) -> [Label]`
+  - Pure Python on the JSON hunks; the vocabulary is in its docstring.
+  - Reduction rule: a changed shuffle, loop bound or If condition whose body does a float max / min / add is also
+    numerical. In tirx-lite the Python loop of a tree reduction is unrolled at trace time, so its bound shows up
+    as If conditions.
+  - `classify.proposal_category()` maps indexing → tiling, so reports can use the proposal's 4 categories. The 5
+    internal labels are unchanged.
+- `ir_worker`
+  - Runs in a child process: `python -m akc.validation.changeaware.ir_worker`, with a 60 s limit per revision (plus
+    a SIGALRM per job).
+  - `backend.tirx.safety_scan` runs first (also in the parent, so an unsafe or unparsable source never starts a
+    process). Then `load_module` and the manifest factory trace both versions at every shape.
+  - Returns hunks and labels as JSON.
+  - `prefetch()` analyses many revisions in one child; the mutation benchmark uses it.
+- `trace_shapes`: all inside the domain, rows = 2:
+  - `perf.shape`;
+  - N = 1, T−1, T+1;
+  - v and v+1 of each size regime (either version);
+  - N = 2T+1, then further tiles;
+  - at most 8.
+
+**`plan()`.** For tirx with a parent, it runs the IR path. `ChangePlan.analysis` holds:
+- `mode`: ir | ast-fallback | cuda-text;
+- the traced shapes and skipped shapes;
+- hunk counts (ir, per shape, ast);
+- `fallback_reason` and `ir_blind`.
+
+Rules:
+- tracing fails, times out or is refused → AST labels, with the reason;
+- IR equal at every shape but an AST change → AST labels, `ir_blind = True`;
+- AST cosmetic but IR changed → IR.
+
+Other details:
+- identical sources are not traced;
+- `classifier="ast"` forces the old path;
+- the LLM option still sees source-line hunks.
+
+The validator puts `analysis` in its artifacts, and `ctx.extra["classifier"]` selects the path.
+
+**Checks on the injected tirx bugs** (CPU, 5 shapes each: N = 1024, 1, 127, 129, 257):
+
+| bug | IR hunks | labels |
+|---|---|---|
+| offbyone | 1: `If.condition LT → LE`, L51 → L54 | indexing guard + numerical reduction-bound |
+| tail | 2: `For.end` at L41, L49, not at N = 1024 | tiling trip-count + numerical reduction-bound |
+| nosync | 1 del hunk at L34, ×14, called from L46 and L54 | sync barrier |
+| nomax | 2: `Sub → TensorLoad` inside exp, L53 and L60 | numerical |
+
+- Re-trace and a renamed local give no hunks.
+- `exp(v - mx)` → `exp(mx - v)` → numerical operand.
+- x → y in the max loop → memory buffer.
+- The float16 mutants of the GLM kernels do not trace → AST fallback, reason recorded.
+- Time: one revision 7.7 s (mostly the tvm import); in a batch 1.1–1.4 s per revision. The AST path takes 0.01 s.
+
+**IR vs AST on the mutation benchmark** (tirx rows only; `akc mutants --classifier ir|ast --only ...`, CPU):
+- The AST verdicts were re-run first: identical to `mutants_rules_after_*.json`.
+- IR results:
+  - tirx reference (tuning set): 21/21 right, 0/3 no-op labelled; 2 AST fallbacks, 0 `ir_blind`;
+  - 4 GLM tirx kernels (held out): 70/70 right, 0/12 no-op labelled; 8 AST fallbacks, 0 `ir_blind`.
+- Agreement matrix: 91 hit/hit, 15 clean/clean, nothing else.
+- Same category set 70/106; same first category 90/106.
+- IR mostly adds categories: +numerical 29, +memory 12, +indexing 8. The shuffle offset `16 → 8` in a warp max is
+  sync + numerical (AST: indexing).
+- Generated tests: 1409 vs 1027 (+37%).
+- **Not fully held out.** The first IR run scored 69/70 held out. Its miss (glm_txl_D3_r1 L114, `red_max[w]` →
+  `[w + 1]` in an unrolled loop) led to the same-line shift pairing above.
+- Results: `results/eval/mutants_rules_ir_{bases,heldout}.json`. `--compare-with` prints the matrix.
+
+**Outlier inputs** (`akc/task/inputs.py`, `make_tensor(shape, "outlier@P", gen)`; TestCase and its JSON
+unchanged):
+- each row (last dimension) is N(0, 1) times a row scale of 1 or 1e3, alternating between adjacent rows;
+- each row has one outlier at column (r mod P) + P·k, k seeded-random (any column if N < P). Plain `outlier` means
+  P = N;
+- outlier magnitude: ladder[(r // 2) % 4] × row scale, ladder = +1e2, +1e3, −1e3, +1e4;
+- why these magnitudes: at least 20× the largest N(0, 1) value in a row of ≤ 16384 elements; three decades, plus a
+  negative rung; at most 1e7, so squares and K = 4096 dot products stay far below float32's limit.
+
+Where it is used:
+- in `DISTS` and `DEFAULT_DISTS`, and in every manifest's `numerical_dists`, as the 2nd entry: never first, so the
+  floor tests never use it;
+- the generator writes `outlier@{tiles[0]}` with rows ≥ P (softmax / LayerNorm: 128 × 1000; GEMM: P = 16);
+- `sanitizer_trial.py` uses `outlier@128` instead of the removed `spike` (2 lines; not re-run).
+
+The idea came from looking at benchmark misses (§8e), so any benchmark gain is tuning-set evidence only.
+
+**Do correct kernels pass the outlier inputs?**
+- CPU, float32:
+  - checked with the harness `compare()` and the op's tolerance, for `outlier@P` and plain `outlier`, 3 seeds;
+  - shapes: rows 128–256 with N = 129, 1000, 4096 and 16384; GEMM 128×128×256 and 64×64×4096;
+  - PyTorch float32 passes for all 3 ops, and so does a block-128 strided + tree-reduction model of softmax and
+    LayerNorm.
+- NumSim (tirx), `outlier@128` at N = 129 and 1000, plain `outlier` at N = 256: the tirx reference,
+  glm_txl_D1_r2 and glm_txl_D3_r1 all pass.
+- NumSim allows at most 4 rows, so on the CPU the generated `outlier@128` test (128 rows) is reported "skipped"
+  for tirx. It only runs fully on the GPU.
+
+**Tests.**
+- New: `tests/validation/test_changeaware_ir.py` (13; 8 need `tvm_tirx`) and `tests/task/test_outlier.py` (7).
+- Login node, full suite: 196 run, all pass, 8 skipped. A run earlier the same day showed 1 failure in
+  `test_volta.py`; that is the parallel VOLTA work and was gone in the final run.
+
+**GPU check of the outlier inputs** (job 24061002, A100, 2 min 14 s; `build/tmp/d3_outlier/run.sh`, `akc check`).
+- Tests:
+  - softmax / LayerNorm: `outlier@128` at 128×1000, 256×4099 and 128×129, plus plain `outlier` at 64×256;
+  - GEMM: `outlier@16` at 128×128×256 and 64×80×1000;
+  - tirx: `outlier@128` at 128×1000 and 128×129.
+- Every correct kernel passes:
+  - softmax / LayerNorm / GEMM `_ref` and `_opt`;
+  - glm_A_r1, glm_B1_r3, glm_B2_r1, glm_B3_r1 (CUDA);
+  - softmax_txl_ref and glm_txl_{C_r2, D1_r2, D2_r1, D3_r1}.
+- For information, the injected CUDA bugs on these inputs alone:
+  - softmax nosync, offbyone and nomax: 0/4 pass; tail: 1/4;
+  - LayerNorm offbyone: 0/4; tail: 1/4; nosync and onepass pass all 4;
+  - GEMM ktail: 1/2; nosync and guard pass.
+- Results: `results/harness/check_{softmax,layernorm,gemm}_20261117-03*.json`.
+- Not done: detection on the mutation benchmark with the new inputs (A vs C on the GPU).
+
+## Task 1: tirx LayerNorm + GEMM (2026-11-17)
+Goal (proposal Task 1): the agent writes tirx-lite only. So every workload needs:
+- a tirx-lite reference with baseline correctness and speed;
+- VOLTA able to analyze the kernels.
+
+Before this, only softmax had tirx kernels.
+
+**What changed.**
+- New kernels, plain SIMT for sm_80 (no tensor cores, TMA or cp.async):
+  - `workloads/layernorm/tirx/layernorm_txl_ref.py`: thread 0 of a 32-thread CTA does the whole row, two-pass,
+    like `layernorm_ref.cu`. tirx-lite blocks have at least 32 threads.
+  - `workloads/layernorm/tirx/layernorm_txl_opt.py`: block-parallel two-pass, 128 threads, shared-memory tree
+    reductions (like `layernorm_opt.cu`). eps = 1e-5 is a constant: no scalar parameters, so VOLTA can read it.
+  - `workloads/gemm/tirx/gemm_txl_ref.py`: one thread per output.
+  - `workloads/gemm/tirx/gemm_txl_opt.py`: 16 x 16 shared-memory tiling with zero-padded tiles.
+  - Both GEMMs use 256 threads read as 16 x 16 and a 2-D grid (ceil(N/16), ceil(M/16)), the same tile mapping as
+    the CUDA tile2d launch. The tirx launch is inside the kernel (`LaunchConfig`), so the shared GPU runner needed
+    no change.
+- Bug ports, single edits of the opt kernel with the same meaning as the CUDA bugs:
+  - LayerNorm: nosync (barrier after reading red[0] removed), tail (n // 128 tiles), onepass (E[x^2] - mean^2),
+    offbyone.
+    - The offbyone port covers col = 0..n: loop count (n + 128) // 128 and guard col <= n. This is the tirx form of
+      CUDA's `i <= N`, so it reads the next row's first element at every N.
+    - The softmax tirx off-by-one only changes the guard, so it shows only when N % 128 != 0.
+  - GEMM: ktail (k // 16 tiles), guard (row <= m, col <= n), nosync (barrier after the inner product removed).
+- Manifests:
+  - layernorm and gemm: `tirx` blocks (tensors x, w, b, y / A, B, C), `references.tirx`, a tirx signature, and the 6 /
+    5 variants with `role`, `bug` and `expect_volta`. Each `expect_volta` is identical to its CUDA twin's.
+  - softmax: `expect_volta` on its 4 tirx bugs.
+    - nosync RACE; nomax EQUIV;
+    - tail and offbyone: EQUIV if N % 128 == 0, else NOT_EQUIV.
+- `akc/validation/runners/numsim.py`: size caps also for M (<= 64) and K (<= 512); before, a GEMM fixed test
+  (128^3) would have been simulated. The skip message names the cap.
+- `scripts/experiments/volta_tirx.py`:
+  - `--workload`;
+  - an `opt` group;
+  - expectations from the variant's own `expect_volta` (the CUDA twin's as fallback);
+  - full-shape `--shapes "M=..,N=..,K=..;..."`;
+  - default shapes = manifest default + deep + change-aware tiling / sync shapes.
+  - The Task 3 softmax run used `--shapes 256,584,200`.
+- New `scripts/experiments/tirx_task1.py`:
+  - runs GPU tests, NumSim, VOLTA and perf for every tirx variant of layernorm and gemm, with NumSim and VOLTA on
+    the CPU in parallel with the GPU parts;
+  - merges into `results/eval/tirx_task1.json`.
+- New `scripts/slurm/tirx_task1.sh`: the job.
+- Tests:
+  - new `tests/validation/test_tirx_kernels.py`, 13 tests:
+    - manifests and variants;
+    - bugs are 1-2 line edits;
+    - VOLTA layouts for the new tensors (CPU);
+    - tracing, launch and parameter order (tvm_tirx);
+    - VOLTA end to end (nvcc + VOLTA);
+    - 2 GPU tests.
+  - `test_volta.py`: `test_workload_without_tirx_reference_is_unsupported` used gemm as the workload without a
+    tirx reference; it now strips the tirx parts of gemm's manifest.
+- Not changed: `runners/gpu.py`, `volta/tirx.py`, `volta/layouts.py`, `perf/measure.py`, `akc bench`.
+  - TIRx orders kernel parameters by name (b, w, x, y); `build_tirx_ptx` already maps them through the traced
+    function's parameter names.
+
+**Steps that did not work at first.**
+1. The first LayerNorm tirx reference failed the offset test (x ~ 1e4 + N(0, 1)) on the A100 (job 24061076).
+   - The plain serial float32 sum drifts by about 1e-2 on such rows.
+   - Fix: mean = x0 + sum(x - x0) / n. It is equal over the reals; VOLTA still proves EQUIV.
+   - A CPU float32 emulation checked it first: max err 0.0168 -> 6.4e-4.
+   - The legacy CUDA `layernorm_ref` fails the same test (job 24061108); it is unchanged.
+2. A NumSim debug run on the login node, gemm 12 x 12 x 40, took 2.5 min (6.5 CPU-min). So NumSim ran in the GPU
+   job instead. There, after the first engine build (about 115 s), each kernel took 7-11 s.
+
+**Results** (jobs 24061076 and 24061108; tables in `notes/gpu_results.md` and `notes/volta_scope.md`):
+- GPU tests:
+  - ref and opt pass all tests (LayerNorm 15, GEMM 17);
+  - every bug except LayerNorm nosync fails at least one test (that one is also missed on CUDA).
+- NumSim: ref / opt pass; every bug is caught.
+  - The gemm guard bug shows as runtime_error: NumSim stops at the out-of-range store with an "unmodeled analysis
+    contract" message.
+- VOLTA: LayerNorm 18/18, GEMM 25/25 as expected; coverage 100%.
+- Softmax tirx bugs at the new shapes: 24/25. softmax_txl_bug_tail at N = 100 is UNSUPPORTED:
+  - no tile runs, so the -inf max identity stays in the expression;
+  - VOLTA is undecided there, not wrong.
+- Speed, x PyTorch: layernorm ref 0.13, opt 1.07-1.12; gemm ref 0.12-0.13, opt 0.28-0.29.
+
+**Not done / open.**
+- `akc check` and `akc volta` (`cli.py`, Task 2's file) still handle CUDA variants only.
+  - For tirx use `scripts/experiments/tirx_task1.py` or `scripts/experiments/volta_tirx.py --workload W`.
+- `akc eval-bugs --lang tirx` has not been re-run. It would now include the 7 new bugs with the tirx opt as parent.
+- Mutation benchmark: the new kernels are not added. Suggested: `layernorm_txl_opt` and `gemm_txl_opt` as HELDOUT
+  bases, since the classifier rules were never tuned on them.
+
+GPU-job time: 2 jobs, about 10 min 15 s (24061076: 4 min 56 s; 24061108: 5 min 19 s).

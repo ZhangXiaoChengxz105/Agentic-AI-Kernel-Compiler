@@ -1,0 +1,550 @@
+{
+ "date": "2026-11-17T03:39:14",
+ "summary": {
+  "workload": "layernorm",
+  "shapes": [
+   {
+    "N": 128
+   },
+   {
+    "N": 200
+   },
+   {
+    "N": 100
+   }
+  ],
+  "kernels": 6,
+  "runs": 18,
+  "decided_runs": 18,
+  "coverage_runs": 1.0,
+  "decided_kernels": 6,
+  "coverage_kernels": 1.0,
+  "as_expected": "18/18",
+  "statuses": {
+   "EQUIV": 10,
+   "NOT_EQUIV": 5,
+   "RACE": 3
+  },
+  "focus_mutants_caught": "0/0",
+  "volta_s_total": 30.89,
+  "build_s_total": 36.24,
+  "seconds": 78.6
+ },
+ "rewrites": [
+  "exp",
+  "ex2",
+  "huge_const",
+  "bar_count",
+  "select_max"
+ ],
+ "rows": [
+  {
+   "kernel": "layernorm_txl_ref",
+   "group": "reference",
+   "expect": "EQUIV",
+   "runs": [
+    {
+     "N": 128,
+     "shape": {
+      "N": 128
+     },
+     "status": "EQUIV",
+     "volta_s": 1.66,
+     "build_s": 2.294,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "EQUIV",
+     "volta_s": 4.11,
+     "build_s": 1.448,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "EQUIV",
+     "volta_s": 0.503,
+     "build_s": 1.547,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 22.96,
+   "hints": []
+  },
+  {
+   "kernel": "layernorm_txl_opt",
+   "group": "opt",
+   "expect": "EQUIV",
+   "runs": [
+    {
+     "N": 128,
+     "shape": {
+      "N": 128
+     },
+     "status": "EQUIV",
+     "volta_s": 1.278,
+     "build_s": 1.975,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "EQUIV",
+     "volta_s": 4.781,
+     "build_s": 2.211,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "EQUIV",
+     "volta_s": 0.647,
+     "build_s": 1.809,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 12.72,
+   "hints": []
+  },
+  {
+   "kernel": "layernorm_txl_bug_nosync",
+   "group": "bug",
+   "bug": {
+    "category": "sync",
+    "change": "removed the CTA barrier between reading the sum from red[0] and reusing red"
+   },
+   "expect": "RACE",
+   "cuda_twin": "layernorm_bug_nosync",
+   "cuda_expect": "RACE",
+   "runs": [
+    {
+     "N": 128,
+     "shape": {
+      "N": 128
+     },
+     "status": "RACE",
+     "volta_s": 0.034,
+     "build_s": 2.147,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x0]: read by t1 at pc:82 conflicts with write by t0 at pc:87"
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "RACE",
+     "volta_s": 0.013,
+     "build_s": 2.002,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x0]: read by t1 at pc:87 conflicts with write by t0 at pc:103"
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "RACE",
+     "volta_s": 0.013,
+     "build_s": 1.863,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x0]: read by t1 at pc:80 conflicts with write by t0 at pc:91"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 6.1,
+   "hints": [
+    "Two threads access the same address between barriers and at least one writes: add the missing txl.cuda.cta_sync() (or make each thread touch only its own element)."
+   ]
+  },
+  {
+   "kernel": "layernorm_txl_bug_tail",
+   "group": "bug",
+   "bug": {
+    "category": "tiling",
+    "change": "mean/variance loops run n // 128 tiles (tail dropped)"
+   },
+   "expect": [
+    {
+     "if": "N % 128 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "cuda_twin": "layernorm_bug_tail",
+   "cuda_expect": [
+    {
+     "if": "N % 128 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "runs": [
+    {
+     "N": 128,
+     "shape": {
+      "N": 128
+     },
+     "status": "EQUIV",
+     "volta_s": 1.92,
+     "build_s": 2.628,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 3.313,
+     "build_s": 2.925,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": "NOT EQUIVALENT: 200 mismatched element"
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 0.31,
+     "build_s": 1.835,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": "NOT EQUIVALENT: 100 mismatched element"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 12.95,
+   "hints": [
+    "The verifier proved that some outputs differ from the reference for these exact sizes (real-number arithmetic, so this is a logic error, not rounding)."
+   ]
+  },
+  {
+   "kernel": "layernorm_txl_bug_offbyone",
+   "group": "bug",
+   "bug": {
+    "category": "indexing",
+    "change": "variance loop covers col = 0..n (i <= N: one element of the next row)"
+   },
+   "expect": "NOT_EQUIV",
+   "cuda_twin": "layernorm_bug_offbyone",
+   "cuda_expect": "NOT_EQUIV",
+   "runs": [
+    {
+     "N": 128,
+     "shape": {
+      "N": 128
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 1.495,
+     "build_s": 1.982,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": "NOT EQUIVALENT: 128 mismatched element"
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 5.039,
+     "build_s": 1.979,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": "NOT EQUIVALENT: 200 mismatched element"
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "NOT_EQUIV",
+     "volta_s": 0.669,
+     "build_s": 2.062,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": "NOT EQUIVALENT: 100 mismatched element"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 13.25,
+   "hints": [
+    "The verifier proved that some outputs differ from the reference for these exact sizes (real-number arithmetic, so this is a logic error, not rounding)."
+   ]
+  },
+  {
+   "kernel": "layernorm_txl_bug_onepass",
+   "group": "bug",
+   "bug": {
+    "category": "numerical",
+    "change": "one-pass variance E[x^2] - mean^2 (catastrophic cancellation)"
+   },
+   "expect": "EQUIV",
+   "cuda_twin": "layernorm_bug_onepass",
+   "cuda_expect": "EQUIV",
+   "runs": [
+    {
+     "N": 128,
+     "shape": {
+      "N": 128
+     },
+     "status": "EQUIV",
+     "volta_s": 1.092,
+     "build_s": 1.805,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "shape": {
+      "N": 200
+     },
+     "status": "EQUIV",
+     "volta_s": 3.496,
+     "build_s": 1.812,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 100,
+     "shape": {
+      "N": 100
+     },
+     "status": "EQUIV",
+     "volta_s": 0.52,
+     "build_s": 1.915,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 0,
+      "huge_const": 0,
+      "bar_count": 0,
+      "select_max": 0
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 10.66,
+   "hints": []
+  }
+ ]
+}

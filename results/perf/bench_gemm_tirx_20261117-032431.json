@@ -1,0 +1,87 @@
+{
+ "workload": "gemm",
+ "reports": [
+  {
+   "workload": "gemm",
+   "label": "gemm_txl_ref",
+   "lang": "tirx",
+   "shape": {
+    "M": 1024,
+    "N": 1024,
+    "K": 1024
+   },
+   "measured": true,
+   "reason": "",
+   "gpu": "A100-SXM4-40GB",
+   "time_ms": 1.3386240005493164,
+   "p10_ms": 1.3318400382995605,
+   "p90_ms": 1.344480037689209,
+   "iters": 50,
+   "torch_ms": 0.14947199821472168,
+   "copy_ms": null,
+   "flops": 2147483648.0,
+   "bytes": 12582912.0,
+   "intensity": 170.66666666666666,
+   "bound": "compute",
+   "achieved_gbps": 9.399885251449614,
+   "achieved_tflops": 1.6042470829140674,
+   "pct_peak_bw": 0.6044942283890427,
+   "pct_peak_flops": 8.226908117508039,
+   "roofline_ms": 0.11012736656410257,
+   "floor_ms": 0.11012736656410257,
+   "seconds": 5.621037679957226,
+   "spec": {
+    "name": "A100-SXM4-40GB",
+    "dram_gbps": 1555.0,
+    "fp32_tflops": 19.5,
+    "sms": 108,
+    "l2_mb": 40.0,
+    "known": true,
+    "ridge_flop_per_byte": 12.54
+   },
+   "speedup_vs_torch": 0.11166092805252595,
+   "headroom": 12.155234818678194
+  },
+  {
+   "workload": "gemm",
+   "label": "gemm_txl_opt",
+   "lang": "tirx",
+   "shape": {
+    "M": 1024,
+    "N": 1024,
+    "K": 1024
+   },
+   "measured": true,
+   "reason": "",
+   "gpu": "A100-SXM4-40GB",
+   "time_ms": 0.6079359948635101,
+   "p10_ms": 0.6013759970664978,
+   "p90_ms": 0.610368013381958,
+   "iters": 50,
+   "torch_ms": 0.17203199863433838,
+   "copy_ms": null,
+   "flops": 2147483648.0,
+   "bytes": 12582912.0,
+   "intensity": 170.66666666666666,
+   "bound": "compute",
+   "achieved_gbps": 20.697757833577587,
+   "achieved_tflops": 3.5324173369305747,
+   "pct_peak_bw": 1.331045519844218,
+   "pct_peak_flops": 18.114960702208077,
+   "roofline_ms": 0.11012736656410257,
+   "floor_ms": 0.11012736656410257,
+   "seconds": 5.417676103999838,
+   "spec": {
+    "name": "A100-SXM4-40GB",
+    "dram_gbps": 1555.0,
+    "fp32_tflops": 19.5,
+    "sms": 108,
+    "l2_mb": 40.0,
+    "known": true,
+    "ridge_flop_per_byte": 12.54
+   },
+   "speedup_vs_torch": 0.2829771556345531,
+   "headroom": 5.520299030392638
+  }
+ ]
+}

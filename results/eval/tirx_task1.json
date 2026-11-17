@@ -1,0 +1,7861 @@
+{
+ "gpu": {
+  "layernorm_txl_ref": {
+   "summary": {
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0,
+    "total": 15,
+    "reasons": [],
+    "failing_tests": [],
+    "seconds": 24.7
+   },
+   "outcomes": [
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 256
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 1.6105287941048374e-06,
+     "max_rel_err": 0.007193454112253408,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 1.61e-06)",
+     "kernel_ms": 1289.5980549510568
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1024
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 65536,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.0529924777720225e-06,
+     "max_rel_err": 0.03806717124568397,
+     "examples": [],
+     "message": "all 65536 outputs within tolerance (max abs err 5.05e-06)",
+     "kernel_ms": 1130.3365599596873
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 4096
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 262144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.8820442379037274e-06,
+     "max_rel_err": 0.06625368487682697,
+     "examples": [],
+     "message": "all 262144 outputs within tolerance (max abs err 5.88e-06)",
+     "kernel_ms": 1394.7709450731054
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 8,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 8 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 1100.8690289454535
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 127
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1016,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.092286954333503e-07,
+     "max_rel_err": 0.00013923628497465083,
+     "examples": [],
+     "message": "all 1016 outputs within tolerance (max abs err 5.09e-07)",
+     "kernel_ms": 1722.2050479613245
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 129
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1032,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.989105275576833e-07,
+     "max_rel_err": 0.000154591184670126,
+     "examples": [],
+     "message": "all 1032 outputs within tolerance (max abs err 4.99e-07)",
+     "kernel_ms": 1085.9185219742358
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 200
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1600,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.791789248199564e-07,
+     "max_rel_err": 0.00024424490353843967,
+     "examples": [],
+     "message": "all 1600 outputs within tolerance (max abs err 5.79e-07)",
+     "kernel_ms": 1071.887757978402
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 4,
+      "N": 4097
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16388,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 7.071733801877755e-06,
+     "max_rel_err": 0.008291680387811452,
+     "examples": [],
+     "message": "all 16388 outputs within tolerance (max abs err 7.07e-06)",
+     "kernel_ms": 1096.3899079943076
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 2,
+      "N": 16384
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 32768,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.912375465655373e-06,
+     "max_rel_err": 0.13402553893017805,
+     "examples": [],
+     "message": "all 32768 outputs within tolerance (max abs err 5.91e-06)",
+     "kernel_ms": 1082.8196270158514
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.0335226637312473e-06,
+     "max_rel_err": 0.0014091946902041925,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 3.03e-06)",
+     "kernel_ms": 1074.4855150114745
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1000
+     },
+     "dist": "offset",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 64000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0006355489910795376,
+     "max_rel_err": 6.851735495408839,
+     "examples": [],
+     "message": "all 64000 outputs within tolerance (max abs err 0.000636)",
+     "kernel_ms": 1064.434094936587
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "large",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.1386042853576157e-06,
+     "max_rel_err": 0.003361277387012912,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 3.14e-06)",
+     "kernel_ms": 0.18459500279277563
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 0.1448820112273097
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "constant",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 0.13849895913153887
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 256,
+      "N": 1000
+     },
+     "dist": "outlier@128",
+     "seed": 134,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 256000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.8591575137681957e-05,
+     "max_rel_err": 0.07862646999357024,
+     "examples": [],
+     "message": "all 256000 outputs within tolerance (max abs err 2.86e-05)",
+     "kernel_ms": 1085.2922889171168
+    }
+   ]
+  },
+  "layernorm_txl_opt": {
+   "summary": {
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0,
+    "total": 15,
+    "reasons": [],
+    "failing_tests": [],
+    "seconds": 28.8
+   },
+   "outcomes": [
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 256
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.329980107797837e-07,
+     "max_rel_err": 0.00010854680782996235,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 4.33e-07)",
+     "kernel_ms": 1614.6050300449133
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1024
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 65536,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 7.066731191329723e-07,
+     "max_rel_err": 0.00019795863844930642,
+     "examples": [],
+     "message": "all 65536 outputs within tolerance (max abs err 7.07e-07)",
+     "kernel_ms": 1552.1881349850446
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 4096
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 262144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 6.878168004043062e-07,
+     "max_rel_err": 0.000944117734709806,
+     "examples": [],
+     "message": "all 262144 outputs within tolerance (max abs err 6.88e-07)",
+     "kernel_ms": 1632.767234928906
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 8,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 8 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 1515.4447939712554
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 127
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1016,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.0264163603254133e-07,
+     "max_rel_err": 2.902726222221319e-05,
+     "examples": [],
+     "message": "all 1016 outputs within tolerance (max abs err 4.03e-07)",
+     "kernel_ms": 1513.5297270026058
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 129
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1032,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.681077452912575e-07,
+     "max_rel_err": 7.392790117304858e-06,
+     "examples": [],
+     "message": "all 1032 outputs within tolerance (max abs err 5.68e-07)",
+     "kernel_ms": 1489.4666990730911
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 200
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1600,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.4689447137026264e-07,
+     "max_rel_err": 1.4208385539189883e-05,
+     "examples": [],
+     "message": "all 1600 outputs within tolerance (max abs err 3.47e-07)",
+     "kernel_ms": 1514.399225008674
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 4,
+      "N": 4097
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16388,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 7.002650992404824e-07,
+     "max_rel_err": 0.00011326036686664006,
+     "examples": [],
+     "message": "all 16388 outputs within tolerance (max abs err 7e-07)",
+     "kernel_ms": 1700.5675149848685
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 2,
+      "N": 16384
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 32768,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.479609487795244e-07,
+     "max_rel_err": 0.0005048024744603581,
+     "examples": [],
+     "message": "all 32768 outputs within tolerance (max abs err 4.48e-07)",
+     "kernel_ms": 1681.8457430927083
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.825813276238989e-07,
+     "max_rel_err": 8.53651480104872e-05,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 5.83e-07)",
+     "kernel_ms": 1553.3588789403439
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1000
+     },
+     "dist": "offset",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 64000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0018971114993708849,
+     "max_rel_err": 20.634175619112614,
+     "examples": [],
+     "message": "all 64000 outputs within tolerance (max abs err 0.0019)",
+     "kernel_ms": 1512.8268899861723
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "large",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.43839777655819e-07,
+     "max_rel_err": 7.730238921986309e-05,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 5.44e-07)",
+     "kernel_ms": 0.14696503058075905
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 0.24248403497040272
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "constant",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 6.084516644477844e-05,
+     "max_rel_err": 0.8856415445502429,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 6.08e-05)",
+     "kernel_ms": 0.395500916056335
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 256,
+      "N": 1000
+     },
+     "dist": "outlier@128",
+     "seed": 134,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 256000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 6.418283952314141e-06,
+     "max_rel_err": 0.038249070682748874,
+     "examples": [],
+     "message": "all 256000 outputs within tolerance (max abs err 6.42e-06)",
+     "kernel_ms": 1698.2513860566542
+    }
+   ]
+  },
+  "layernorm_txl_bug_nosync": {
+   "summary": {
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0,
+    "total": 15,
+    "reasons": [],
+    "failing_tests": [],
+    "seconds": 28.2
+   },
+   "outcomes": [
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 256
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.329980107797837e-07,
+     "max_rel_err": 0.00010854680782996235,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 4.33e-07)",
+     "kernel_ms": 1582.1840960998088
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1024
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 65536,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 7.066731191329723e-07,
+     "max_rel_err": 0.00019795863844930642,
+     "examples": [],
+     "message": "all 65536 outputs within tolerance (max abs err 7.07e-07)",
+     "kernel_ms": 1568.4901439817622
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 4096
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 262144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 6.878168004043062e-07,
+     "max_rel_err": 0.000944117734709806,
+     "examples": [],
+     "message": "all 262144 outputs within tolerance (max abs err 6.88e-07)",
+     "kernel_ms": 1713.2308960426599
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 8,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 8 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 1512.1482190443203
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 127
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1016,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.0264163603254133e-07,
+     "max_rel_err": 2.902726222221319e-05,
+     "examples": [],
+     "message": "all 1016 outputs within tolerance (max abs err 4.03e-07)",
+     "kernel_ms": 1510.6976109091192
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 129
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1032,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.681077452912575e-07,
+     "max_rel_err": 7.392790117304858e-06,
+     "examples": [],
+     "message": "all 1032 outputs within tolerance (max abs err 5.68e-07)",
+     "kernel_ms": 1473.9857190288603
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 200
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1600,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.4689447137026264e-07,
+     "max_rel_err": 1.4208385539189883e-05,
+     "examples": [],
+     "message": "all 1600 outputs within tolerance (max abs err 3.47e-07)",
+     "kernel_ms": 1478.6362809827551
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 4,
+      "N": 4097
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16388,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 7.002650992404824e-07,
+     "max_rel_err": 0.00011326036686664006,
+     "examples": [],
+     "message": "all 16388 outputs within tolerance (max abs err 7e-07)",
+     "kernel_ms": 1628.0645139049739
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 2,
+      "N": 16384
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 32768,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.479609487795244e-07,
+     "max_rel_err": 0.0005048024744603581,
+     "examples": [],
+     "message": "all 32768 outputs within tolerance (max abs err 4.48e-07)",
+     "kernel_ms": 1590.9313129959628
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.825813276238989e-07,
+     "max_rel_err": 8.53651480104872e-05,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 5.83e-07)",
+     "kernel_ms": 1504.2002289555967
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1000
+     },
+     "dist": "offset",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 64000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0018971114993708849,
+     "max_rel_err": 20.634175619112614,
+     "examples": [],
+     "message": "all 64000 outputs within tolerance (max abs err 0.0019)",
+     "kernel_ms": 1447.7581870742142
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "large",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.43839777655819e-07,
+     "max_rel_err": 7.730238921986309e-05,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 5.44e-07)",
+     "kernel_ms": 0.2377149648964405
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 0.11012691538780928
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "constant",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 6.084516644477844e-05,
+     "max_rel_err": 0.8856415445502429,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 6.08e-05)",
+     "kernel_ms": 0.11781998910009861
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 256,
+      "N": 1000
+     },
+     "dist": "outlier@128",
+     "seed": 134,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 256000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 6.418283952314141e-06,
+     "max_rel_err": 0.038249070682748874,
+     "examples": [],
+     "message": "all 256000 outputs within tolerance (max abs err 6.42e-06)",
+     "kernel_ms": 1511.62566896528
+    }
+   ]
+  },
+  "layernorm_txl_bug_tail": {
+   "summary": {
+    "passed": 5,
+    "failed": 10,
+    "skipped": 0,
+    "total": 15,
+    "reasons": [
+     "mismatch"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "rows": 8,
+       "N": 1
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: N % 128 != 0 / edge",
+      "reason": "mismatch",
+      "message": "8 of 8 outputs exceed tolerance (max abs err 859, max rel err 3.12e+04)"
+     },
+     {
+      "shape": {
+       "rows": 8,
+       "N": 127
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: N % 128 != 0 / edge",
+      "reason": "mismatch",
+      "message": "1016 of 1016 outputs exceed tolerance (max abs err 1.17e+03, max rel err 1.19e+05)"
+     },
+     {
+      "shape": {
+       "rows": 8,
+       "N": 129
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: N % 128 != 0 / edge",
+      "reason": "mismatch",
+      "message": "993 of 1032 outputs exceed tolerance (max abs err 0.101, max rel err 34.9)"
+     },
+     {
+      "shape": {
+       "rows": 8,
+       "N": 200
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: N % 128 != 0 / edge",
+      "reason": "mismatch",
+      "message": "1598 of 1600 outputs exceed tolerance (max abs err 0.995, max rel err 136)"
+     },
+     {
+      "shape": {
+       "rows": 4,
+       "N": 4097
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: N % 128 != 0 / edge",
+      "reason": "mismatch",
+      "message": "586 of 16388 outputs exceed tolerance (max abs err 0.000709, max rel err 0.894)"
+     },
+     {
+      "shape": {
+       "rows": 16,
+       "N": 1000
+      },
+      "dist": "normal",
+      "repeat": 5,
+      "tag": "sync: repeated",
+      "reason": "mismatch",
+      "message": "15941 of 16000 outputs exceed tolerance (max abs err 0.303, max rel err 40.8)"
+     },
+     {
+      "shape": {
+       "rows": 64,
+       "N": 1000
+      },
+      "dist": "offset",
+      "repeat": 1,
+      "tag": "numerical",
+      "reason": "mismatch",
+      "message": "63715 of 64000 outputs exceed tolerance (max abs err 5.58, max rel err 1.88e+04)"
+     },
+     {
+      "shape": {
+       "rows": 16,
+       "N": 1000
+      },
+      "dist": "large",
+      "repeat": 1,
+      "tag": "numerical",
+      "reason": "mismatch",
+      "message": "15932 of 16000 outputs exceed tolerance (max abs err 0.238, max rel err 338)"
+     },
+     {
+      "shape": {
+       "rows": 16,
+       "N": 1000
+      },
+      "dist": "constant",
+      "repeat": 1,
+      "tag": "numerical",
+      "reason": "mismatch",
+      "message": "16000 of 16000 outputs exceed tolerance (max abs err 1.43, max rel err 2.08e+04)"
+     },
+     {
+      "shape": {
+       "rows": 256,
+       "N": 1000
+      },
+      "dist": "outlier@128",
+      "repeat": 1,
+      "tag": "numerical",
+      "reason": "mismatch",
+      "message": "143094 of 256000 outputs exceed tolerance (max abs err 1.22e+04, max rel err 4.36e+04)"
+     }
+    ],
+    "seconds": 29.7
+   },
+   "outcomes": [
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 256
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.329980107797837e-07,
+     "max_rel_err": 0.00010854680782996235,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 4.33e-07)",
+     "kernel_ms": 1609.4433510443196
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1024
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 65536,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 7.066731191329723e-07,
+     "max_rel_err": 0.00019795863844930642,
+     "examples": [],
+     "message": "all 65536 outputs within tolerance (max abs err 7.07e-07)",
+     "kernel_ms": 1614.9040210293606
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 4096
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 262144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 6.878168004043062e-07,
+     "max_rel_err": 0.000944117734709806,
+     "examples": [],
+     "message": "all 262144 outputs within tolerance (max abs err 6.88e-07)",
+     "kernel_ms": 1638.2837280398235
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 8,
+     "n_bad": 8,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 859.4655167721212,
+     "max_rel_err": 31155.570404107748,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       133.95982360839844,
+       -0.027586255222558975
+      ],
+      [
+       [
+        1,
+        0
+       ],
+       -106.25025939941406,
+       -0.027586255222558975
+      ],
+      [
+       [
+        2,
+        0
+       ],
+       -146.3350830078125,
+       -0.027586255222558975
+      ],
+      [
+       [
+        3,
+        0
+       ],
+       90.22637176513672,
+       -0.027586255222558975
+      ],
+      [
+       [
+        4,
+        0
+       ],
+       -513.9465942382812,
+       -0.027586255222558975
+      ]
+     ],
+     "message": "8 of 8 outputs exceed tolerance (max abs err 859, max rel err 3.12e+04)",
+     "kernel_ms": 1466.6466799098998
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 127
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 1016,
+     "n_bad": 1016,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 1171.1851192092827,
+     "max_rel_err": 119293.97135157137,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       -176.1291046142578,
+       -0.6800943931560051
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       -41.82014465332031,
+       -0.09617074889749694
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -135.81614685058594,
+       -0.4479256080153829
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       708.0236206054688,
+       2.3705285477015843
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       -236.4404296875,
+       -0.9178284818324957
+      ]
+     ],
+     "message": "1016 of 1016 outputs exceed tolerance (max abs err 1.17e+03, max rel err 1.19e+05)",
+     "kernel_ms": 1495.2900080243126
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 129
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 1032,
+     "n_bad": 993,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.10085631135100304,
+     "max_rel_err": 34.85591918519159,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       0.15006957948207855,
+       0.1424188692820285
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       1.2826836109161377,
+       1.272465993336231
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       0.16815723478794098,
+       0.16122232466917963
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       -0.09430959820747375,
+       -0.10146452161509442
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       0.6018213033676147,
+       0.5925804070914567
+      ]
+     ],
+     "message": "993 of 1032 outputs exceed tolerance (max abs err 0.101, max rel err 34.9)",
+     "kernel_ms": 1490.5484459595755
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 200
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 1600,
+     "n_bad": 1598,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.9947942953799185,
+     "max_rel_err": 135.56277921519157,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       -0.6404129266738892,
+       -0.48942466007846797
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       0.7268167734146118,
+       0.6066699804888832
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -1.2752134799957275,
+       -1.0047761106227648
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       -0.08259136974811554,
+       -0.01907156412382315
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       -1.6294655799865723,
+       -1.3033886472700305
+      ]
+     ],
+     "message": "1598 of 1600 outputs exceed tolerance (max abs err 0.995, max rel err 136)",
+     "kernel_ms": 1478.9080099435523
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 4,
+      "N": 4097
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 16388,
+     "n_bad": 586,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0007092802821890842,
+     "max_rel_err": 0.8937420317323583,
+     "examples": [
+      [
+       [
+        0,
+        1
+       ],
+       0.05067470297217369,
+       0.05044664054343439
+      ],
+      [
+       [
+        0,
+        26
+       ],
+       -0.024467099457979202,
+       -0.024686453321324606
+      ],
+      [
+       [
+        0,
+        43
+       ],
+       -0.11531372368335724,
+       -0.11555420443336364
+      ],
+      [
+       [
+        0,
+        51
+       ],
+       0.09637092798948288,
+       0.0961296446196542
+      ],
+      [
+       [
+        0,
+        56
+       ],
+       0.0995289608836174,
+       0.09925064207156746
+      ]
+     ],
+     "message": "586 of 16388 outputs exceed tolerance (max abs err 0.000709, max rel err 0.894)",
+     "kernel_ms": 1789.4742640201002
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 2,
+      "N": 16384
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 32768,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.479609487795244e-07,
+     "max_rel_err": 0.0005048024744603581,
+     "examples": [],
+     "message": "all 32768 outputs within tolerance (max abs err 4.48e-07)",
+     "kernel_ms": 1884.2956420267
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 16000,
+     "n_bad": 15941,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.3031692530376602,
+     "max_rel_err": 40.79825136737808,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       0.6343520879745483,
+       0.5831222463105635
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       -1.0501806735992432,
+       -1.0283509827644792
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -0.7484016418457031,
+       -0.7357817070182586
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       -0.8283566236495972,
+       -0.8221549629428244
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       1.536352515220642,
+       1.4591530226579232
+      ]
+     ],
+     "message": "15941 of 16000 outputs exceed tolerance (max abs err 0.303, max rel err 40.8)",
+     "kernel_ms": 1735.1317929569632
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1000
+     },
+     "dist": "offset",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 64000,
+     "n_bad": 63715,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.5849859599324985,
+     "max_rel_err": 18827.74056792017,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       1.0134671926498413,
+       -0.242118672097886
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       0.9827604293823242,
+       0.07184064602632927
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       0.9593991637229919,
+       -0.042741167458254306
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       1.0344679355621338,
+       0.05917553309015237
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       1.155667781829834,
+       -0.9705233439885981
+      ]
+     ],
+     "message": "63715 of 64000 outputs exceed tolerance (max abs err 5.58, max rel err 1.88e+04)",
+     "kernel_ms": 2088.955360930413
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "large",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 16000,
+     "n_bad": 15932,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.23761054262617787,
+     "max_rel_err": 338.1774302570993,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       0.1084003672003746,
+       0.08023243647827093
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       -0.09181521832942963,
+       -0.11076412762188809
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -1.4000858068466187,
+       -1.3553022163914277
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       1.0729713439941406,
+       0.985330366397508
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       -0.36184161901474,
+       -0.37024495327505497
+      ]
+     ],
+     "message": "15932 of 16000 outputs exceed tolerance (max abs err 0.238, max rel err 338)",
+     "kernel_ms": 0.13826903887093067
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 0.10964600369334221
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "constant",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 16000,
+     "n_bad": 16000,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 1.4264657944440842,
+     "max_rel_err": 20762.87784665054,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       0.8540283441543579,
+       -0.10123544931411743
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       0.7018977403640747,
+       -0.14405249059200287
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       0.9025266170501709,
+       -0.2106407880783081
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       1.1582521200180054,
+       0.030233431607484818
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       1.1360254287719727,
+       0.05947313830256462
+      ]
+     ],
+     "message": "16000 of 16000 outputs exceed tolerance (max abs err 1.43, max rel err 2.08e+04)",
+     "kernel_ms": 0.10322302114218473
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 256,
+      "N": 1000
+     },
+     "dist": "outlier@128",
+     "seed": 134,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 256000,
+     "n_bad": 143094,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 12167.020603462455,
+     "max_rel_err": 43602.05231654781,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       -0.5538439750671387,
+       -0.5570028838057386
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       0.028277959674596786,
+       0.023802655860217726
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -0.5543635487556458,
+       -0.557216104366454
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       -0.3463829457759857,
+       -0.3497797653634147
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       0.08554238080978394,
+       0.08122988687957015
+      ]
+     ],
+     "message": "143094 of 256000 outputs exceed tolerance (max abs err 1.22e+04, max rel err 4.36e+04)",
+     "kernel_ms": 1732.370781013742
+    }
+   ]
+  },
+  "layernorm_txl_bug_offbyone": {
+   "summary": {
+    "passed": 0,
+    "failed": 3,
+    "skipped": 12,
+    "total": 15,
+    "reasons": [
+     "cuda_error",
+     "mismatch"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "rows": 64,
+       "N": 256
+      },
+      "dist": "normal",
+      "repeat": 3,
+      "tag": "fixed",
+      "reason": "mismatch",
+      "message": "7395 of 16384 outputs exceed tolerance (max abs err 0.0384, max rel err 3.61)"
+     },
+     {
+      "shape": {
+       "rows": 64,
+       "N": 1024
+      },
+      "dist": "normal",
+      "repeat": 3,
+      "tag": "fixed",
+      "reason": "mismatch",
+      "message": "5078 of 65536 outputs exceed tolerance (max abs err 0.0104, max rel err 3.81)"
+     },
+     {
+      "shape": {
+       "rows": 64,
+       "N": 4096
+      },
+      "dist": "normal",
+      "repeat": 3,
+      "tag": "fixed",
+      "reason": "cuda_error",
+      "message": "AcceleratorError: CUDA error: an illegal memory access was encountered"
+     }
+    ],
+    "seconds": 11.7
+   },
+   "outcomes": [
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 256
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 16384,
+     "n_bad": 7395,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.03843955084109929,
+     "max_rel_err": 3.6130711349365656,
+     "examples": [
+      [
+       [
+        3,
+        0
+       ],
+       0.43913668394088745,
+       0.44013957108069196
+      ],
+      [
+       [
+        3,
+        1
+       ],
+       0.4522846043109894,
+       0.4530050242961656
+      ],
+      [
+       [
+        3,
+        2
+       ],
+       1.5930813550949097,
+       1.5963077735337352
+      ],
+      [
+       [
+        3,
+        3
+       ],
+       0.22112233936786652,
+       0.2218486778512379
+      ],
+      [
+       [
+        3,
+        4
+       ],
+       2.2995877265930176,
+       2.3037805195514354
+      ]
+     ],
+     "message": "7395 of 16384 outputs exceed tolerance (max abs err 0.0384, max rel err 3.61)",
+     "kernel_ms": 1559.712952002883
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1024
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 65536,
+     "n_bad": 5078,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.010403786541017812,
+     "max_rel_err": 3.8071767825184866,
+     "examples": [
+      [
+       [
+        2,
+        2
+       ],
+       -1.3092645406723022,
+       -1.311012724057367
+      ],
+      [
+       [
+        2,
+        3
+       ],
+       -1.8478739261627197,
+       -1.8500351277906535
+      ],
+      [
+       [
+        2,
+        4
+       ],
+       1.084868311882019,
+       1.086408085230839
+      ],
+      [
+       [
+        2,
+        6
+       ],
+       1.1648352146148682,
+       1.16626946778624
+      ],
+      [
+       [
+        2,
+        8
+       ],
+       -0.5015111565589905,
+       -0.5023440765957747
+      ]
+     ],
+     "message": "5078 of 65536 outputs exceed tolerance (max abs err 0.0104, max rel err 3.81)",
+     "kernel_ms": 1459.4857059419155
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 4096
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": false,
+     "reason": "cuda_error",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 127
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 129
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 200
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 4,
+      "N": 4097
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 2,
+      "N": 16384
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1000
+     },
+     "dist": "offset",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "large",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "constant",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 256,
+      "N": 1000
+     },
+     "dist": "outlier@128",
+     "seed": 134,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "skipped",
+     "n": 0,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "skipped after: AcceleratorError: CUDA error: an illegal memory access was encountered"
+    }
+   ]
+  },
+  "layernorm_txl_bug_onepass": {
+   "summary": {
+    "passed": 14,
+    "failed": 1,
+    "skipped": 0,
+    "total": 15,
+    "reasons": [
+     "nonfinite"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "rows": 64,
+       "N": 1000
+      },
+      "dist": "offset",
+      "repeat": 1,
+      "tag": "numerical",
+      "reason": "nonfinite",
+      "message": "38000 outputs are NaN/Inf where the reference is finite"
+     }
+    ],
+    "seconds": 30.3
+   },
+   "outcomes": [
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 256
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.106177041191984e-07,
+     "max_rel_err": 0.00010854680782996235,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 5.11e-07)",
+     "kernel_ms": 1572.2418919904158
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1024
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 65536,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 6.376521644035904e-07,
+     "max_rel_err": 0.00019795863844930642,
+     "examples": [],
+     "message": "all 65536 outputs within tolerance (max abs err 6.38e-07)",
+     "kernel_ms": 1654.383106972091
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 4096
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 262144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 6.135413022079206e-07,
+     "max_rel_err": 0.000944117734709806,
+     "examples": [],
+     "message": "all 262144 outputs within tolerance (max abs err 6.14e-07)",
+     "kernel_ms": 1587.487809942104
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 8,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 8 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 1444.122929009609
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 127
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1016,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.318113758725815e-07,
+     "max_rel_err": 2.902726222221319e-05,
+     "examples": [],
+     "message": "all 1016 outputs within tolerance (max abs err 2.32e-07)",
+     "kernel_ms": 1461.55881206505
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 129
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1032,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.592188506651439e-07,
+     "max_rel_err": 6.15543860772725e-06,
+     "examples": [],
+     "message": "all 1032 outputs within tolerance (max abs err 3.59e-07)",
+     "kernel_ms": 1756.3306840602309
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 8,
+      "N": 200
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1600,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.4689447137026264e-07,
+     "max_rel_err": 1.4208385539189883e-05,
+     "examples": [],
+     "message": "all 1600 outputs within tolerance (max abs err 3.47e-07)",
+     "kernel_ms": 2271.7254359740764
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 4,
+      "N": 4097
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16388,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 8.031546725462135e-07,
+     "max_rel_err": 9.696640656240495e-05,
+     "examples": [],
+     "message": "all 16388 outputs within tolerance (max abs err 8.03e-07)",
+     "kernel_ms": 2606.7635299405083
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 2,
+      "N": 16384
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: N % 128 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 32768,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.479609487795244e-07,
+     "max_rel_err": 0.0005048024744603581,
+     "examples": [],
+     "message": "all 32768 outputs within tolerance (max abs err 4.48e-07)",
+     "kernel_ms": 2057.8783709788695
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.825813276238989e-07,
+     "max_rel_err": 8.53651480104872e-05,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 5.83e-07)",
+     "kernel_ms": 2091.4236929966137
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 64,
+      "N": 1000
+     },
+     "dist": "offset",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": false,
+     "reason": "nonfinite",
+     "n": 64000,
+     "n_bad": 63641,
+     "n_nonfinite": 38000,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.5009948289927664,
+     "max_rel_err": 558.1979924092095,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       NaN,
+       -0.242118672097886
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       NaN,
+       0.07184064602632927
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       NaN,
+       -0.042741167458254306
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       NaN,
+       0.05917553309015237
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       NaN,
+       -0.9705233439885981
+      ]
+     ],
+     "message": "38000 outputs are NaN/Inf where the reference is finite",
+     "kernel_ms": 1858.7958558928221
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "large",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.319471423348432e-07,
+     "max_rel_err": 0.0004563304496555985,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 5.32e-07)",
+     "kernel_ms": 0.1472060102969408
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.0,
+     "max_rel_err": 0.0,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 0)",
+     "kernel_ms": 0.1323180040344596
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 16,
+      "N": 1000
+     },
+     "dist": "constant",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.00011029466986656189,
+     "max_rel_err": 1.6054006791012407,
+     "examples": [],
+     "message": "all 16000 outputs within tolerance (max abs err 0.00011)",
+     "kernel_ms": 0.13950199354439974
+    },
+    {
+     "op": "layernorm",
+     "shape": {
+      "rows": 256,
+      "N": 1000
+     },
+     "dist": "outlier@128",
+     "seed": 134,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 256000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.238576171961995e-06,
+     "max_rel_err": 0.018060329584782306,
+     "examples": [],
+     "message": "all 256000 outputs within tolerance (max abs err 5.24e-06)",
+     "kernel_ms": 2168.1500260019675
+    }
+   ]
+  },
+  "gemm_txl_ref": {
+   "summary": {
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0,
+    "total": 17,
+    "reasons": [],
+    "failing_tests": [],
+    "seconds": 27.1
+   },
+   "outcomes": [
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 128
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.1542762468129695e-05,
+     "max_rel_err": 0.0006510959154668694,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+     "kernel_ms": 1196.9761770451441
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 256,
+      "N": 256,
+      "K": 256
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 65536,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.072619566386493e-05,
+     "max_rel_err": 0.10590636721095462,
+     "examples": [],
+     "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+     "kernel_ms": 1428.608553018421
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 512,
+      "N": 512,
+      "K": 512
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 262144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 8.83508713656056e-05,
+     "max_rel_err": 0.008491038751917352,
+     "examples": [],
+     "message": "all 262144 outputs within tolerance (max abs err 8.84e-05)",
+     "kernel_ms": 1175.0136939808726
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 1,
+      "N": 1,
+      "K": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.2798155302771193e-09,
+     "max_rel_err": 3.180607512949228e-08,
+     "examples": [],
+     "message": "all 1 outputs within tolerance (max abs err 3.28e-09)",
+     "kernel_ms": 1231.1589490855113
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.198639034529549e-06,
+     "max_rel_err": 8.078651037287702e-06,
+     "examples": [],
+     "message": "all 144 outputs within tolerance (max abs err 3.2e-06)",
+     "kernel_ms": 1148.8532640505582
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 15,
+      "N": 17,
+      "K": 13
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 255,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 1.2897917756049537e-06,
+     "max_rel_err": 7.005780189523868e-06,
+     "examples": [],
+     "message": "all 255 outputs within tolerance (max abs err 1.29e-06)",
+     "kernel_ms": 1162.7258609514683
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 17,
+      "N": 15,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 255,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.735306983581154e-06,
+     "max_rel_err": 7.905781726085097e-06,
+     "examples": [],
+     "message": "all 255 outputs within tolerance (max abs err 2.74e-06)",
+     "kernel_ms": 1232.7269760426134
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1089,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.9079590895264573e-06,
+     "max_rel_err": 3.310911020375434e-05,
+     "examples": [],
+     "message": "all 1089 outputs within tolerance (max abs err 2.91e-06)",
+     "kernel_ms": 1822.5456170039251
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 9.321568704478977e-06,
+     "max_rel_err": 0.013875371574099574,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 9.32e-06)",
+     "kernel_ms": 2071.6388589935377
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 257,
+      "N": 129,
+      "K": 1000
+     },
+     "dist": "normal",
+     "seed": 106,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 33153,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.00013585655658232554,
+     "max_rel_err": 0.33944062438638517,
+     "examples": [],
+     "message": "all 33153 outputs within tolerance (max abs err 0.000136)",
+     "kernel_ms": 1669.7882330045104
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 4096,
+      "N": 17,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 107,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 69632,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.972421952549212e-06,
+     "max_rel_err": 0.0005210119620934154,
+     "examples": [],
+     "message": "all 69632 outputs within tolerance (max abs err 5.97e-06)",
+     "kernel_ms": 1353.6580390064046
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 100,
+      "N": 100,
+      "K": 100
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 10000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 1.3465362588505059e-05,
+     "max_rel_err": 0.006390692781093259,
+     "examples": [],
+     "message": "all 10000 outputs within tolerance (max abs err 1.35e-05)",
+     "kernel_ms": 1280.454784980975
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 16,
+      "N": 16,
+      "K": 64
+     },
+     "dist": "normal",
+     "seed": 121,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 256,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.831890501184489e-06,
+     "max_rel_err": 1.1036848120202175e-05,
+     "examples": [],
+     "message": "all 256 outputs within tolerance (max abs err 5.83e-06)",
+     "kernel_ms": 1163.7956759659573
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "large",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.07916396029759198,
+     "max_rel_err": 0.00017465135833297606,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 0.0792)",
+     "kernel_ms": 1271.3280980242416
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "mixed",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 208036.46997070312,
+     "max_rel_err": 8.633969214672265e-06,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.08e+05)",
+     "kernel_ms": 0.1554910559207201
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.9423865287424912e-77,
+     "max_rel_err": 2.942386528742491e-47,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.94e-77)",
+     "kernel_ms": 0.12665800750255585
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "outlier@16",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4624944.28125,
+     "max_rel_err": 0.00016375546503728293,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 4.62e+06)",
+     "kernel_ms": 0.16550009604543447
+    }
+   ]
+  },
+  "gemm_txl_opt": {
+   "summary": {
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0,
+    "total": 17,
+    "reasons": [],
+    "failing_tests": [],
+    "seconds": 28.0
+   },
+   "outcomes": [
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 128
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.1542762468129695e-05,
+     "max_rel_err": 0.0006510959154668694,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+     "kernel_ms": 1271.1838399991393
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 256,
+      "N": 256,
+      "K": 256
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 65536,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.072619566386493e-05,
+     "max_rel_err": 0.10590636721095462,
+     "examples": [],
+     "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+     "kernel_ms": 1437.016383977607
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 512,
+      "N": 512,
+      "K": 512
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 262144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 8.83508713656056e-05,
+     "max_rel_err": 0.008491038751917352,
+     "examples": [],
+     "message": "all 262144 outputs within tolerance (max abs err 8.84e-05)",
+     "kernel_ms": 1497.3791289376095
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 1,
+      "N": 1,
+      "K": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.2798155302771193e-09,
+     "max_rel_err": 3.180607512949228e-08,
+     "examples": [],
+     "message": "all 1 outputs within tolerance (max abs err 3.28e-09)",
+     "kernel_ms": 1203.814754029736
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.198639034529549e-06,
+     "max_rel_err": 8.078651037287702e-06,
+     "examples": [],
+     "message": "all 144 outputs within tolerance (max abs err 3.2e-06)",
+     "kernel_ms": 1217.7111470373347
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 15,
+      "N": 17,
+      "K": 13
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 255,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 1.2897917756049537e-06,
+     "max_rel_err": 7.005780189523868e-06,
+     "examples": [],
+     "message": "all 255 outputs within tolerance (max abs err 1.29e-06)",
+     "kernel_ms": 1262.527131009847
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 17,
+      "N": 15,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 255,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.735306983581154e-06,
+     "max_rel_err": 7.905781726085097e-06,
+     "examples": [],
+     "message": "all 255 outputs within tolerance (max abs err 2.74e-06)",
+     "kernel_ms": 1567.1693950425833
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1089,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.9079590895264573e-06,
+     "max_rel_err": 3.310911020375434e-05,
+     "examples": [],
+     "message": "all 1089 outputs within tolerance (max abs err 2.91e-06)",
+     "kernel_ms": 1724.013815051876
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 9.321568704478977e-06,
+     "max_rel_err": 0.013875371574099574,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 9.32e-06)",
+     "kernel_ms": 2459.155762917362
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 257,
+      "N": 129,
+      "K": 1000
+     },
+     "dist": "normal",
+     "seed": 106,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 33153,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.00013585655658232554,
+     "max_rel_err": 0.33944062438638517,
+     "examples": [],
+     "message": "all 33153 outputs within tolerance (max abs err 0.000136)",
+     "kernel_ms": 1616.6848030406982
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 4096,
+      "N": 17,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 107,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 69632,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.972421952549212e-06,
+     "max_rel_err": 0.0005210119620934154,
+     "examples": [],
+     "message": "all 69632 outputs within tolerance (max abs err 5.97e-06)",
+     "kernel_ms": 1291.9632649281994
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 100,
+      "N": 100,
+      "K": 100
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 10000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 1.3465362588505059e-05,
+     "max_rel_err": 0.006390692781093259,
+     "examples": [],
+     "message": "all 10000 outputs within tolerance (max abs err 1.35e-05)",
+     "kernel_ms": 1246.2287989910692
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 16,
+      "N": 16,
+      "K": 64
+     },
+     "dist": "normal",
+     "seed": 121,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 256,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.831890501184489e-06,
+     "max_rel_err": 1.1036848120202175e-05,
+     "examples": [],
+     "message": "all 256 outputs within tolerance (max abs err 5.83e-06)",
+     "kernel_ms": 1290.7929529901594
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "large",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.07916396029759198,
+     "max_rel_err": 0.00017465135833297606,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 0.0792)",
+     "kernel_ms": 1281.1918170191348
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "mixed",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 208036.46997070312,
+     "max_rel_err": 8.633969214672265e-06,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.08e+05)",
+     "kernel_ms": 0.13516400940716267
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.9423865287424912e-77,
+     "max_rel_err": 2.942386528742491e-47,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.94e-77)",
+     "kernel_ms": 0.16562000382691622
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "outlier@16",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4624944.28125,
+     "max_rel_err": 0.00016375546503728293,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 4.62e+06)",
+     "kernel_ms": 0.2038710517808795
+    }
+   ]
+  },
+  "gemm_txl_bug_nosync": {
+   "summary": {
+    "passed": 14,
+    "failed": 3,
+    "skipped": 0,
+    "total": 17,
+    "reasons": [
+     "mismatch"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "M": 256,
+       "N": 256,
+       "K": 256
+      },
+      "dist": "normal",
+      "repeat": 3,
+      "tag": "fixed",
+      "reason": "mismatch",
+      "message": "4273 of 65536 outputs exceed tolerance (max abs err 13.8, max rel err 158)"
+     },
+     {
+      "shape": {
+       "M": 512,
+       "N": 512,
+       "K": 512
+      },
+      "dist": "normal",
+      "repeat": 3,
+      "tag": "fixed",
+      "reason": "mismatch",
+      "message": "125184 of 262144 outputs exceed tolerance (max abs err 23.7, max rel err 3.78e+03)"
+     },
+     {
+      "shape": {
+       "M": 4096,
+       "N": 17,
+       "K": 33
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "mismatch",
+      "message": "5261 of 69632 outputs exceed tolerance (max abs err 11.3, max rel err 1.61e+03)"
+     }
+    ],
+    "seconds": 28.5
+   },
+   "outcomes": [
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 128
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.1542762468129695e-05,
+     "max_rel_err": 0.0006510959154668694,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+     "kernel_ms": 1281.01566596888
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 256,
+      "N": 256,
+      "K": 256
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 65536,
+     "n_bad": 4273,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 13.837221392877087,
+     "max_rel_err": 157.86676541539467,
+     "examples": [
+      [
+       [
+        0,
+        80
+       ],
+       9.22939395904541,
+       6.834160203910866
+      ],
+      [
+       [
+        0,
+        81
+       ],
+       -1.0025272369384766,
+       -1.864527319781966
+      ],
+      [
+       [
+        0,
+        82
+       ],
+       2.4602091312408447,
+       4.354868689088332
+      ],
+      [
+       [
+        0,
+        83
+       ],
+       44.172203063964844,
+       46.195346232768486
+      ],
+      [
+       [
+        0,
+        84
+       ],
+       0.5867426991462708,
+       6.820800335198022
+      ]
+     ],
+     "message": "4273 of 65536 outputs exceed tolerance (max abs err 13.8, max rel err 158)",
+     "kernel_ms": 1615.7327089458704
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 512,
+      "N": 512,
+      "K": 512
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 262144,
+     "n_bad": 125184,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 23.707913608229376,
+     "max_rel_err": 3778.5362644714787,
+     "examples": [
+      [
+       [
+        0,
+        16
+       ],
+       -47.94230270385742,
+       -48.057654082148
+      ],
+      [
+       [
+        0,
+        17
+       ],
+       -25.590551376342773,
+       -26.788262926505865
+      ],
+      [
+       [
+        0,
+        18
+       ],
+       26.60691261291504,
+       25.60367728354774
+      ],
+      [
+       [
+        0,
+        19
+       ],
+       7.880255222320557,
+       10.542101648352
+      ],
+      [
+       [
+        0,
+        20
+       ],
+       -13.482475280761719,
+       -13.988788670835763
+      ]
+     ],
+     "message": "125184 of 262144 outputs exceed tolerance (max abs err 23.7, max rel err 3.78e+03)",
+     "kernel_ms": 1564.207065035589
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 1,
+      "N": 1,
+      "K": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.2798155302771193e-09,
+     "max_rel_err": 3.180607512949228e-08,
+     "examples": [],
+     "message": "all 1 outputs within tolerance (max abs err 3.28e-09)",
+     "kernel_ms": 1654.544505989179
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 3.198639034529549e-06,
+     "max_rel_err": 8.078651037287702e-06,
+     "examples": [],
+     "message": "all 144 outputs within tolerance (max abs err 3.2e-06)",
+     "kernel_ms": 1454.6609099488705
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 15,
+      "N": 17,
+      "K": 13
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 255,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 1.2897917756049537e-06,
+     "max_rel_err": 7.005780189523868e-06,
+     "examples": [],
+     "message": "all 255 outputs within tolerance (max abs err 1.29e-06)",
+     "kernel_ms": 1355.88871804066
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 17,
+      "N": 15,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 255,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.735306983581154e-06,
+     "max_rel_err": 7.905781726085097e-06,
+     "examples": [],
+     "message": "all 255 outputs within tolerance (max abs err 2.74e-06)",
+     "kernel_ms": 1294.4161299383268
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 1089,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.9079590895264573e-06,
+     "max_rel_err": 3.310911020375434e-05,
+     "examples": [],
+     "message": "all 1089 outputs within tolerance (max abs err 2.91e-06)",
+     "kernel_ms": 1358.151125954464
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 9.321568704478977e-06,
+     "max_rel_err": 0.013875371574099574,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 9.32e-06)",
+     "kernel_ms": 1394.156335038133
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 257,
+      "N": 129,
+      "K": 1000
+     },
+     "dist": "normal",
+     "seed": 106,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 33153,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.00013585655658232554,
+     "max_rel_err": 0.33944062438638517,
+     "examples": [],
+     "message": "all 33153 outputs within tolerance (max abs err 0.000136)",
+     "kernel_ms": 1474.941220949404
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 4096,
+      "N": 17,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 107,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 69632,
+     "n_bad": 5261,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 11.288282195980523,
+     "max_rel_err": 1611.2135767348684,
+     "examples": [
+      [
+       [
+        84,
+        16
+       ],
+       -6.515800952911377,
+       -6.49674340174078
+      ],
+      [
+       [
+        85,
+        16
+       ],
+       5.0553388595581055,
+       5.5458306536071
+      ],
+      [
+       [
+        86,
+        16
+       ],
+       1.6075955629348755,
+       1.6233092905608584
+      ],
+      [
+       [
+        87,
+        16
+       ],
+       9.485136985778809,
+       9.894126226135715
+      ],
+      [
+       [
+        94,
+        16
+       ],
+       -1.886030673980713,
+       -1.8120348868245095
+      ]
+     ],
+     "message": "5261 of 69632 outputs exceed tolerance (max abs err 11.3, max rel err 1.61e+03)",
+     "kernel_ms": 1248.7795180641115
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 100,
+      "N": 100,
+      "K": 100
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 10000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 1.3465362588505059e-05,
+     "max_rel_err": 0.006390692781093259,
+     "examples": [],
+     "message": "all 10000 outputs within tolerance (max abs err 1.35e-05)",
+     "kernel_ms": 1242.159656016156
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 16,
+      "N": 16,
+      "K": 64
+     },
+     "dist": "normal",
+     "seed": 121,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 256,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.831890501184489e-06,
+     "max_rel_err": 1.1036848120202175e-05,
+     "examples": [],
+     "message": "all 256 outputs within tolerance (max abs err 5.83e-06)",
+     "kernel_ms": 1188.4384190198034
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "large",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.07916396029759198,
+     "max_rel_err": 0.00017465135833297606,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 0.0792)",
+     "kernel_ms": 1236.2151499837637
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "mixed",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 208036.46997070312,
+     "max_rel_err": 8.633969214672265e-06,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.08e+05)",
+     "kernel_ms": 0.09415694512426853
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.9423865287424912e-77,
+     "max_rel_err": 2.942386528742491e-47,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.94e-77)",
+     "kernel_ms": 0.07919804193079472
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "outlier@16",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4624944.28125,
+     "max_rel_err": 0.00016375546503728293,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 4.62e+06)",
+     "kernel_ms": 0.07841596379876137
+    }
+   ]
+  },
+  "gemm_txl_bug_ktail": {
+   "summary": {
+    "passed": 8,
+    "failed": 9,
+    "skipped": 0,
+    "total": 17,
+    "reasons": [
+     "mismatch"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "M": 1,
+       "N": 1,
+       "K": 1
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "mismatch",
+      "message": "1 of 1 outputs exceed tolerance (max abs err 0.103, max rel err 1)"
+     },
+     {
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "mismatch",
+      "message": "144 of 144 outputs exceed tolerance (max abs err 8.91, max rel err 26.8)"
+     },
+     {
+      "shape": {
+       "M": 15,
+       "N": 17,
+       "K": 13
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "mismatch",
+      "message": "255 of 255 outputs exceed tolerance (max abs err 11.7, max rel err 1)"
+     },
+     {
+      "shape": {
+       "M": 17,
+       "N": 15,
+       "K": 40
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "mismatch",
+      "message": "255 of 255 outputs exceed tolerance (max abs err 10.8, max rel err 47.1)"
+     },
+     {
+      "shape": {
+       "M": 33,
+       "N": 33,
+       "K": 33
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "mismatch",
+      "message": "1086 of 1089 outputs exceed tolerance (max abs err 4.14, max rel err 52.1)"
+     },
+     {
+      "shape": {
+       "M": 128,
+       "N": 128,
+       "K": 40
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "mismatch",
+      "message": "16381 of 16384 outputs exceed tolerance (max abs err 12.9, max rel err 1.67e+05)"
+     },
+     {
+      "shape": {
+       "M": 257,
+       "N": 129,
+       "K": 1000
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "mismatch",
+      "message": "33068 of 33153 outputs exceed tolerance (max abs err 15.3, max rel err 6.78e+04)"
+     },
+     {
+      "shape": {
+       "M": 4096,
+       "N": 17,
+       "K": 33
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "mismatch",
+      "message": "69611 of 69632 outputs exceed tolerance (max abs err 8.43, max rel err 6e+03)"
+     },
+     {
+      "shape": {
+       "M": 100,
+       "N": 100,
+       "K": 100
+      },
+      "dist": "normal",
+      "repeat": 5,
+      "tag": "sync: repeated",
+      "reason": "mismatch",
+      "message": "9997 of 10000 outputs exceed tolerance (max abs err 11.7, max rel err 2.11e+03)"
+     }
+    ],
+    "seconds": 25.0
+   },
+   "outcomes": [
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 128
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.1542762468129695e-05,
+     "max_rel_err": 0.0006510959154668694,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+     "kernel_ms": 1273.1981109827757
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 256,
+      "N": 256,
+      "K": 256
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 65536,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.072619566386493e-05,
+     "max_rel_err": 0.10590636721095462,
+     "examples": [],
+     "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+     "kernel_ms": 1221.742698107846
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 512,
+      "N": 512,
+      "K": 512
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 262144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 8.83508713656056e-05,
+     "max_rel_err": 0.008491038751917352,
+     "examples": [],
+     "message": "all 262144 outputs within tolerance (max abs err 8.84e-05)",
+     "kernel_ms": 1287.4939320608974
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 1,
+      "N": 1,
+      "K": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 1,
+     "n_bad": 1,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.10311915308393083,
+     "max_rel_err": 1.0,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       0.0,
+       -0.10311915308393083
+      ]
+     ],
+     "message": "1 of 1 outputs exceed tolerance (max abs err 0.103, max rel err 1)",
+     "kernel_ms": 1243.927347008139
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 144,
+     "n_bad": 144,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 8.909148692750849,
+     "max_rel_err": 26.75137041217968,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       -4.895211219787598,
+       -4.476937351443788
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       4.580811977386475,
+       1.4422813558980376
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -1.3371024131774902,
+       -3.2995716852167583
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       3.0783207416534424,
+       2.4993419497285077
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       0.0713426023721695,
+       1.3521840578040925
+      ]
+     ],
+     "message": "144 of 144 outputs exceed tolerance (max abs err 8.91, max rel err 26.8)",
+     "kernel_ms": 1170.753600075841
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 15,
+      "N": 17,
+      "K": 13
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 255,
+     "n_bad": 255,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 11.714891097598361,
+     "max_rel_err": 1.0,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       0.0,
+       -1.4238055956939593
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       0.0,
+       4.803037090472287
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       0.0,
+       5.813878969127661
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       0.0,
+       -3.3613489438626045
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       0.0,
+       8.557077352280555
+      ]
+     ],
+     "message": "255 of 255 outputs exceed tolerance (max abs err 11.7, max rel err 1)",
+     "kernel_ms": 1113.836005097255
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 17,
+      "N": 15,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 255,
+     "n_bad": 255,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 10.786118475480997,
+     "max_rel_err": 47.09839491002128,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       -4.436383247375488,
+       -5.116821457674009
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       3.671191453933716,
+       2.797047275072142
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -7.25574254989624,
+       -9.46171419873696
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       4.65233039855957,
+       4.759104607760811
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       12.865230560302734,
+       12.615428486764424
+      ]
+     ],
+     "message": "255 of 255 outputs exceed tolerance (max abs err 10.8, max rel err 47.1)",
+     "kernel_ms": 1182.2242880007252
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 1089,
+     "n_bad": 1086,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.144356885175634,
+     "max_rel_err": 52.109701816971274,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       -0.5181745886802673,
+       -0.4223312713507612
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       4.362537860870361,
+       4.379687534084146
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -7.299644470214844,
+       -7.5735044009987105
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       4.02275276184082,
+       3.9592266912294285
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       10.441534996032715,
+       10.546342064882209
+      ]
+     ],
+     "message": "1086 of 1089 outputs exceed tolerance (max abs err 4.14, max rel err 52.1)",
+     "kernel_ms": 1205.3931009722874
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 16384,
+     "n_bad": 16381,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 12.901814450628454,
+     "max_rel_err": 166565.36697025268,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       -3.229729175567627,
+       -1.3576488935460382
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       12.928474426269531,
+       11.605046030753014
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -1.4983524084091187,
+       -0.4428797028440461
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       -6.101533889770508,
+       -7.4199133122975125
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       -3.0237209796905518,
+       -1.53097885723996
+      ]
+     ],
+     "message": "16381 of 16384 outputs exceed tolerance (max abs err 12.9, max rel err 1.67e+05)",
+     "kernel_ms": 1149.8130219988525
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 257,
+      "N": 129,
+      "K": 1000
+     },
+     "dist": "normal",
+     "seed": 106,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 33153,
+     "n_bad": 33068,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 15.341488655905877,
+     "max_rel_err": 67819.52805425908,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       38.29328536987305,
+       34.44075883111479
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       80.2243423461914,
+       79.87310818859743
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       20.559940338134766,
+       22.13300503723464
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       -4.407226085662842,
+       -6.294028640688844
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       -26.326562881469727,
+       -28.16130734687395
+      ]
+     ],
+     "message": "33068 of 33153 outputs exceed tolerance (max abs err 15.3, max rel err 6.78e+04)",
+     "kernel_ms": 1205.6922310730442
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 4096,
+      "N": 17,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 107,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 69632,
+     "n_bad": 69611,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 8.428454901842388,
+     "max_rel_err": 6002.1674485772955,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       -2.5927648544311523,
+       -3.0043757125340327
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       -7.135806083679199,
+       -7.3358510876045
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -0.22501298785209656,
+       0.6105134171919832
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       -2.420792579650879,
+       -2.549700723191416
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       1.2569721937179565,
+       0.7902530371265273
+      ]
+     ],
+     "message": "69611 of 69632 outputs exceed tolerance (max abs err 8.43, max rel err 6e+03)",
+     "kernel_ms": 1267.599603976123
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 100,
+      "N": 100,
+      "K": 100
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": false,
+     "reason": "mismatch",
+     "n": 10000,
+     "n_bad": 9997,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 11.675585782724347,
+     "max_rel_err": 2106.591242217406,
+     "examples": [
+      [
+       [
+        0,
+        0
+       ],
+       -5.899049758911133,
+       -6.961950510252666
+      ],
+      [
+       [
+        0,
+        1
+       ],
+       0.14302997291088104,
+       -0.06299172316046264
+      ],
+      [
+       [
+        0,
+        2
+       ],
+       -8.40521240234375,
+       -7.6485318844041945
+      ],
+      [
+       [
+        0,
+        3
+       ],
+       17.707759857177734,
+       17.65396767864754
+      ],
+      [
+       [
+        0,
+        4
+       ],
+       1.7808879613876343,
+       2.803367294300264
+      ]
+     ],
+     "message": "9997 of 10000 outputs exceed tolerance (max abs err 11.7, max rel err 2.11e+03)",
+     "kernel_ms": 1312.8617240581661
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 16,
+      "N": 16,
+      "K": 64
+     },
+     "dist": "normal",
+     "seed": 121,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 256,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.831890501184489e-06,
+     "max_rel_err": 1.1036848120202175e-05,
+     "examples": [],
+     "message": "all 256 outputs within tolerance (max abs err 5.83e-06)",
+     "kernel_ms": 1173.7426089821383
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "large",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.07916396029759198,
+     "max_rel_err": 0.00017465135833297606,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 0.0792)",
+     "kernel_ms": 1172.9145479621366
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "mixed",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 208036.46997070312,
+     "max_rel_err": 8.633969214672265e-06,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.08e+05)",
+     "kernel_ms": 0.12713903561234474
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.9423865287424912e-77,
+     "max_rel_err": 2.942386528742491e-47,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.94e-77)",
+     "kernel_ms": 0.10776100680232048
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "outlier@16",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4624944.28125,
+     "max_rel_err": 0.00016375546503728293,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 4.62e+06)",
+     "kernel_ms": 0.11646805796772242
+    }
+   ]
+  },
+  "gemm_txl_bug_guard": {
+   "summary": {
+    "passed": 9,
+    "failed": 8,
+    "skipped": 0,
+    "total": 17,
+    "reasons": [
+     "canary"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "M": 1,
+       "N": 1,
+       "K": 1
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "canary",
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)"
+     },
+     {
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "canary",
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)"
+     },
+     {
+      "shape": {
+       "M": 15,
+       "N": 17,
+       "K": 13
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "canary",
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)"
+     },
+     {
+      "shape": {
+       "M": 17,
+       "N": 15,
+       "K": 40
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "canary",
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)"
+     },
+     {
+      "shape": {
+       "M": 33,
+       "N": 33,
+       "K": 33
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "canary",
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)"
+     },
+     {
+      "shape": {
+       "M": 257,
+       "N": 129,
+       "K": 1000
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "canary",
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)"
+     },
+     {
+      "shape": {
+       "M": 4096,
+       "N": 17,
+       "K": 33
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "tiling: % 16 != 0 / edge",
+      "reason": "canary",
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)"
+     },
+     {
+      "shape": {
+       "M": 100,
+       "N": 100,
+       "K": 100
+      },
+      "dist": "normal",
+      "repeat": 5,
+      "tag": "sync: repeated",
+      "reason": "canary",
+      "message": "kernel wrote outside the output buffer (out-of-bounds store)"
+     }
+    ],
+    "seconds": 24.3
+   },
+   "outcomes": [
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 128
+     },
+     "dist": "normal",
+     "seed": 0,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.1542762468129695e-05,
+     "max_rel_err": 0.0006510959154668694,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 2.15e-05)",
+     "kernel_ms": 1266.2265610415488
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 256,
+      "N": 256,
+      "K": 256
+     },
+     "dist": "normal",
+     "seed": 1,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 65536,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4.072619566386493e-05,
+     "max_rel_err": 0.10590636721095462,
+     "examples": [],
+     "message": "all 65536 outputs within tolerance (max abs err 4.07e-05)",
+     "kernel_ms": 1290.561118046753
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 512,
+      "N": 512,
+      "K": 512
+     },
+     "dist": "normal",
+     "seed": 2,
+     "repeat": 3,
+     "tag": "fixed",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 262144,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 8.83508713656056e-05,
+     "max_rel_err": 0.008491038751917352,
+     "examples": [],
+     "message": "all 262144 outputs within tolerance (max abs err 8.84e-05)",
+     "kernel_ms": 1231.4885460073128
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 1,
+      "N": 1,
+      "K": 1
+     },
+     "dist": "normal",
+     "seed": 100,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "canary",
+     "n": 1,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": false,
+     "max_abs_err": 3.2798155302771193e-09,
+     "max_rel_err": 3.180607512949228e-08,
+     "examples": [],
+     "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+     "kernel_ms": 1194.1172280348837
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 101,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "canary",
+     "n": 144,
+     "n_bad": 9,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": false,
+     "max_abs_err": 8.813222111102283,
+     "max_rel_err": 1.0,
+     "examples": [],
+     "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+     "kernel_ms": 1188.3473589550704
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 15,
+      "N": 17,
+      "K": 13
+     },
+     "dist": "normal",
+     "seed": 102,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "canary",
+     "n": 255,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": false,
+     "max_abs_err": 1.2897917756049537e-06,
+     "max_rel_err": 7.005780189523868e-06,
+     "examples": [],
+     "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+     "kernel_ms": 1182.7896069735289
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 17,
+      "N": 15,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 103,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "canary",
+     "n": 255,
+     "n_bad": 11,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": false,
+     "max_abs_err": 10.315441506232084,
+     "max_rel_err": 1.0,
+     "examples": [],
+     "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+     "kernel_ms": 1192.9715320002288
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 33,
+      "N": 33,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 104,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "canary",
+     "n": 1089,
+     "n_bad": 1,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": false,
+     "max_abs_err": 3.2692527891454564,
+     "max_rel_err": 1.0,
+     "examples": [],
+     "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+     "kernel_ms": 1192.6421439275146
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 128,
+      "N": 128,
+      "K": 40
+     },
+     "dist": "normal",
+     "seed": 105,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 16384,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 9.321568704478977e-06,
+     "max_rel_err": 0.013875371574099574,
+     "examples": [],
+     "message": "all 16384 outputs within tolerance (max abs err 9.32e-06)",
+     "kernel_ms": 1219.1142949741334
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 257,
+      "N": 129,
+      "K": 1000
+     },
+     "dist": "normal",
+     "seed": 106,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "canary",
+     "n": 33153,
+     "n_bad": 93,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": false,
+     "max_abs_err": 71.48868571586107,
+     "max_rel_err": 1.0,
+     "examples": [],
+     "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+     "kernel_ms": 1276.0993560077623
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 4096,
+      "N": 17,
+      "K": 33
+     },
+     "dist": "normal",
+     "seed": 107,
+     "repeat": 1,
+     "tag": "tiling: % 16 != 0 / edge",
+     "misalign": 0,
+     "passed": false,
+     "reason": "canary",
+     "n": 69632,
+     "n_bad": 3132,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": false,
+     "max_abs_err": 21.7634196186253,
+     "max_rel_err": 1.0,
+     "examples": [],
+     "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+     "kernel_ms": 1249.065582989715
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 100,
+      "N": 100,
+      "K": 100
+     },
+     "dist": "normal",
+     "seed": 120,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": false,
+     "reason": "canary",
+     "n": 10000,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": false,
+     "max_abs_err": 1.3465362588505059e-05,
+     "max_rel_err": 0.006390692781093259,
+     "examples": [],
+     "message": "kernel wrote outside the output buffer (out-of-bounds store)",
+     "kernel_ms": 1226.9892669282854
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 16,
+      "N": 16,
+      "K": 64
+     },
+     "dist": "normal",
+     "seed": 121,
+     "repeat": 5,
+     "tag": "sync: repeated",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 256,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 5.831890501184489e-06,
+     "max_rel_err": 1.1036848120202175e-05,
+     "examples": [],
+     "message": "all 256 outputs within tolerance (max abs err 5.83e-06)",
+     "kernel_ms": 1164.4924309803173
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "large",
+     "seed": 130,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 0.07916396029759198,
+     "max_rel_err": 0.00017465135833297606,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 0.0792)",
+     "kernel_ms": 1178.5389840370044
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "mixed",
+     "seed": 131,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 208036.46997070312,
+     "max_rel_err": 8.633969214672265e-06,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.08e+05)",
+     "kernel_ms": 0.12499501463025808
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "tiny",
+     "seed": 132,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 2.9423865287424912e-77,
+     "max_rel_err": 2.942386528742491e-47,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 2.94e-77)",
+     "kernel_ms": 0.1050169812515378
+    },
+    {
+     "op": "gemm",
+     "shape": {
+      "M": 64,
+      "N": 64,
+      "K": 64
+     },
+     "dist": "outlier@16",
+     "seed": 133,
+     "repeat": 1,
+     "tag": "numerical",
+     "misalign": 0,
+     "passed": true,
+     "reason": "ok",
+     "n": 4096,
+     "n_bad": 0,
+     "n_nonfinite": 0,
+     "n_unwritten": 0,
+     "canary_ok": true,
+     "max_abs_err": 4624944.28125,
+     "max_rel_err": 0.00016375546503728293,
+     "examples": [],
+     "message": "all 4096 outputs within tolerance (max abs err 4.62e+06)",
+     "kernel_ms": 0.09951693937182426
+    }
+   ]
+  }
+ },
+ "perf": {
+  "file": "results/perf/tirx_task1_20261117-033945.json",
+  "reports": {
+   "layernorm_txl_ref": {
+    "workload": "layernorm",
+    "label": "layernorm_txl_ref",
+    "lang": "tirx",
+    "shape": {
+     "rows": 4096,
+     "N": 1024
+    },
+    "measured": true,
+    "reason": "",
+    "gpu": "A100-SXM4-40GB",
+    "time_ms": 0.29526400566101074,
+    "p10_ms": 0.29366400837898254,
+    "p90_ms": 0.2995840013027191,
+    "iters": 50,
+    "torch_ms": 0.03758399933576584,
+    "copy_ms": 0.03073599934577942,
+    "flops": 33554432.0,
+    "bytes": 33562624.0,
+    "intensity": 0.9997559189650964,
+    "bound": "memory",
+    "achieved_gbps": 113.66987968907007,
+    "achieved_tflops": 0.1136421350271982,
+    "pct_peak_bw": 7.30996010862187,
+    "pct_peak_flops": 0.5827801796266574,
+    "roofline_ms": 0.021583681028938907,
+    "floor_ms": 0.03073599934577942,
+    "seconds": 6.136674885055982,
+    "spec": {
+     "name": "A100-SXM4-40GB",
+     "dram_gbps": 1555.0,
+     "fp32_tflops": 19.5,
+     "sms": 108,
+     "l2_mb": 40.0,
+     "known": true,
+     "ridge_flop_per_byte": 12.54
+    },
+    "speedup_vs_torch": 0.1272894718461403,
+    "headroom": 9.606455360025754
+   },
+   "layernorm_txl_opt": {
+    "workload": "layernorm",
+    "label": "layernorm_txl_opt",
+    "lang": "tirx",
+    "shape": {
+     "rows": 4096,
+     "N": 1024
+    },
+    "measured": true,
+    "reason": "",
+    "gpu": "A100-SXM4-40GB",
+    "time_ms": 0.0347680002450943,
+    "p10_ms": 0.03385600075125694,
+    "p90_ms": 0.035679999738931656,
+    "iters": 50,
+    "torch_ms": 0.03736000135540962,
+    "copy_ms": 0.030848000198602676,
+    "flops": 33554432.0,
+    "bytes": 33562624.0,
+    "intensity": 0.9997559189650964,
+    "bound": "memory",
+    "achieved_gbps": 965.3308721641424,
+    "achieved_tflops": 0.9650952532058403,
+    "pct_peak_bw": 62.079155766182794,
+    "pct_peak_flops": 4.949206426696617,
+    "roofline_ms": 0.021583681028938907,
+    "floor_ms": 0.030848000198602676,
+    "seconds": 7.598197679966688,
+    "spec": {
+     "name": "A100-SXM4-40GB",
+     "dram_gbps": 1555.0,
+     "fp32_tflops": 19.5,
+     "sms": 108,
+     "l2_mb": 40.0,
+     "known": true,
+     "ridge_flop_per_byte": 12.54
+    },
+    "speedup_vs_torch": 1.0745513429602858,
+    "headroom": 1.1270746894856798
+   },
+   "gemm_txl_ref": {
+    "workload": "gemm",
+    "label": "gemm_txl_ref",
+    "lang": "tirx",
+    "shape": {
+     "M": 1024,
+     "N": 1024,
+     "K": 1024
+    },
+    "measured": true,
+    "reason": "",
+    "gpu": "A100-SXM4-40GB",
+    "time_ms": 1.088815987110138,
+    "p10_ms": 1.08515202999115,
+    "p90_ms": 1.0945279598236084,
+    "iters": 50,
+    "torch_ms": 0.1345279961824417,
+    "copy_ms": null,
+    "flops": 2147483648.0,
+    "bytes": 12582912.0,
+    "intensity": 170.66666666666666,
+    "bound": "compute",
+    "achieved_gbps": 11.556509225582477,
+    "achieved_tflops": 1.9723109078327428,
+    "pct_peak_bw": 0.743183873027812,
+    "pct_peak_flops": 10.114414911962784,
+    "roofline_ms": 0.11012736656410257,
+    "floor_ms": 0.11012736656410257,
+    "seconds": 7.427531330031343,
+    "spec": {
+     "name": "A100-SXM4-40GB",
+     "dram_gbps": 1555.0,
+     "fp32_tflops": 19.5,
+     "sms": 108,
+     "l2_mb": 40.0,
+     "known": true,
+     "ridge_flop_per_byte": 12.54
+    },
+    "speedup_vs_torch": 0.12355439098529115,
+    "headroom": 9.886879356879595
+   },
+   "gemm_txl_opt": {
+    "workload": "gemm",
+    "label": "gemm_txl_opt",
+    "lang": "tirx",
+    "shape": {
+     "M": 1024,
+     "N": 1024,
+     "K": 1024
+    },
+    "measured": true,
+    "reason": "",
+    "gpu": "A100-SXM4-40GB",
+    "time_ms": 0.47092799842357635,
+    "p10_ms": 0.47017601132392883,
+    "p90_ms": 0.4716159999370575,
+    "iters": 50,
+    "torch_ms": 0.13475200533866882,
+    "copy_ms": null,
+    "flops": 2147483648.0,
+    "bytes": 12582912.0,
+    "intensity": 170.66666666666666,
+    "bound": "compute",
+    "achieved_gbps": 26.71939668510067,
+    "achieved_tflops": 4.560110367590514,
+    "pct_peak_bw": 1.7182891758907182,
+    "pct_peak_flops": 23.385181372259048,
+    "roofline_ms": 0.11012736656410257,
+    "floor_ms": 0.11012736656410257,
+    "seconds": 6.144796884036623,
+    "spec": {
+     "name": "A100-SXM4-40GB",
+     "dram_gbps": 1555.0,
+     "fp32_tflops": 19.5,
+     "sms": 108,
+     "l2_mb": 40.0,
+     "known": true,
+     "ridge_flop_per_byte": 12.54
+    },
+    "speedup_vs_torch": 0.2861414181992766,
+    "headroom": 4.276212290516002
+   }
+  }
+ },
+ "numsim": {
+  "layernorm_txl_ref": {
+   "summary": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [],
+    "failing_tests": [],
+    "seconds": 115.4
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "normal",
+     "passed": true,
+     "reason": "ok",
+     "message": "all 400 outputs within tolerance (max abs err 7.14e-07)",
+     "sim_seconds": 54.04219917394221
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "offset",
+     "passed": true,
+     "reason": "ok",
+     "message": "all 400 outputs within tolerance (max abs err 0.000361)",
+     "sim_seconds": 0.06347378203645349
+    }
+   ]
+  },
+  "layernorm_txl_opt": {
+   "summary": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [],
+    "failing_tests": [],
+    "seconds": 115.9
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "normal",
+     "passed": true,
+     "reason": "ok",
+     "message": "all 400 outputs within tolerance (max abs err 2.62e-07)",
+     "sim_seconds": 54.39042461197823
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "offset",
+     "passed": true,
+     "reason": "ok",
+     "message": "all 400 outputs within tolerance (max abs err 0.000642)",
+     "sim_seconds": 0.05932815501000732
+    }
+   ]
+  },
+  "layernorm_txl_bug_nosync": {
+   "summary": {
+    "passed": 0,
+    "failed": 2,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [
+     "mismatch",
+     "race"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "rows": 2,
+       "N": 200
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "sync: numsim",
+      "reason": "race",
+      "message": "Racecheck: data race ({'status': 'error', 'kind': 'data_race', 'access_pair': 'read_write', 'ordering_domain': 'execution', 'ordering_failure': 'missing_inter_actor_sync', 'prior': {'operation': {'ker"
+     },
+     {
+      "shape": {
+       "rows": 2,
+       "N": 200
+      },
+      "dist": "offset",
+      "repeat": 1,
+      "tag": "numsim",
+      "reason": "mismatch",
+      "message": "398 of 400 outputs exceed tolerance (max abs err 4.63, max rel err 153)"
+     }
+    ],
+    "seconds": 116.1
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "normal",
+     "passed": false,
+     "reason": "race",
+     "message": "Racecheck: data race ({'status': 'error', 'kind': 'data_race', 'access_pair': 'read_write', 'ordering_domain': 'execution', 'ordering_failure': 'missing_inter_actor_sync', 'prior': {'operation': {'kernel_index': 0, 'global)",
+     "sim_seconds": 54.417409433983266
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "offset",
+     "passed": false,
+     "reason": "mismatch",
+     "message": "398 of 400 outputs exceed tolerance (max abs err 4.63, max rel err 153)",
+     "sim_seconds": 0.05950802203733474
+    }
+   ]
+  },
+  "layernorm_txl_bug_tail": {
+   "summary": {
+    "passed": 0,
+    "failed": 2,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [
+     "mismatch"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "rows": 2,
+       "N": 200
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "sync: numsim",
+      "reason": "mismatch",
+      "message": "399 of 400 outputs exceed tolerance (max abs err 0.831, max rel err 140)"
+     },
+     {
+      "shape": {
+       "rows": 2,
+       "N": 200
+      },
+      "dist": "offset",
+      "repeat": 1,
+      "tag": "numsim",
+      "reason": "mismatch",
+      "message": "399 of 400 outputs exceed tolerance (max abs err 4.76, max rel err 2.13e+03)"
+     }
+    ],
+    "seconds": 10.6
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "normal",
+     "passed": false,
+     "reason": "mismatch",
+     "message": "399 of 400 outputs exceed tolerance (max abs err 0.831, max rel err 140)",
+     "sim_seconds": 3.5443759199697524
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "offset",
+     "passed": false,
+     "reason": "mismatch",
+     "message": "399 of 400 outputs exceed tolerance (max abs err 4.76, max rel err 2.13e+03)",
+     "sim_seconds": 0.06441748898942024
+    }
+   ]
+  },
+  "layernorm_txl_bug_offbyone": {
+   "summary": {
+    "passed": 0,
+    "failed": 2,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [
+     "out_of_bounds"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "rows": 2,
+       "N": 200
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "sync: numsim",
+      "reason": "out_of_bounds",
+      "message": "NumSimExecutionError: NumSim artifact execution failed: NumSim kernel phase 0 failed: warp 6 failed: out-of-bounds access: buffer x: pointer byte range [1600, 1604) exceeds 1600 bytes on lane 8"
+     },
+     {
+      "shape": {
+       "rows": 2,
+       "N": 200
+      },
+      "dist": "offset",
+      "repeat": 1,
+      "tag": "numsim",
+      "reason": "out_of_bounds",
+      "message": "NumSimExecutionError: NumSim artifact execution failed: NumSim kernel phase 0 failed: warp 6 failed: out-of-bounds access: buffer x: pointer byte range [1600, 1604) exceeds 1600 bytes on lane 8"
+     }
+    ],
+    "seconds": 7.8
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "normal",
+     "passed": false,
+     "reason": "out_of_bounds",
+     "message": "NumSimExecutionError: NumSim artifact execution failed: NumSim kernel phase 0 failed: warp 6 failed: out-of-bounds access: buffer x: pointer byte range [1600, 1604) exceeds 1600 bytes on lane 8",
+     "sim_seconds": null
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "offset",
+     "passed": false,
+     "reason": "out_of_bounds",
+     "message": "NumSimExecutionError: NumSim artifact execution failed: NumSim kernel phase 0 failed: warp 6 failed: out-of-bounds access: buffer x: pointer byte range [1600, 1604) exceeds 1600 bytes on lane 8",
+     "sim_seconds": null
+    }
+   ]
+  },
+  "layernorm_txl_bug_onepass": {
+   "summary": {
+    "passed": 1,
+    "failed": 1,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [
+     "nonfinite"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "rows": 2,
+       "N": 200
+      },
+      "dist": "offset",
+      "repeat": 1,
+      "tag": "numsim",
+      "reason": "nonfinite",
+      "message": "400 outputs are NaN/Inf where the reference is finite"
+     }
+    ],
+    "seconds": 10.6
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "normal",
+     "passed": true,
+     "reason": "ok",
+     "message": "all 400 outputs within tolerance (max abs err 2.62e-07)",
+     "sim_seconds": 3.618711631046608
+    },
+    {
+     "shape": {
+      "rows": 2,
+      "N": 200
+     },
+     "dist": "offset",
+     "passed": false,
+     "reason": "nonfinite",
+     "message": "400 outputs are NaN/Inf where the reference is finite",
+     "sim_seconds": 0.054383002105169
+    }
+   ]
+  },
+  "gemm_txl_ref": {
+   "summary": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [],
+    "failing_tests": [],
+    "seconds": 9.0
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "passed": true,
+     "reason": "ok",
+     "message": "all 144 outputs within tolerance (max abs err 2.94e-06)",
+     "sim_seconds": 2.5184304920258
+    },
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "large",
+     "passed": true,
+     "reason": "ok",
+     "message": "all 144 outputs within tolerance (max abs err 0.0272)",
+     "sim_seconds": 0.02501575497444719
+    }
+   ]
+  },
+  "gemm_txl_opt": {
+   "summary": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [],
+    "failing_tests": [],
+    "seconds": 9.6
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "passed": true,
+     "reason": "ok",
+     "message": "all 144 outputs within tolerance (max abs err 2.94e-06)",
+     "sim_seconds": 2.896461046067998
+    },
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "large",
+     "passed": true,
+     "reason": "ok",
+     "message": "all 144 outputs within tolerance (max abs err 0.0272)",
+     "sim_seconds": 0.0598006600048393
+    }
+   ]
+  },
+  "gemm_txl_bug_nosync": {
+   "summary": {
+    "passed": 0,
+    "failed": 2,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [
+     "mismatch",
+     "race"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "sync: numsim",
+      "reason": "race",
+      "message": "Racecheck: data race ({'status': 'error', 'kind': 'data_race', 'access_pair': 'read_write', 'ordering_domain': 'execution', 'ordering_failure': 'missing_same_warp_lane_order', 'prior': {'operation': {"
+     },
+     {
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "large",
+      "repeat": 1,
+      "tag": "numsim",
+      "reason": "mismatch",
+      "message": "144 of 144 outputs exceed tolerance (max abs err 1.87e+05, max rel err 35.3)"
+     }
+    ],
+    "seconds": 9.7
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "passed": false,
+     "reason": "race",
+     "message": "Racecheck: data race ({'status': 'error', 'kind': 'data_race', 'access_pair': 'read_write', 'ordering_domain': 'execution', 'ordering_failure': 'missing_same_warp_lane_order', 'prior': {'operation': {'kernel_index': 0, 'gl)",
+     "sim_seconds": 2.8634892449481413
+    },
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "large",
+     "passed": false,
+     "reason": "mismatch",
+     "message": "144 of 144 outputs exceed tolerance (max abs err 1.87e+05, max rel err 35.3)",
+     "sim_seconds": 0.05322220700327307
+    }
+   ]
+  },
+  "gemm_txl_bug_ktail": {
+   "summary": {
+    "passed": 0,
+    "failed": 2,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [
+     "mismatch"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "sync: numsim",
+      "reason": "mismatch",
+      "message": "144 of 144 outputs exceed tolerance (max abs err 9.87, max rel err 52)"
+     },
+     {
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "large",
+      "repeat": 1,
+      "tag": "numsim",
+      "reason": "mismatch",
+      "message": "144 of 144 outputs exceed tolerance (max abs err 1.02e+05, max rel err 23.3)"
+     }
+    ],
+    "seconds": 9.6
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "passed": false,
+     "reason": "mismatch",
+     "message": "144 of 144 outputs exceed tolerance (max abs err 9.87, max rel err 52)",
+     "sim_seconds": 2.7632356400135905
+    },
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "large",
+     "passed": false,
+     "reason": "mismatch",
+     "message": "144 of 144 outputs exceed tolerance (max abs err 1.02e+05, max rel err 23.3)",
+     "sim_seconds": 0.018897652975283563
+    }
+   ]
+  },
+  "gemm_txl_bug_guard": {
+   "summary": {
+    "passed": 0,
+    "failed": 2,
+    "skipped": 0,
+    "total": 2,
+    "reasons": [
+     "runtime_error"
+    ],
+    "failing_tests": [
+     {
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "normal",
+      "repeat": 1,
+      "tag": "sync: numsim",
+      "reason": "runtime_error",
+      "message": "NumSimExecutionError: NumSim artifact execution failed: NumSim kernel phase 0 failed: warp 6 failed: buffer C: integer_address_without_binding requires an unmodeled analysis contract"
+     },
+     {
+      "shape": {
+       "M": 12,
+       "N": 12,
+       "K": 40
+      },
+      "dist": "large",
+      "repeat": 1,
+      "tag": "numsim",
+      "reason": "runtime_error",
+      "message": "NumSimExecutionError: NumSim artifact execution failed: NumSim kernel phase 0 failed: warp 6 failed: buffer C: integer_address_without_binding requires an unmodeled analysis contract"
+     }
+    ],
+    "seconds": 6.9
+   },
+   "outcomes": [
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "normal",
+     "passed": false,
+     "reason": "runtime_error",
+     "message": "NumSimExecutionError: NumSim artifact execution failed: NumSim kernel phase 0 failed: warp 6 failed: buffer C: integer_address_without_binding requires an unmodeled analysis contract",
+     "sim_seconds": null
+    },
+    {
+     "shape": {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     "dist": "large",
+     "passed": false,
+     "reason": "runtime_error",
+     "message": "NumSimExecutionError: NumSim artifact execution failed: NumSim kernel phase 0 failed: warp 6 failed: buffer C: integer_address_without_binding requires an unmodeled analysis contract",
+     "sim_seconds": null
+    }
+   ]
+  }
+ },
+ "volta": {
+  "layernorm": {
+   "file": "results/eval/volta_tirx_layernorm.json",
+   "summary": {
+    "workload": "layernorm",
+    "shapes": [
+     {
+      "N": 128
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     }
+    ],
+    "kernels": 6,
+    "runs": 18,
+    "decided_runs": 18,
+    "coverage_runs": 1.0,
+    "decided_kernels": 6,
+    "coverage_kernels": 1.0,
+    "as_expected": "18/18",
+    "statuses": {
+     "EQUIV": 10,
+     "NOT_EQUIV": 5,
+     "RACE": 3
+    },
+    "focus_mutants_caught": "0/0",
+    "volta_s_total": 30.89,
+    "build_s_total": 36.24,
+    "seconds": 78.6
+   },
+   "kernels": {
+    "layernorm_txl_ref": {
+     "decided": true,
+     "caught": false,
+     "runs": [
+      {
+       "shape": {
+        "N": 128
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 1.66,
+       "build_s": 2.294
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 4.11,
+       "build_s": 1.448
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.503,
+       "build_s": 1.547
+      }
+     ]
+    },
+    "layernorm_txl_opt": {
+     "decided": true,
+     "caught": false,
+     "runs": [
+      {
+       "shape": {
+        "N": 128
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 1.278,
+       "build_s": 1.975
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 4.781,
+       "build_s": 2.211
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.647,
+       "build_s": 1.809
+      }
+     ]
+    },
+    "layernorm_txl_bug_nosync": {
+     "decided": true,
+     "caught": true,
+     "runs": [
+      {
+       "shape": {
+        "N": 128
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.034,
+       "build_s": 2.147
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.013,
+       "build_s": 2.002
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.013,
+       "build_s": 1.863
+      }
+     ]
+    },
+    "layernorm_txl_bug_tail": {
+     "decided": true,
+     "caught": true,
+     "runs": [
+      {
+       "shape": {
+        "N": 128
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 1.92,
+       "build_s": 2.628
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 3.313,
+       "build_s": 2.925
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.31,
+       "build_s": 1.835
+      }
+     ]
+    },
+    "layernorm_txl_bug_offbyone": {
+     "decided": true,
+     "caught": true,
+     "runs": [
+      {
+       "shape": {
+        "N": 128
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 1.495,
+       "build_s": 1.982
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 5.039,
+       "build_s": 1.979
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.669,
+       "build_s": 2.062
+      }
+     ]
+    },
+    "layernorm_txl_bug_onepass": {
+     "decided": true,
+     "caught": false,
+     "runs": [
+      {
+       "shape": {
+        "N": 128
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 1.092,
+       "build_s": 1.805
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 3.496,
+       "build_s": 1.812
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.52,
+       "build_s": 1.915
+      }
+     ]
+    }
+   }
+  },
+  "gemm": {
+   "file": "results/eval/volta_tirx_gemm.json",
+   "summary": {
+    "workload": "gemm",
+    "shapes": [
+     {
+      "M": 32,
+      "N": 32,
+      "K": 48
+     },
+     {
+      "M": 32,
+      "N": 32,
+      "K": 72
+     },
+     {
+      "M": 32,
+      "N": 32,
+      "K": 40
+     },
+     {
+      "M": 12,
+      "N": 12,
+      "K": 40
+     },
+     {
+      "M": 16,
+      "N": 16,
+      "K": 64
+     }
+    ],
+    "kernels": 5,
+    "runs": 25,
+    "decided_runs": 25,
+    "coverage_runs": 1.0,
+    "decided_kernels": 5,
+    "coverage_kernels": 1.0,
+    "as_expected": "25/25",
+    "statuses": {
+     "EQUIV": 16,
+     "NOT_EQUIV": 3,
+     "RACE": 6
+    },
+    "focus_mutants_caught": "0/0",
+    "volta_s_total": 2.24,
+    "build_s_total": 41.53,
+    "seconds": 54.5
+   },
+   "kernels": {
+    "gemm_txl_ref": {
+     "decided": true,
+     "caught": false,
+     "runs": [
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 48
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.088,
+       "build_s": 1.49
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 72
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.133,
+       "build_s": 1.514
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 40
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.093,
+       "build_s": 1.521
+      },
+      {
+       "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.113,
+       "build_s": 2.179
+      },
+      {
+       "shape": {
+        "M": 16,
+        "N": 16,
+        "K": 64
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.134,
+       "build_s": 1.496
+      }
+     ]
+    },
+    "gemm_txl_opt": {
+     "decided": true,
+     "caught": false,
+     "runs": [
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 48
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.089,
+       "build_s": 1.86
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 72
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.132,
+       "build_s": 1.643
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 40
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.08,
+       "build_s": 1.596
+      },
+      {
+       "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.057,
+       "build_s": 1.603
+      },
+      {
+       "shape": {
+        "M": 16,
+        "N": 16,
+        "K": 64
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.111,
+       "build_s": 1.56
+      }
+     ]
+    },
+    "gemm_txl_bug_nosync": {
+     "decided": true,
+     "caught": true,
+     "runs": [
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 48
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.05,
+       "build_s": 1.589
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 72
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.069,
+       "build_s": 1.629
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 40
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.045,
+       "build_s": 1.815
+      },
+      {
+       "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.027,
+       "build_s": 1.671
+      },
+      {
+       "shape": {
+        "M": 16,
+        "N": 16,
+        "K": 64
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.057,
+       "build_s": 1.613
+      }
+     ]
+    },
+    "gemm_txl_bug_ktail": {
+     "decided": true,
+     "caught": true,
+     "runs": [
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 48
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.092,
+       "build_s": 1.555
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 72
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.131,
+       "build_s": 1.561
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 40
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.08,
+       "build_s": 1.697
+      },
+      {
+       "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.053,
+       "build_s": 1.697
+      },
+      {
+       "shape": {
+        "M": 16,
+        "N": 16,
+        "K": 64
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.114,
+       "build_s": 1.657
+      }
+     ]
+    },
+    "gemm_txl_bug_guard": {
+     "decided": true,
+     "caught": true,
+     "runs": [
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 48
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.091,
+       "build_s": 1.634
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 72
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.131,
+       "build_s": 1.725
+      },
+      {
+       "shape": {
+        "M": 32,
+        "N": 32,
+        "K": 40
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.093,
+       "build_s": 1.739
+      },
+      {
+       "shape": {
+        "M": 12,
+        "N": 12,
+        "K": 40
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE",
+        "OUT_OF_BOUNDS",
+        "FOOTPRINT",
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.056,
+       "build_s": 1.809
+      },
+      {
+       "shape": {
+        "M": 16,
+        "N": 16,
+        "K": 64
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.124,
+       "build_s": 1.681
+      }
+     ]
+    }
+   }
+  },
+  "softmax": {
+   "file": "results/eval/volta_tirx_softmax_task1.json",
+   "summary": {
+    "workload": "softmax",
+    "shapes": [
+     {
+      "N": 256
+     },
+     {
+      "N": 584
+     },
+     {
+      "N": 200
+     },
+     {
+      "N": 100
+     },
+     {
+      "N": 264
+     }
+    ],
+    "kernels": 5,
+    "runs": 25,
+    "decided_runs": 24,
+    "coverage_runs": 0.96,
+    "decided_kernels": 4,
+    "coverage_kernels": 0.8,
+    "as_expected": "24/25",
+    "statuses": {
+     "EQUIV": 12,
+     "NOT_EQUIV": 7,
+     "RACE": 5,
+     "UNSUPPORTED": 1
+    },
+    "focus_mutants_caught": "0/0",
+    "volta_s_total": 2.05,
+    "build_s_total": 52.51,
+    "seconds": 66.8
+   },
+   "kernels": {
+    "softmax_txl_ref": {
+     "decided": true,
+     "caught": false,
+     "runs": [
+      {
+       "shape": {
+        "N": 256
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.035,
+       "build_s": 2.089
+      },
+      {
+       "shape": {
+        "N": 584
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.121,
+       "build_s": 2.121
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.028,
+       "build_s": 2.098
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.017,
+       "build_s": 2.088
+      },
+      {
+       "shape": {
+        "N": 264
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.038,
+       "build_s": 2.112
+      }
+     ]
+    },
+    "softmax_txl_bug_nosync": {
+     "decided": true,
+     "caught": true,
+     "runs": [
+      {
+       "shape": {
+        "N": 256
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.015,
+       "build_s": 2.087
+      },
+      {
+       "shape": {
+        "N": 584
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.018,
+       "build_s": 2.125
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.013,
+       "build_s": 2.1
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.012,
+       "build_s": 2.29
+      },
+      {
+       "shape": {
+        "N": 264
+       },
+       "status": "RACE",
+       "expect": [
+        "RACE"
+       ],
+       "as_expected": true,
+       "volta_s": 0.015,
+       "build_s": 2.303
+      }
+     ]
+    },
+    "softmax_txl_bug_tail": {
+     "decided": false,
+     "caught": true,
+     "runs": [
+      {
+       "shape": {
+        "N": 256
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.036,
+       "build_s": 2.098
+      },
+      {
+       "shape": {
+        "N": 584
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.527,
+       "build_s": 2.151
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.067,
+       "build_s": 2.093
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "UNSUPPORTED",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": false,
+       "volta_s": 0.014,
+       "build_s": 2.021
+      },
+      {
+       "shape": {
+        "N": 264
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.115,
+       "build_s": 2.08
+      }
+     ]
+    },
+    "softmax_txl_bug_offbyone": {
+     "decided": true,
+     "caught": true,
+     "runs": [
+      {
+       "shape": {
+        "N": 256
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.035,
+       "build_s": 2.087
+      },
+      {
+       "shape": {
+        "N": 584
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.455,
+       "build_s": 2.122
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.062,
+       "build_s": 2.153
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.025,
+       "build_s": 2.096
+      },
+      {
+       "shape": {
+        "N": 264
+       },
+       "status": "NOT_EQUIV",
+       "expect": [
+        "NOT_EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.106,
+       "build_s": 2.106
+      }
+     ]
+    },
+    "softmax_txl_bug_nomax": {
+     "decided": true,
+     "caught": false,
+     "runs": [
+      {
+       "shape": {
+        "N": 256
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.042,
+       "build_s": 1.875
+      },
+      {
+       "shape": {
+        "N": 584
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.157,
+       "build_s": 2.115
+      },
+      {
+       "shape": {
+        "N": 200
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.032,
+       "build_s": 2.104
+      },
+      {
+       "shape": {
+        "N": 100
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.019,
+       "build_s": 2.1
+      },
+      {
+       "shape": {
+        "N": 264
+       },
+       "status": "EQUIV",
+       "expect": [
+        "EQUIV"
+       ],
+       "as_expected": true,
+       "volta_s": 0.045,
+       "build_s": 1.9
+      }
+     ]
+    }
+   }
+  }
+ },
+ "date": "2026-11-17T03:41:21",
+ "seconds_last_run": 212.2,
+ "summary": {
+  "layernorm_txl_ref": {
+   "workload": "layernorm",
+   "role": "reference",
+   "bug": null,
+   "gpu": "15/15 pass",
+   "numsim": "2/2 pass",
+   "volta": {
+    "N=128": "EQUIV",
+    "N=200": "EQUIV",
+    "N=100": "EQUIV"
+   },
+   "volta_as_expected": true,
+   "caught_by": [],
+   "ok": true
+  },
+  "layernorm_txl_opt": {
+   "workload": "layernorm",
+   "role": "candidate",
+   "bug": null,
+   "gpu": "15/15 pass",
+   "numsim": "2/2 pass",
+   "volta": {
+    "N=128": "EQUIV",
+    "N=200": "EQUIV",
+    "N=100": "EQUIV"
+   },
+   "volta_as_expected": true,
+   "caught_by": [],
+   "ok": true
+  },
+  "layernorm_txl_bug_nosync": {
+   "workload": "layernorm",
+   "role": "candidate",
+   "bug": "sync",
+   "gpu": "15/15 pass",
+   "numsim": "0/2 pass (mismatch,race)",
+   "volta": {
+    "N=128": "RACE",
+    "N=200": "RACE",
+    "N=100": "RACE"
+   },
+   "volta_as_expected": true,
+   "caught_by": [
+    "numsim",
+    "volta"
+   ],
+   "ok": true
+  },
+  "layernorm_txl_bug_tail": {
+   "workload": "layernorm",
+   "role": "candidate",
+   "bug": "tiling",
+   "gpu": "5/15 pass (mismatch)",
+   "numsim": "0/2 pass (mismatch)",
+   "volta": {
+    "N=128": "EQUIV",
+    "N=200": "NOT_EQUIV",
+    "N=100": "NOT_EQUIV"
+   },
+   "volta_as_expected": true,
+   "caught_by": [
+    "gpu",
+    "numsim",
+    "volta"
+   ],
+   "ok": true
+  },
+  "layernorm_txl_bug_offbyone": {
+   "workload": "layernorm",
+   "role": "candidate",
+   "bug": "indexing",
+   "gpu": "0/15 pass (cuda_error,mismatch)",
+   "numsim": "0/2 pass (out_of_bounds)",
+   "volta": {
+    "N=128": "NOT_EQUIV",
+    "N=200": "NOT_EQUIV",
+    "N=100": "NOT_EQUIV"
+   },
+   "volta_as_expected": true,
+   "caught_by": [
+    "gpu",
+    "numsim",
+    "volta"
+   ],
+   "ok": true
+  },
+  "layernorm_txl_bug_onepass": {
+   "workload": "layernorm",
+   "role": "candidate",
+   "bug": "numerical",
+   "gpu": "14/15 pass (nonfinite)",
+   "numsim": "1/2 pass (nonfinite)",
+   "volta": {
+    "N=128": "EQUIV",
+    "N=200": "EQUIV",
+    "N=100": "EQUIV"
+   },
+   "volta_as_expected": true,
+   "caught_by": [
+    "gpu",
+    "numsim"
+   ],
+   "ok": true
+  },
+  "gemm_txl_ref": {
+   "workload": "gemm",
+   "role": "reference",
+   "bug": null,
+   "gpu": "17/17 pass",
+   "numsim": "2/2 pass",
+   "volta": {
+    "M=32,N=32,K=48": "EQUIV",
+    "M=32,N=32,K=72": "EQUIV",
+    "M=32,N=32,K=40": "EQUIV",
+    "M=12,N=12,K=40": "EQUIV",
+    "M=16,N=16,K=64": "EQUIV"
+   },
+   "volta_as_expected": true,
+   "caught_by": [],
+   "ok": true
+  },
+  "gemm_txl_opt": {
+   "workload": "gemm",
+   "role": "candidate",
+   "bug": null,
+   "gpu": "17/17 pass",
+   "numsim": "2/2 pass",
+   "volta": {
+    "M=32,N=32,K=48": "EQUIV",
+    "M=32,N=32,K=72": "EQUIV",
+    "M=32,N=32,K=40": "EQUIV",
+    "M=12,N=12,K=40": "EQUIV",
+    "M=16,N=16,K=64": "EQUIV"
+   },
+   "volta_as_expected": true,
+   "caught_by": [],
+   "ok": true
+  },
+  "gemm_txl_bug_nosync": {
+   "workload": "gemm",
+   "role": "candidate",
+   "bug": "sync",
+   "gpu": "14/17 pass (mismatch)",
+   "numsim": "0/2 pass (mismatch,race)",
+   "volta": {
+    "M=32,N=32,K=48": "RACE",
+    "M=32,N=32,K=72": "RACE",
+    "M=32,N=32,K=40": "RACE",
+    "M=12,N=12,K=40": "RACE",
+    "M=16,N=16,K=64": "RACE"
+   },
+   "volta_as_expected": true,
+   "caught_by": [
+    "gpu",
+    "numsim",
+    "volta"
+   ],
+   "ok": true
+  },
+  "gemm_txl_bug_ktail": {
+   "workload": "gemm",
+   "role": "candidate",
+   "bug": "tiling",
+   "gpu": "8/17 pass (mismatch)",
+   "numsim": "0/2 pass (mismatch)",
+   "volta": {
+    "M=32,N=32,K=48": "EQUIV",
+    "M=32,N=32,K=72": "NOT_EQUIV",
+    "M=32,N=32,K=40": "NOT_EQUIV",
+    "M=12,N=12,K=40": "NOT_EQUIV",
+    "M=16,N=16,K=64": "EQUIV"
+   },
+   "volta_as_expected": true,
+   "caught_by": [
+    "gpu",
+    "numsim",
+    "volta"
+   ],
+   "ok": true
+  },
+  "gemm_txl_bug_guard": {
+   "workload": "gemm",
+   "role": "candidate",
+   "bug": "indexing",
+   "gpu": "9/17 pass (canary)",
+   "numsim": "0/2 pass (runtime_error)",
+   "volta": {
+    "M=32,N=32,K=48": "EQUIV",
+    "M=32,N=32,K=72": "EQUIV",
+    "M=32,N=32,K=40": "EQUIV",
+    "M=12,N=12,K=40": "RACE",
+    "M=16,N=16,K=64": "EQUIV"
+   },
+   "volta_as_expected": true,
+   "caught_by": [
+    "gpu",
+    "numsim",
+    "volta"
+   ],
+   "ok": true
+  }
+ }
+}

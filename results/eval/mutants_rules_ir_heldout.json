@@ -1,0 +1,1925 @@
+{
+ "rows": [
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 75,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 95,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 110,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 71,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 98,
+   "desc": "[col] -> [col + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 120,
+   "desc": "[col] -> [col + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 9,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "memory",
+    "tiling",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 20,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 11,
+   "desc": "4 -> 2",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "memory",
+    "numerical",
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 20,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 28,
+   "desc": "5 -> 6",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "define",
+   "line": 9,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "memory",
+    "tiling",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 20,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 121,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "init",
+   "line": 4,
+   "desc": "-3.4028234663852886e38 -> 0.0",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 70,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 75,
+   "desc": "if (lane < NWARP) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 95,
+   "desc": "if (col < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 19,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 17,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 38,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: ex2: destination 'd' must have dtype float32 (from .f32), got float16"
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 42,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: TypeError: Check failed: (false_ty == true_ty) is false: mismatched types. False type: float32; True type: float16"
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "v -> v_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "s -> s_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "wv -> wv_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 67,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 148,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 187,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 64,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 167,
+   "desc": "[base] -> [base + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 190,
+   "desc": "[r, tid * vec] -> [r, tid * vec + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 19,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "memory",
+    "numerical",
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 20,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 48,
+   "desc": "31 -> 32",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 110,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 11,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "define",
+   "line": 19,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "memory",
+    "tiling",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 20,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 63,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 67,
+   "desc": "if (lane < WARPS) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 165,
+   "desc": "if (base < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 51,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 17,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  max: max: operand 'b' must have dtype float32 (from .f32), got floa"
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 116,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "tiling",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 19,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 121,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  max: max: destination 'd' must have dtype float32 (from .f32), got "
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "peer -> peer_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "out -> out_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "shift -> shift_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 151,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 164,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 183,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 128,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 152,
+   "desc": "[r, base] -> [r, base + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 175,
+   "desc": "[base] -> [base + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 19,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "memory",
+    "numerical",
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 20,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 53,
+   "desc": "5 -> 6",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 87,
+   "desc": "2 -> 1",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "define",
+   "line": 19,
+   "desc": "128 -> 256",
+   "accept": [
+    "tiling"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "memory",
+    "numerical",
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 20,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 171,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 127,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 138,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 164,
+   "desc": "if (base < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 44,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 17,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 61,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 17,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  ld_vec: ld_vec: destination 'd' must have dtype float32 / uint32 / "
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 64,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  ld: ld: destination 'd' must have dtype float32 / uint32 / int32 / "
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "m -> m_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "s -> s_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "peer -> peer_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 97,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 121,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "cmp",
+   "line": 153,
+   "desc": "< -> <=",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 89,
+   "desc": "[r, idx] -> [r, idx + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 114,
+   "desc": "[w] -> [w + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "idx1",
+   "line": 142,
+   "desc": "[warp] -> [warp + 1]",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 9,
+   "desc": "128 -> 64",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical",
+    "tiling"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 20,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 65,
+   "desc": "16 -> 8",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "sync",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 16,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "const",
+   "line": 123,
+   "desc": "4 -> 2",
+   "accept": [
+    "indexing",
+    "tiling",
+    "memory",
+    "sync"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 17,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 130,
+   "desc": "* -> /",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 132,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "aop",
+   "line": 147,
+   "desc": "+ -> -",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "init",
+   "line": 12,
+   "desc": "-3.4028234663852886e38 -> 0.0",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 97,
+   "desc": "if (idx < n) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 18,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 109,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "negate",
+   "line": 141,
+   "desc": "if (lane == 0) negated",
+   "accept": [
+    "indexing"
+   ],
+   "bug": true,
+   "categories": [
+    "indexing"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 13,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 36,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 17,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 54,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "memory",
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 17,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: ex2: destination 'd' must have dtype float32 (from .f32), got float16"
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "dtype",
+   "line": 59,
+   "desc": "\"float32\" -> \"float16\"",
+   "accept": [
+    "numerical"
+   ],
+   "bug": true,
+   "categories": [
+    "numerical"
+   ],
+   "verdict": "hit",
+   "llm": {},
+   "n_tests": 12,
+   "analysis": {
+    "mode": "ast-fallback",
+    "ir_blind": false,
+    "fallback_reason": "the new version does not trace at rows=2,N=1024: ValueError: no ptx instruction matches these operands; candidates rejected it as:\n  max: max: destination 'd' must have dtype float32 (from .f32), got "
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "m -> m_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "tmp -> tmp_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "workload": "softmax",
+   "lang": "tirx",
+   "op": "rename",
+   "line": 0,
+   "desc": "inv -> inv_renamed",
+   "accept": [],
+   "bug": true,
+   "categories": [],
+   "verdict": "clean",
+   "llm": {},
+   "n_tests": 7,
+   "analysis": {
+    "mode": "ir",
+    "ir_blind": false,
+    "fallback_reason": null
+   }
+  }
+ ],
+ "seconds": 117.83523905999027,
+ "llm_model": null,
+ "classifier": "ir",
+ "complete": true
+}

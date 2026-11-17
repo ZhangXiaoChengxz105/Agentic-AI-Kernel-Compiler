@@ -1,0 +1,227 @@
+{
+ "date": "2026-11-17T02:43:07",
+ "shape": {
+  "N": 256
+ },
+ "summary": {
+  "None": "5/5 decided",
+  "exp": "0/5 decided",
+  "ex2": "1/5 decided",
+  "huge_const": "0/5 decided",
+  "bar_count": "1/5 decided",
+  "select_max": "4/5 decided"
+ },
+ "rows": [
+  {
+   "dropped": null,
+   "kernel": "softmax_txl_ref",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": null,
+   "kernel": "glm_txl_C_r2",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": null,
+   "kernel": "glm_txl_D1_r2",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": null,
+   "kernel": "glm_txl_D2_r1",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": null,
+   "kernel": "glm_txl_D3_r1",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": "exp",
+   "kernel": "softmax_txl_ref",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: Ex2(Float32 { ftz: true, dst: Ident(AsciiString { data: ['%', 'f', '4', '5'] }), src: Ident(AsciiString { data: ['%', 'f', '4', '3'] }) })",
+   "decided": false
+  },
+  {
+   "dropped": "exp",
+   "kernel": "glm_txl_C_r2",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: Ex2(Float32 { ftz: true, dst: Ident(AsciiString { data: ['%', 'f', '4', '5'] }), src: Ident(AsciiString { data: ['%', 'f', '4', '3'] }) })",
+   "decided": false
+  },
+  {
+   "dropped": "exp",
+   "kernel": "glm_txl_D1_r2",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: Ex2(Float32 { ftz: true, dst: Ident(AsciiString { data: ['%', 'f', '4', '5'] }), src: Ident(AsciiString { data: ['%', 'f', '4', '3'] }) })",
+   "decided": false
+  },
+  {
+   "dropped": "exp",
+   "kernel": "glm_txl_D2_r1",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: Ex2(Float32 { ftz: true, dst: Ident(AsciiString { data: ['%', 'f', '4', '5'] }), src: Ident(AsciiString { data: ['%', 'f', '4', '3'] }) })",
+   "decided": false
+  },
+  {
+   "dropped": "exp",
+   "kernel": "glm_txl_D3_r1",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: Ex2(Float32 { ftz: true, dst: Ident(AsciiString { data: ['%', 'f', '4', '5'] }), src: Ident(AsciiString { data: ['%', 'f', '4', '3'] }) })",
+   "decided": false
+  },
+  {
+   "dropped": "ex2",
+   "kernel": "softmax_txl_ref",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": "ex2",
+   "kernel": "glm_txl_C_r2",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: Ex2(Float32 { ftz: false, dst: Ident(AsciiString { data: ['%', 'f', '3', '6'] }), src: Ident(AsciiString { data: ['%', 'f', '3', '7'] }) })",
+   "decided": false
+  },
+  {
+   "dropped": "ex2",
+   "kernel": "glm_txl_D1_r2",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: Ex2(Float32 { ftz: false, dst: Ident(AsciiString { data: ['%', 'f', '1', '7', '1'] }), src: Ident(AsciiString { data: ['%', 'f', '8', '1'] }) })",
+   "decided": false
+  },
+  {
+   "dropped": "ex2",
+   "kernel": "glm_txl_D2_r1",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: Ex2(Float32 { ftz: false, dst: Ident(AsciiString { data: ['%', 'f', '5', '8'] }), src: Ident(AsciiString { data: ['%', 'f', '5', '9'] }) })",
+   "decided": false
+  },
+  {
+   "dropped": "ex2",
+   "kernel": "glm_txl_D3_r1",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: Ex2(Float32 { ftz: false, dst: Ident(AsciiString { data: ['%', 'f', '6', '1'] }), src: Ident(AsciiString { data: ['%', 'f', '6', '2'] }) })",
+   "decided": false
+  },
+  {
+   "dropped": "huge_const",
+   "kernel": "softmax_txl_ref",
+   "status": "UNSUPPORTED",
+   "detail": "equivalence check failed: rational coefficient overflowed i128",
+   "decided": false
+  },
+  {
+   "dropped": "huge_const",
+   "kernel": "glm_txl_C_r2",
+   "status": "UNSUPPORTED",
+   "detail": "equivalence check failed: rational coefficient overflowed i128",
+   "decided": false
+  },
+  {
+   "dropped": "huge_const",
+   "kernel": "glm_txl_D1_r2",
+   "status": "UNSUPPORTED",
+   "detail": "equivalence check failed: rational coefficient overflowed i128",
+   "decided": false
+  },
+  {
+   "dropped": "huge_const",
+   "kernel": "glm_txl_D2_r1",
+   "status": "UNSUPPORTED",
+   "detail": "equivalence check failed: rational coefficient overflowed i128",
+   "decided": false
+  },
+  {
+   "dropped": "huge_const",
+   "kernel": "glm_txl_D3_r1",
+   "status": "UNSUPPORTED",
+   "detail": "equivalence check failed: rational coefficient overflowed i128",
+   "decided": false
+  },
+  {
+   "dropped": "bar_count",
+   "kernel": "softmax_txl_ref",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": "bar_count",
+   "kernel": "glm_txl_C_r2",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: bar.sync",
+   "decided": false
+  },
+  {
+   "dropped": "bar_count",
+   "kernel": "glm_txl_D1_r2",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: bar.sync",
+   "decided": false
+  },
+  {
+   "dropped": "bar_count",
+   "kernel": "glm_txl_D2_r1",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: bar.sync",
+   "decided": false
+  },
+  {
+   "dropped": "bar_count",
+   "kernel": "glm_txl_D3_r1",
+   "status": "UNSUPPORTED",
+   "detail": "lowering failed: Unsupported instruction: bar.sync",
+   "decided": false
+  },
+  {
+   "dropped": "select_max",
+   "kernel": "softmax_txl_ref",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": "select_max",
+   "kernel": "glm_txl_C_r2",
+   "status": "UNSUPPORTED",
+   "detail": "equivalence check failed: non-finite constant -inf in expression",
+   "decided": false
+  },
+  {
+   "dropped": "select_max",
+   "kernel": "glm_txl_D1_r2",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": "select_max",
+   "kernel": "glm_txl_D2_r1",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  },
+  {
+   "dropped": "select_max",
+   "kernel": "glm_txl_D3_r1",
+   "status": "EQUIV",
+   "detail": "",
+   "decided": true
+  }
+ ],
+ "seconds": 71.1
+}

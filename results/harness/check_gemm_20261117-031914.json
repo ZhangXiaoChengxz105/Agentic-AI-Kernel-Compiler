@@ -1,0 +1,334 @@
+{
+  "workload": "gemm",
+  "tests": [
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 256
+      },
+      "dist": "outlier@16",
+      "seed": 105,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    },
+    {
+      "op": "gemm",
+      "shape": {
+        "M": 64,
+        "N": 80,
+        "K": 1000
+      },
+      "dist": "outlier@16",
+      "seed": 106,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    }
+  ],
+  "results": [
+    {
+      "variant": "gemm_ref",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 256
+      },
+      "dist": "outlier@16",
+      "seed": 105,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 11421425.21875,
+      "max_rel_err": 0.0044575171151591,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 1.14e+07)",
+      "kernel_ms": 0.28016394935548306
+    },
+    {
+      "variant": "gemm_ref",
+      "op": "gemm",
+      "shape": {
+        "M": 64,
+        "N": 80,
+        "K": 1000
+      },
+      "dist": "outlier@16",
+      "seed": 106,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 5120,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 15863846.28125,
+      "max_rel_err": 0.0005993910285868039,
+      "examples": [],
+      "message": "all 5120 outputs within tolerance (max abs err 1.59e+07)",
+      "kernel_ms": 0.16263400902971625
+    },
+    {
+      "variant": "gemm_opt",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 256
+      },
+      "dist": "outlier@16",
+      "seed": 105,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 11421425.21875,
+      "max_rel_err": 0.0044575171151591,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 1.14e+07)",
+      "kernel_ms": 0.25943497894331813
+    },
+    {
+      "variant": "gemm_opt",
+      "op": "gemm",
+      "shape": {
+        "M": 64,
+        "N": 80,
+        "K": 1000
+      },
+      "dist": "outlier@16",
+      "seed": 106,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 5120,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 15863846.28125,
+      "max_rel_err": 0.0005993910285868039,
+      "examples": [],
+      "message": "all 5120 outputs within tolerance (max abs err 1.59e+07)",
+      "kernel_ms": 0.19865098875015974
+    },
+    {
+      "variant": "gemm_bug_nosync",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 256
+      },
+      "dist": "outlier@16",
+      "seed": 105,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 11421425.21875,
+      "max_rel_err": 0.0044575171151591,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 1.14e+07)",
+      "kernel_ms": 0.2712769783101976
+    },
+    {
+      "variant": "gemm_bug_nosync",
+      "op": "gemm",
+      "shape": {
+        "M": 64,
+        "N": 80,
+        "K": 1000
+      },
+      "dist": "outlier@16",
+      "seed": 106,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 5120,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 15863846.28125,
+      "max_rel_err": 0.0005993910285868039,
+      "examples": [],
+      "message": "all 5120 outputs within tolerance (max abs err 1.59e+07)",
+      "kernel_ms": 0.13071397552266717
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 256
+      },
+      "dist": "outlier@16",
+      "seed": 105,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 11421425.21875,
+      "max_rel_err": 0.0044575171151591,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 1.14e+07)",
+      "kernel_ms": 0.3105110372416675
+    },
+    {
+      "variant": "gemm_bug_ktail",
+      "op": "gemm",
+      "shape": {
+        "M": 64,
+        "N": 80,
+        "K": 1000
+      },
+      "dist": "outlier@16",
+      "seed": 106,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 5120,
+      "n_bad": 4715,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 24869654645.354168,
+      "max_rel_err": 30.181897094810463,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -10008.8671875,
+          -6472.904003753722
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          218021.6875,
+          220490.70486000867
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -5737.0361328125,
+          -6169.549426269579
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -196921.140625,
+          -200208.45776080783
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -7707.08935546875,
+          -15348.332003672684
+        ]
+      ],
+      "message": "4715 of 5120 outputs exceed tolerance (max abs err 2.49e+10, max rel err 30.2)",
+      "kernel_ms": 0.13819901505485177
+    },
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 128,
+        "N": 128,
+        "K": 256
+      },
+      "dist": "outlier@16",
+      "seed": 105,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 11421425.21875,
+      "max_rel_err": 0.0044575171151591,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 1.14e+07)",
+      "kernel_ms": 0.2921670093201101
+    },
+    {
+      "variant": "gemm_bug_guard",
+      "op": "gemm",
+      "shape": {
+        "M": 64,
+        "N": 80,
+        "K": 1000
+      },
+      "dist": "outlier@16",
+      "seed": 106,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 5120,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 15863846.28125,
+      "max_rel_err": 0.0005993910285868039,
+      "examples": [],
+      "message": "all 5120 outputs within tolerance (max abs err 1.59e+07)",
+      "kernel_ms": 0.13380002928897738
+    }
+  ]
+}

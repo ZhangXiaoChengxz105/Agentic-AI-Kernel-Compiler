@@ -1,0 +1,1670 @@
+{
+  "workload": "softmax",
+  "tests": [
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    }
+  ],
+  "results": [
+    {
+      "variant": "softmax_ref",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.394212506376392e-08,
+      "max_rel_err": 1.4630470514329837e-06,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 2.39e-08)",
+      "kernel_ms": 6.951517018023878
+    },
+    {
+      "variant": "softmax_ref",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.722312811553578e-08,
+      "max_rel_err": 3.0282174479879995e-06,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.72e-08)",
+      "kernel_ms": 2.3717250442132354
+    },
+    {
+      "variant": "softmax_ref",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.7376385941236805e-08,
+      "max_rel_err": 6.812515701593312e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 1.74e-08)",
+      "kernel_ms": 0.22629299201071262
+    },
+    {
+      "variant": "softmax_ref",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.0062162273414295e-08,
+      "max_rel_err": 7.80552543217008e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 3.01e-08)",
+      "kernel_ms": 0.21234696032479405
+    },
+    {
+      "variant": "softmax_opt",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0278820239406627e-08,
+      "max_rel_err": 4.370081270974391e-07,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 1.03e-08)",
+      "kernel_ms": 0.2672289847396314
+    },
+    {
+      "variant": "softmax_opt",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.7180679989792225e-08,
+      "max_rel_err": 4.6488056933724777e-07,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.72e-08)",
+      "kernel_ms": 0.18228997942060232
+    },
+    {
+      "variant": "softmax_opt",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.671966563092212e-09,
+      "max_rel_err": 3.741397689809176e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 5.67e-09)",
+      "kernel_ms": 0.1364750205539167
+    },
+    {
+      "variant": "softmax_opt",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.4513811114633697e-09,
+      "max_rel_err": 3.8511194154895256e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 3.45e-09)",
+      "kernel_ms": 0.07598201045766473
+    },
+    {
+      "variant": "softmax_bug_nosync",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 128000,
+      "n_bad": 4239,
+      "n_nonfinite": 302,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0,
+      "max_rel_err": 4.9999999999999994e+29,
+      "examples": [
+        [
+          [
+            3,
+            349
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            3,
+            387
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            3,
+            463
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            3,
+            986
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            6,
+            646
+          ],
+          NaN,
+          1.0
+        ]
+      ],
+      "message": "302 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.25972601724788547
+    },
+    {
+      "variant": "softmax_bug_nosync",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 1049344,
+      "n_bad": 32494,
+      "n_nonfinite": 568,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0,
+      "max_rel_err": 9.999999999999999e+29,
+      "examples": [
+        [
+          [
+            3,
+            1411
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            5,
+            3515
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            6,
+            1158
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            7,
+            1799
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            9,
+            1929
+          ],
+          NaN,
+          1.0
+        ]
+      ],
+      "message": "568 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.10760099394246936
+    },
+    {
+      "variant": "softmax_bug_nosync",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 16512,
+      "n_bad": 1112,
+      "n_nonfinite": 351,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0,
+      "max_rel_err": 1.0,
+      "examples": [
+        [
+          [
+            1,
+            86
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            3,
+            3
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            3,
+            26
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            3,
+            27
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            3,
+            50
+          ],
+          NaN,
+          0.0
+        ]
+      ],
+      "message": "351 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.19893102580681443
+    },
+    {
+      "variant": "softmax_bug_nosync",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 16384,
+      "n_bad": 168,
+      "n_nonfinite": 166,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0,
+      "max_rel_err": 1.0,
+      "examples": [
+        [
+          [
+            1,
+            173
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            3,
+            3
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            3,
+            35
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            3,
+            238
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            6,
+            6
+          ],
+          NaN,
+          1.0
+        ]
+      ],
+      "message": "166 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.0773550127632916
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 128000,
+      "n_bad": 18996,
+      "n_nonfinite": 9,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0,
+      "max_rel_err": 9.999999999999999e+29,
+      "examples": [
+        [
+          [
+            7,
+            903
+          ],
+          Infinity,
+          1.0
+        ],
+        [
+          [
+            14,
+            910
+          ],
+          Infinity,
+          1.0
+        ],
+        [
+          [
+            17,
+            913
+          ],
+          Infinity,
+          1.0
+        ],
+        [
+          [
+            23,
+            919
+          ],
+          Infinity,
+          1.0
+        ],
+        [
+          [
+            49,
+            945
+          ],
+          Infinity,
+          1.0
+        ]
+      ],
+      "message": "9 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.2603169996291399
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 1049344,
+      "n_bad": 3131,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.467266146739591e-05,
+      "max_rel_err": 0.0034143017155271634,
+      "examples": [
+        [
+          [
+            4,
+            1385
+          ],
+          0.004815374035388231,
+          0.004813199610443372
+        ],
+        [
+          [
+            4,
+            1516
+          ],
+          0.006558784283697605,
+          0.006555823464859119
+        ],
+        [
+          [
+            4,
+            1755
+          ],
+          0.003948052413761616,
+          0.003946270005395153
+        ],
+        [
+          [
+            4,
+            2329
+          ],
+          0.002861124463379383,
+          0.0028598328362204506
+        ],
+        [
+          [
+            4,
+            2428
+          ],
+          0.003727863309904933,
+          0.0037261805089386386
+        ]
+      ],
+      "message": "3131 of 1049344 outputs exceed tolerance (max abs err 1.47e-05, max rel err 0.00341)",
+      "kernel_ms": 0.20132696954533458
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 16512,
+      "n_bad": 2033,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.001467063875692072,
+      "max_rel_err": 0.03304214460506936,
+      "examples": [
+        [
+          [
+            4,
+            0
+          ],
+          0.008015631698071957,
+          0.007994817139637784
+        ],
+        [
+          [
+            4,
+            1
+          ],
+          0.0032549372408539057,
+          0.003246485473412571
+        ],
+        [
+          [
+            4,
+            2
+          ],
+          0.005511773284524679,
+          0.005497460321034007
+        ],
+        [
+          [
+            4,
+            3
+          ],
+          0.005987599026411772,
+          0.0059720515896195675
+        ],
+        [
+          [
+            4,
+            5
+          ],
+          0.009707335382699966,
+          0.009682127697255564
+        ]
+      ],
+      "message": "2033 of 16512 outputs exceed tolerance (max abs err 0.00147, max rel err 0.033)",
+      "kernel_ms": 0.1459720078855753
+    },
+    {
+      "variant": "softmax_bug_tail",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.4513811114633697e-09,
+      "max_rel_err": 3.8511194154895256e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 3.45e-09)",
+      "kernel_ms": 0.07888698019087315
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 128000,
+      "n_bad": 7009,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0,
+      "max_rel_err": 1.0,
+      "examples": [
+        [
+          [
+            0,
+            512
+          ],
+          0.0,
+          1.0
+        ],
+        [
+          [
+            8,
+            136
+          ],
+          0.0,
+          1.0
+        ],
+        [
+          [
+            12,
+            0
+          ],
+          0.0,
+          0.0008711017879284352
+        ],
+        [
+          [
+            12,
+            1
+          ],
+          0.0,
+          0.0006191608735610469
+        ],
+        [
+          [
+            12,
+            2
+          ],
+          0.0,
+          0.0005079478599788285
+        ]
+      ],
+      "message": "7009 of 128000 outputs exceed tolerance (max abs err 1, max rel err 1)",
+      "kernel_ms": 0.275494996458292
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 1049344,
+      "n_bad": 69689,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0,
+      "max_rel_err": 1.0,
+      "examples": [
+        [
+          [
+            0,
+            1408
+          ],
+          0.0,
+          1.0
+        ],
+        [
+          [
+            2,
+            1154
+          ],
+          3.5567191553065314e-12,
+          1.0
+        ],
+        [
+          [
+            4,
+            0
+          ],
+          0.0,
+          3.923508405105599e-05
+        ],
+        [
+          [
+            4,
+            1
+          ],
+          0.0,
+          0.0001491904228867407
+        ],
+        [
+          [
+            4,
+            2
+          ],
+          0.0,
+          0.0006432339986549733
+        ]
+      ],
+      "message": "69689 of 1049344 outputs exceed tolerance (max abs err 1, max rel err 1)",
+      "kernel_ms": 0.10889401892200112
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 16512,
+      "n_bad": 1291,
+      "n_nonfinite": 129,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0,
+      "max_rel_err": 1.0,
+      "examples": [
+        [
+          [
+            127,
+            0
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            127,
+            1
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            127,
+            2
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            127,
+            3
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            127,
+            4
+          ],
+          NaN,
+          0.0
+        ]
+      ],
+      "message": "129 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.21246698452159762
+    },
+    {
+      "variant": "softmax_bug_offbyone",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 16384,
+      "n_bad": 1024,
+      "n_nonfinite": 256,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0,
+      "max_rel_err": 1.0,
+      "examples": [
+        [
+          [
+            63,
+            0
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            63,
+            1
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            63,
+            2
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            63,
+            3
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            63,
+            4
+          ],
+          NaN,
+          0.0
+        ]
+      ],
+      "message": "256 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.07868697866797447
+    },
+    {
+      "variant": "softmax_bug_nomax",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 128000,
+      "n_bad": 29884,
+      "n_nonfinite": 29884,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.8372539253852516e-09,
+      "max_rel_err": 2.600716931253693e-07,
+      "examples": [
+        [
+          [
+            0,
+            512
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            3
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            10
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            11
+          ],
+          NaN,
+          0.0
+        ]
+      ],
+      "message": "29884 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.26176904793828726
+    },
+    {
+      "variant": "softmax_bug_nomax",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 1049344,
+      "n_bad": 243827,
+      "n_nonfinite": 243827,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.619386944296425e-10,
+      "max_rel_err": 2.3952785732598723e-07,
+      "examples": [
+        [
+          [
+            0,
+            1408
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            5
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            9
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            14
+          ],
+          NaN,
+          0.0
+        ]
+      ],
+      "message": "243827 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.18582702614367008
+    },
+    {
+      "variant": "softmax_bug_nomax",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 16512,
+      "n_bad": 3792,
+      "n_nonfinite": 3792,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.047994549618352e-09,
+      "max_rel_err": 2.4777044322251595e-07,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            1,
+            0
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            1
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            1,
+            2
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            3
+          ],
+          NaN,
+          0.0
+        ]
+      ],
+      "message": "3792 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.13308896450325847
+    },
+    {
+      "variant": "softmax_bug_nomax",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "nonfinite",
+      "n": 16384,
+      "n_bad": 3752,
+      "n_nonfinite": 3752,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.791331942310961e-09,
+      "max_rel_err": 1.820564267409821e-07,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            1,
+            1
+          ],
+          NaN,
+          1.0
+        ],
+        [
+          [
+            1,
+            6
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            7
+          ],
+          NaN,
+          0.0
+        ],
+        [
+          [
+            1,
+            9
+          ],
+          NaN,
+          0.0
+        ]
+      ],
+      "message": "3752 outputs are NaN/Inf where the reference is finite",
+      "kernel_ms": 0.07908797124400735
+    },
+    {
+      "variant": "glm_A_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0278820239406627e-08,
+      "max_rel_err": 3.9552084694194244e-07,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 1.03e-08)",
+      "kernel_ms": 0.26989501202479005
+    },
+    {
+      "variant": "glm_A_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.7180679989792225e-08,
+      "max_rel_err": 4.596228203719679e-07,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.72e-08)",
+      "kernel_ms": 0.12471299851313233
+    },
+    {
+      "variant": "glm_A_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 7.405759144818447e-09,
+      "max_rel_err": 3.741397689809176e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 7.41e-09)",
+      "kernel_ms": 0.12900197179988027
+    },
+    {
+      "variant": "glm_A_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.784317310906449e-09,
+      "max_rel_err": 3.8511194154895256e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 3.78e-09)",
+      "kernel_ms": 0.0787070021033287
+    },
+    {
+      "variant": "glm_B1_r3",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0278820239406627e-08,
+      "max_rel_err": 3.9240963737016855e-07,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 1.03e-08)",
+      "kernel_ms": 0.28677599038928747
+    },
+    {
+      "variant": "glm_B1_r3",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.7180679989792225e-08,
+      "max_rel_err": 4.91765618025846e-07,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.72e-08)",
+      "kernel_ms": 0.13232702622190118
+    },
+    {
+      "variant": "glm_B1_r3",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.329404952070238e-09,
+      "max_rel_err": 3.741397689809176e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 5.33e-09)",
+      "kernel_ms": 0.20684703486040235
+    },
+    {
+      "variant": "glm_B1_r3",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.6662632860173794e-09,
+      "max_rel_err": 3.7661698334900527e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 3.67e-09)",
+      "kernel_ms": 0.0787070021033287
+    },
+    {
+      "variant": "glm_B2_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0278820239406627e-08,
+      "max_rel_err": 3.9240963737016855e-07,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 1.03e-08)",
+      "kernel_ms": 0.27424300787970424
+    },
+    {
+      "variant": "glm_B2_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.7180679989792225e-08,
+      "max_rel_err": 4.91765618025846e-07,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.72e-08)",
+      "kernel_ms": 0.1194329815916717
+    },
+    {
+      "variant": "glm_B2_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.329404952070238e-09,
+      "max_rel_err": 3.741397689809176e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 5.33e-09)",
+      "kernel_ms": 0.1974289771169424
+    },
+    {
+      "variant": "glm_B2_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.6662632860173794e-09,
+      "max_rel_err": 3.7661698334900527e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 3.67e-09)",
+      "kernel_ms": 0.07900805212557316
+    },
+    {
+      "variant": "glm_B3_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0278820239406627e-08,
+      "max_rel_err": 3.894551587056649e-07,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 1.03e-08)",
+      "kernel_ms": 0.29048294527456164
+    },
+    {
+      "variant": "glm_B3_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.7180679989792225e-08,
+      "max_rel_err": 5.250137523710627e-07,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.72e-08)",
+      "kernel_ms": 0.18388399621471763
+    },
+    {
+      "variant": "glm_B3_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.329404952070238e-09,
+      "max_rel_err": 3.741397689809176e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 5.33e-09)",
+      "kernel_ms": 0.12936198618263006
+    },
+    {
+      "variant": "glm_B3_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.543498487163955e-09,
+      "max_rel_err": 3.9147328078653985e-07,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 4.54e-09)",
+      "kernel_ms": 0.07998995715752244
+    }
+  ]
+}

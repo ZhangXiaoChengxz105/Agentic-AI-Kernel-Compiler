@@ -1,0 +1,942 @@
+{
+  "workload": "layernorm",
+  "tests": [
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    },
+    {
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    }
+  ],
+  "results": [
+    {
+      "variant": "layernorm_ref",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.532649637743134e-05,
+      "max_rel_err": 0.03670211510218964,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 2.53e-05)",
+      "kernel_ms": 0.425446021836251
+    },
+    {
+      "variant": "layernorm_ref",
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.0002787934270287451,
+      "max_rel_err": 2.2417787882630313,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 0.000279)",
+      "kernel_ms": 0.4834140418097377
+    },
+    {
+      "variant": "layernorm_ref",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 4.370906927064766e-06,
+      "max_rel_err": 0.004999107974904069,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 4.37e-06)",
+      "kernel_ms": 0.17012900207191706
+    },
+    {
+      "variant": "layernorm_ref",
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 9.931442860988682e-06,
+      "max_rel_err": 0.00096959373922667,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 9.93e-06)",
+      "kernel_ms": 0.08855498163029552
+    },
+    {
+      "variant": "layernorm_opt",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.445650053559348e-06,
+      "max_rel_err": 0.006443506808266816,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 5.45e-06)",
+      "kernel_ms": 0.2699950127862394
+    },
+    {
+      "variant": "layernorm_opt",
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.457066099419535e-05,
+      "max_rel_err": 0.12346041805858927,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.46e-05)",
+      "kernel_ms": 0.19011599943041801
+    },
+    {
+      "variant": "layernorm_opt",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.114061432578751e-06,
+      "max_rel_err": 0.004401120400300735,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 2.11e-06)",
+      "kernel_ms": 0.13351894449442625
+    },
+    {
+      "variant": "layernorm_opt",
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.7687719672542244e-06,
+      "max_rel_err": 0.00096959373922667,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 2.77e-06)",
+      "kernel_ms": 0.09809405310079455
+    },
+    {
+      "variant": "layernorm_bug_nosync",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.445650053559348e-06,
+      "max_rel_err": 0.006443506808266816,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 5.45e-06)",
+      "kernel_ms": 0.5303010111674666
+    },
+    {
+      "variant": "layernorm_bug_nosync",
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.457066099419535e-05,
+      "max_rel_err": 0.12346041805858927,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.46e-05)",
+      "kernel_ms": 0.11075701331719756
+    },
+    {
+      "variant": "layernorm_bug_nosync",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.114061432578751e-06,
+      "max_rel_err": 0.004401120400300735,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 2.11e-06)",
+      "kernel_ms": 0.14311796985566616
+    },
+    {
+      "variant": "layernorm_bug_nosync",
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.7687719672542244e-06,
+      "max_rel_err": 0.00096959373922667,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 2.77e-06)",
+      "kernel_ms": 0.08096103556454182
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 128000,
+      "n_bad": 72647,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 10007.35079477666,
+      "max_rel_err": 38112.39301682796,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -0.1456412672996521,
+          -0.14754768404036758
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.49768275022506714,
+          0.49324322400827103
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.19739562273025513,
+          0.19377737161163816
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -0.046257201582193375,
+          -0.04867338765142076
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -0.4831940531730652,
+          -0.4838839186388994
+        ]
+      ],
+      "message": "72647 of 128000 outputs exceed tolerance (max abs err 1e+04, max rel err 3.81e+04)",
+      "kernel_ms": 0.4532479797489941
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 1049344,
+      "n_bad": 31680,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.01900186423551986,
+      "max_rel_err": 247.23204157439582,
+      "examples": [
+        [
+          [
+            0,
+            3
+          ],
+          -0.04741431400179863,
+          -0.047176503956507555
+        ],
+        [
+          [
+            0,
+            8
+          ],
+          -0.03879483416676521,
+          -0.038581592448944206
+        ],
+        [
+          [
+            0,
+            21
+          ],
+          -0.057200659066438675,
+          -0.05696479134185844
+        ],
+        [
+          [
+            0,
+            26
+          ],
+          0.04468974471092224,
+          0.04489822344035568
+        ],
+        [
+          [
+            0,
+            42
+          ],
+          0.06733642518520355,
+          0.06750515678333174
+        ]
+      ],
+      "message": "31680 of 1049344 outputs exceed tolerance (max abs err 0.019, max rel err 247)",
+      "kernel_ms": 0.1122409594245255
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 16512,
+      "n_bad": 3862,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 0.004714884757914817,
+      "max_rel_err": 98.85373802619948,
+      "examples": [
+        [
+          [
+            1,
+            0
+          ],
+          0.11301323771476746,
+          0.11565909881366149
+        ],
+        [
+          [
+            1,
+            2
+          ],
+          -0.007717518601566553,
+          -0.005485040181976945
+        ],
+        [
+          [
+            1,
+            3
+          ],
+          0.08327610045671463,
+          0.08599518976976106
+        ],
+        [
+          [
+            1,
+            4
+          ],
+          -0.09415185451507568,
+          -0.09159254932134742
+        ],
+        [
+          [
+            1,
+            5
+          ],
+          -0.056140873581171036,
+          -0.05372671447381961
+        ]
+      ],
+      "message": "3862 of 16512 outputs exceed tolerance (max abs err 0.00471, max rel err 98.9)",
+      "kernel_ms": 0.14100398402661085
+    },
+    {
+      "variant": "layernorm_bug_tail",
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.7687719672542244e-06,
+      "max_rel_err": 0.00096959373922667,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 2.77e-06)",
+      "kernel_ms": 0.0832049991004169
+    },
+    {
+      "variant": "layernorm_bug_offbyone",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 128000,
+      "n_bad": 47810,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 29.783075231695832,
+      "max_rel_err": 812.4683559472455,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          -0.060265254229307175,
+          -0.14754768404036758
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.10534869879484177,
+          0.49324322400827103
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -0.0048922766000032425,
+          0.19377737161163816
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -0.11675466597080231,
+          -0.04867338765142076
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -0.1815209835767746,
+          -0.4838839186388994
+        ]
+      ],
+      "message": "47810 of 128000 outputs exceed tolerance (max abs err 29.8, max rel err 812)",
+      "kernel_ms": 0.4244229639880359
+    },
+    {
+      "variant": "layernorm_bug_offbyone",
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 1049344,
+      "n_bad": 384504,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 55.19658320482921,
+      "max_rel_err": 100400.52853675376,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          0.21148988604545593,
+          0.3520069521618797
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.12858076393604279,
+          0.4178321308721256
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.2110147923231125,
+          1.1074770199032125
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -0.04003618285059929,
+          -0.047176503956507555
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -0.02797112427651882,
+          -0.2896482497879179
+        ]
+      ],
+      "message": "384504 of 1049344 outputs exceed tolerance (max abs err 55.2, max rel err 1e+05)",
+      "kernel_ms": 0.14522200217470527
+    },
+    {
+      "variant": "layernorm_bug_offbyone",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 16512,
+      "n_bad": 7000,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 13.984477098044582,
+      "max_rel_err": 2942.9954283155807,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          1.947307825088501,
+          11.44608388648444
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          -0.08128686994314194,
+          -0.30472981957464906
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          -0.0008169420179910958,
+          -0.05929136265428685
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          0.020368482917547226,
+          -0.12283642993752661
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -0.07228812575340271,
+          -0.24190203137544178
+        ]
+      ],
+      "message": "7000 of 16512 outputs exceed tolerance (max abs err 14, max rel err 2.94e+03)",
+      "kernel_ms": 0.12888101628050208
+    },
+    {
+      "variant": "layernorm_bug_offbyone",
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": false,
+      "reason": "mismatch",
+      "n": 16384,
+      "n_bad": 6630,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 16.098814100014863,
+      "max_rel_err": 777.1800159532756,
+      "examples": [
+        [
+          [
+            0,
+            0
+          ],
+          12.827588081359863,
+          15.028744125494617
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.22372081875801086,
+          0.23776472772167315
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          0.03855114057660103,
+          0.0562678725077588
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          -0.07860671728849411,
+          -0.07041058144243542
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          -0.2252580225467682,
+          -0.24191791198655652
+        ]
+      ],
+      "message": "6630 of 16384 outputs exceed tolerance (max abs err 16.1, max rel err 777)",
+      "kernel_ms": 0.08035002974793315
+    },
+    {
+      "variant": "layernorm_bug_onepass",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.665996759773861e-06,
+      "max_rel_err": 0.0036426740394231304,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 5.67e-06)",
+      "kernel_ms": 0.43228798313066363
+    },
+    {
+      "variant": "layernorm_bug_onepass",
+      "op": "layernorm",
+      "shape": {
+        "rows": 256,
+        "N": 4099
+      },
+      "dist": "outlier@128",
+      "seed": 102,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 1049344,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.2126248321919775e-05,
+      "max_rel_err": 0.25877459928233126,
+      "examples": [],
+      "message": "all 1049344 outputs within tolerance (max abs err 1.21e-05)",
+      "kernel_ms": 0.11129799531772733
+    },
+    {
+      "variant": "layernorm_bug_onepass",
+      "op": "layernorm",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 2.072128362229364e-06,
+      "max_rel_err": 0.004401120400300735,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 2.07e-06)",
+      "kernel_ms": 0.1320469891652465
+    },
+    {
+      "variant": "layernorm_bug_onepass",
+      "op": "layernorm",
+      "shape": {
+        "rows": 64,
+        "N": 256
+      },
+      "dist": "outlier",
+      "seed": 104,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16384,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 3.3649070338981346e-06,
+      "max_rel_err": 0.0004581490106939444,
+      "examples": [],
+      "message": "all 16384 outputs within tolerance (max abs err 3.36e-06)",
+      "kernel_ms": 0.10260200360789895
+    }
+  ]
+}

@@ -1,0 +1,281 @@
+{
+  "workload": "softmax",
+  "tests": [
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    },
+    {
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0
+    }
+  ],
+  "results": [
+    {
+      "variant": "softmax_txl_ref",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0278820239406627e-08,
+      "max_rel_err": 2.6489271744190584e-06,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 1.03e-08)",
+      "kernel_ms": 2888.0419959896244
+    },
+    {
+      "variant": "softmax_txl_ref",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.498664238685503e-09,
+      "max_rel_err": 7.216473463196611e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 6.5e-09)",
+      "kernel_ms": 1440.2942190063186
+    },
+    {
+      "variant": "glm_txl_C_r2",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0278820239406627e-08,
+      "max_rel_err": 2.6489271744190584e-06,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 1.03e-08)",
+      "kernel_ms": 1635.0696359877475
+    },
+    {
+      "variant": "glm_txl_C_r2",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 6.309955807859424e-09,
+      "max_rel_err": 7.216473463196611e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 6.31e-09)",
+      "kernel_ms": 1826.1856689932756
+    },
+    {
+      "variant": "glm_txl_D1_r2",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.960464477539063e-08,
+      "max_rel_err": 1.825994140020491e-06,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 5.96e-08)",
+      "kernel_ms": 1472.4236230249517
+    },
+    {
+      "variant": "glm_txl_D1_r2",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 5.960464477539063e-08,
+      "max_rel_err": 1.0789667798899077e-06,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 5.96e-08)",
+      "kernel_ms": 1316.1621670005843
+    },
+    {
+      "variant": "glm_txl_D2_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0278820239406627e-08,
+      "max_rel_err": 2.6489271744190584e-06,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 1.03e-08)",
+      "kernel_ms": 1322.419436997734
+    },
+    {
+      "variant": "glm_txl_D2_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.240367735390386e-09,
+      "max_rel_err": 7.216473463196611e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 8.24e-09)",
+      "kernel_ms": 1304.3911589775234
+    },
+    {
+      "variant": "glm_txl_D3_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 1000
+      },
+      "dist": "outlier@128",
+      "seed": 101,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 128000,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 1.0278820239406627e-08,
+      "max_rel_err": 2.6489271744190584e-06,
+      "examples": [],
+      "message": "all 128000 outputs within tolerance (max abs err 1.03e-08)",
+      "kernel_ms": 1308.4798640338704
+    },
+    {
+      "variant": "glm_txl_D3_r1",
+      "op": "softmax",
+      "shape": {
+        "rows": 128,
+        "N": 129
+      },
+      "dist": "outlier@128",
+      "seed": 103,
+      "repeat": 1,
+      "tag": "numerical: outlier (D3 check)",
+      "misalign": 0,
+      "passed": true,
+      "reason": "ok",
+      "n": 16512,
+      "n_bad": 0,
+      "n_nonfinite": 0,
+      "n_unwritten": 0,
+      "canary_ok": true,
+      "max_abs_err": 8.240367735390386e-09,
+      "max_rel_err": 7.216473463196611e-07,
+      "examples": [],
+      "message": "all 16512 outputs within tolerance (max abs err 8.24e-09)",
+      "kernel_ms": 1210.7150200172327
+    }
+  ]
+}

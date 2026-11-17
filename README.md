@@ -61,14 +61,20 @@ LLM calls (`akc pilot`, `akc lumen`) use your own Lumen key: put `export LUMEN_A
 In its place we use **tirx-lite** from MLC's TIRx-harness. It plays the same role, a "CAKE-style" kernel IR plus
 compiler, and it works on sm_80.
 
-We also support plain **CUDA**. Every component handles both languages; the one exception is VOLTA on tirx-lite
-(see Open items). Which language the agent writes in the final experiments is still a team decision.
+We also support plain **CUDA**. Every component handles both languages; VOLTA reads tirx-lite through rewrites of
+its generated code (see Open items). Which language the agent writes in the final experiments is still a team decision.
 
 ### Task 1: environment and baseline
 - **One-command environment.** `setup_env.sh` builds VOLTA, Rust, libz3, TIRx and torch inside the cloned folder.
   It was tested in a fresh clone (see §4).
-- **Three kernels.** softmax, LayerNorm and GEMM, all fp32. Each has a simple CUDA reference and an optimized CUDA
-  version in `workloads/<op>/cuda/`. softmax also has a tirx-lite version in `workloads/softmax/tirx/`.
+- **Three kernels.** softmax, LayerNorm and GEMM, all fp32.
+  - **tirx-lite (the agent's language), all three:** `workloads/<op>/tirx/` holds a simple reference
+    (`<op>_txl_ref.py`, VOLTA's comparison kernel) and the injected bugs (`bugs/`). LayerNorm and GEMM also have an
+    optimized correct version (`<op>_txl_opt.py`: block-parallel two-pass LayerNorm; 16×16 shared-memory GEMM), a
+    false-alarm control. They are plain SIMT code for sm_80: no tensor cores, TMA or cp.async.
+  - The bugs are ports of the CUDA ones with the same meaning: softmax 4, LayerNorm 4 (tail, offbyone, onepass,
+    nosync), GEMM 3 (ktail, guard, nosync).
+  - The hand-written CUDA kernels in `workloads/<op>/cuda/` (a reference, an optimized version, bugs) are legacy.
 - **Reference results.** PyTorch computes the correct answer in float64 (`akc/task/`). Inputs come from 8 value
   distributions: normal, uniform, large, negative large, offset, tiny, mixed and constant. Test sizes include sizes
   that are not multiples of the tile size.
@@ -99,24 +105,65 @@ We also support plain **CUDA**. Every component handles both languages; the one 
 ### Task 2: change-aware test generation
 When the agent submits a new version of a kernel, `akc/validation/changeaware/` compares it with the last version
 that passed validation and tests what changed:
-1. **Diff** (`diff.py`) finds the changed lines. CUDA is compared as normalized text, tirx-lite as a Python AST.
-   Pure reformatting and consistent renaming of local variables count as no change.
-2. **Classify** (`classify.py`): rules label each change as tiling, indexing, memory, sync or numerical, and keep the
-   line as evidence. Loop and `if` headers are split off first, so a changed loop bound, loop step or guard is
-   told apart from a changed statement; a changed float computation is numerical, changed index or pointer
-   arithmetic is indexing.
+1. **Diff.** What changed between the two versions.
+   - **tirx-lite: on the IR** (`irdiff.py`, run by `ir_worker.py`), as the proposal asks ("inspect the modified IR
+     operations"). Both versions are safety-scanned, traced in a child process (60 s limit) and compared statement
+     by statement at up to 8 shapes inside the declared domain, all with rows = 2:
+     - the benchmark shape;
+     - N = 1, T−1, T+1 and 2T+1 (T = the kernel's tile);
+     - both sides of each size-regime switch.
+
+     Variables are renamed in definition order (txl calls every local `v`), so a renamed local gives no change.
+     For each changed statement, TVM's `get_first_structural_mismatch` names the exact IR node, e.g.
+     `If.condition: LT → LE` or `For.end: 2 → 1`. Hunks are merged across shapes and repeats: the 14 barriers
+     that an unrolled loop drops become one hunk "×14". A hunk that appears only at some shapes says so; the tail
+     bug, for example, does not show at N = 1024.
+   - **Fallbacks** (recorded in the plan's `analysis` field):
+     - tracing fails or times out → the Python-AST diff, with the reason;
+     - the IR is equal at every traced shape but the AST shows a real change → the AST labels are kept and
+       `ir_blind` is set;
+     - the AST says "cosmetic" but the IR differs → the IR wins.
+   - **CUDA** (legacy) is still compared as normalized text. Pure reformatting and consistent renaming of local
+     variables count as no change.
+2. **Classify.** Each change is labelled tiling, indexing, memory, sync or numerical, with the line as evidence.
+   - tirx-lite (`classify_ir.py`): the label follows the IR op that changed.
+     - sync: barriers, shuffles, mbarrier, fences, async copies, atomics;
+     - tiling: `For.end`, the grid / block, shared-memory shapes, `smem_required`;
+     - indexing: `If.condition`, loop start / step, integer index expressions;
+     - memory: ld / st form, scope, dtype, `ptr_byte_offset`, a different buffer;
+     - numerical: math calls, float arithmetic, float constants, casts.
+   - A changed shuffle or loop bound whose body does a float max / min / add (a reduction) is also numerical, so it
+     gets the value-range tests.
+   - CUDA (`classify.py`): the text rules. Loop and `if` headers are split off first, so a changed loop bound, loop
+     step or guard is told apart from a changed statement.
+   - Reports can use the proposal's 4 categories: `proposal_category()` maps indexing → tiling.
 3. **Generate tests** (`generate.py`). Each label gets its own tests, and tile sizes are read from the kernel itself:
    - tiling / indexing → sizes at tile boundaries and sizes that are not multiples of the tile (1, T±1, 2T±1, 1000;
      for GEMM also K % T ≠ 0);
    - memory → odd sizes and pointers misaligned by one element;
    - sync → large sizes, repeated runs, many vs. few thread blocks;
-   - numerical → large, negative, offset, tiny, mixed and constant values.
+   - numerical → large, negative, offset, tiny, mixed and constant values, plus the **outlier family** below.
 
    It also picks VOLTA sizes for which thread block 0 crosses a tile boundary, plus a larger "deep" size that runs
    unrolled loops.
 
+   **Outlier inputs** (`outlier@P` in `akc/task/inputs.py`; generic, no operator knowledge):
+   - every row (last dimension) is N(0, 1) times a row scale that alternates 1 / 1e3 between adjacent rows, so a
+     read from the neighbouring row changes the result far beyond tolerance;
+   - each row has exactly one outlier, at column (r mod P) + P·k with k random. P is the kernel's own tile and the
+     test has at least P rows, so every position modulo the tile holds an outlier in some row;
+   - outlier magnitude, relative to the row scale: +1e2, +1e3, −1e3, +1e4 by row. Even the smallest is more than
+     20× every other value in its row, and squares and long dot products stay far below float32's limit;
+   - correct kernels pass:
+     - on the A100 (job 24061002, 2 min): the CUDA reference and optimized kernels of all 3 ops, the 4 correct GLM
+       CUDA kernels, the tirx reference and the 4 GLM tirx kernels;
+     - on the CPU: PyTorch float32 and a block-128 reduction model, and NumSim on 3 tirx kernels;
+     - NumSim allows at most 4 rows, so on the CPU the generated 128-row test is skipped for tirx;
+   - the idea came from looking at mutation-benchmark misses, so gains on that benchmark are tuning-set evidence.
+
    A small **floor set** runs on every revision whatever the classifier says: sizes 1, T−1, T+1 and 1000, plus one
-   extreme value distribution. A misclassified edit still meets a non-divisible size.
+   extreme value distribution. A misclassified edit still meets a non-divisible size. The outlier family is never
+   the floor's distribution: it is never first in a manifest's `numerical_dists`.
 
    The floor set also covers **size regimes**. Some kernels take a different code path for large rows, e.g. GLM's
    `use_smem = (N <= SMEM_FLOATS)` with 8192. The fixed suite stops at N = 4096, so the second path is never run.
@@ -143,8 +190,9 @@ Example: the change-aware report (`akc hottest`) for `softmax_bug_tail`. That bu
 - **VOLTA:** sizes N = 256, 584, 200 and 100. VOLTA proves the kernel wrong at N = 200 and 584. At the default
   N = 256, a multiple of 128, it says "equivalent", which is why configuration B misses this bug.
 
-The 37 unit tests are in `tests/validation/test_changeaware.py`. How well the classifier does is measured in §4
-("Change classifier").
+The unit tests are in `tests/validation/test_changeaware.py` (text / AST path, generator),
+`tests/validation/test_changeaware_ir.py` (IR path; skipped without `tvm_tirx`) and `tests/task/test_outlier.py`.
+How well the classifier does is measured in §4 ("Change classifier").
 
 ### Groundwork beyond Tasks 1–2 (for Tasks 3–5)
 - **VOLTA validator** (`akc/validation/volta/`) with actionable hints.
@@ -153,15 +201,32 @@ The 37 unit tests are in `tests/validation/test_changeaware.py`. How well the cl
 - **Speed objective** (`akc/perf/`).
 - **Bug-set evaluation** (`akc/evaluation/`).
 - **GLM-5.3 pilot loop** (`akc/agent/pilot.py`).
-- **Injected bugs** (off-by-one, missing barrier, tail/tiling, numerical): 11 in CUDA (`workloads/*/cuda/bugs/`)
-  and 4 in tirx-lite (`workloads/softmax/tirx/bugs/`).
+- **Injected bugs** (off-by-one, missing barrier, tail/tiling, numerical): 11 in tirx-lite
+  (`workloads/*/tirx/bugs/`: softmax 4, LayerNorm 4, GEMM 3) and the 11 legacy CUDA originals (`workloads/*/cuda/bugs/`).
 
 ### Open items
-- **VOLTA on tirx-lite (Task 3).** VOLTA is not run on tirx-lite yet, so it reports "n/a".
-  - TIRx's generated CUDA calls `expf`, which compiles to `ex2.approx`, and VOLTA does not read that as exp.
-  - Our CUDA kernels avoid this: `EXP()` becomes `__symexpf` under `-DVOLTA`.
-  - The likely fix is the same substitution on TIRx's generated source.
-- **tirx-lite kernels exist only for softmax** (no tirx GEMM or LayerNorm yet).
+- **VOLTA on tirx-lite (Task 3): works for softmax; the rest is open.** `VoltaValidator` traces a tirx-lite candidate
+  and `softmax_txl_ref` at each VOLTA size, rewrites TIRx's generated CUDA so that VOLTA can read it, and runs
+  `volta compare` (`akc/validation/volta/tirx.py`; details in `notes/volta_scope.md`).
+  - **What works:**
+    - All 23 tirx kernels we tried are decided at N = 256, 584 and 200: 69 of 69 runs, coverage 100%. They are the
+      reference, 4 injected bugs, 4 GLM kernels, and 14 mutants that the tests missed.
+    - Verdicts match the CUDA counterparts.
+    - VOLTA catches 8 of the 14 missed mutants, including all 5 races.
+  - **Not exact:** two of the five rewrites are modelling choices:
+    - `ex2.approx(t)` is read as exp(t / log2 e);
+    - constants of magnitude 2^127 or more (-3.4e38, -FLT_MAX as the identity of a max) become -inf.
+  - **Not covered:**
+    - data-dependent control flow;
+    - partial-CTA barriers and async copies;
+    - transcendental functions other than exp;
+    - code paths that only run above the VOLTA sizes.
+  - **Not re-run:** the tirx numbers for `eval-bugs` and mutant detection in §4 predate this change. B and C now
+    include VOLTA for tirx.
+- **tirx-lite LayerNorm and GEMM are new (Task 1, 2026-11-17).** They are not yet in the mutation benchmark
+  (`akc/evaluation/mutants.py`), and `akc eval-bugs --lang tirx` has not been re-run with them. `akc check` and
+  `akc volta` still cover CUDA variants only; for tirx use `scripts/experiments/tirx_task1.py` and
+  `scripts/experiments/volta_tirx.py --workload W`.
 - **Detection is measured on our own bugs only.**
   - The 11/11 bug detection uses bugs written by the same person as the classifier.
   - The classifier itself is now measured on mechanically generated edits, including edits of GLM-written kernels
@@ -169,8 +234,9 @@ The 37 unit tests are in `tests/validation/test_changeaware.py`. How well the cl
   - Detection on those generated edits is measured too: tests A 61% → C 77% on the tuning set, 67% → 79% held
     out. Most remaining misses are races (VOLTA's job) or edits that change nothing (§4).
   - Still missing:
-    - a `spike` input distribution: 8 CUDA edits make the max reduction skip half the warp, giving NaN on rows with
-      one large value, and no test row has one yet (§4);
+    - a detection re-run with the new outlier input family (§2 Task 2). It targets the 8 CUDA edits whose max
+      reduction skips half the warp: they give NaN only on rows with one large value. It has not been run on the
+      GPU yet;
     - the LLM option, measured with real calls.
 - **GPU tests are weak at races.** `layernorm_bug_nosync` is caught only by VOLTA.
 - **Our GEMM leaves the most room for the agent.** It reaches 0.28× PyTorch, and TF32 tensor cores cannot be used
@@ -188,9 +254,15 @@ The 37 unit tests are in `tests/validation/test_changeaware.py`. How well the cl
 - numerical distributions;
 - VOLTA default / deep shapes and a size cap;
 - the tirx factory arguments;
-- the benchmark shape;
+- the declared shape domain and the benchmark shape;
 - the reference files;
 - the variants, including injected bugs with their category and expected VOLTA verdict.
+
+**Shape domain (CAKE contract).** The optional `domain` key fixes the valid shape range before tuning, e.g.
+`{"rows": [1, 4096], "N": [1, 16384]}` (gemm: M, N, K in [1, 4096]). The kernel must be correct on all of it and is
+timed at the one `perf.shape` inside it; generated tests, VOLTA shapes, size-regime and LLM-suggested sizes never
+leave it, `akc bench` rejects a shape outside it, and the agent's prompt states it (`agent/pilot.py: contract_text`).
+Without `domain`, nothing is limited, as before.
 
 Adding a workload needs **three things**. Each optional add-on is switched on by adding its piece; without it, that
 feature reports "not set up" instead of failing.
@@ -207,6 +279,7 @@ feature reports "not set up" instead of failing.
 |---|---|
 | VOLTA | a CUDA reference kernel (`references.cuda`) and a `volta` block (default / deep shape, size cap) in the manifest. The VOLTA memory layout is derived from the `OpSpec`; the output array takes its name from the manifest `signature` |
 | speed | `perf.shape` in the manifest, plus `flops`, `bytes` and `torch_impl` in the `OpSpec` |
+| shape domain | `domain` in the manifest: `{shape key: [lo, hi]}` (inclusive) |
 | tirx-lite | a `tirx` block in the manifest and a tirx reference kernel |
 | better change-aware tests | `tiles` and `numerical_dists` in the manifest (defaults: the launch block or tile, and large / negative large / tiny / mixed values) |
 | evaluation | bug variants with `bug` and `expect_volta` |
@@ -289,7 +362,11 @@ Run with `python -m unittest discover -s tests`.
 | `tests/llm/test_lumen.py` | 8 | the Lumen client against a fake server (no coins) |
 | `tests/evaluation/test_bugset.py` | 2 | which parent the bug-set evaluation uses (CUDA: the optimized kernel; tirx: the reference) |
 | `tests/evaluation/test_mutants.py` | 4 | the mutation generator (incl. which edits cannot change outputs), plus a regression guard on the classifier |
+| `tests/validation/test_changeaware_ir.py` | 13 | IR change analysis: offbyone → indexing at L51, tail only at non-multiples of 128, nosync → one sync hunk "×14", nomax → numerical, re-trace / rename → no hunks, a float16 mutant that does not trace → AST fallback, swapped operands and another buffer detected, indexing → tiling, same categories → same tests (8 need `tvm_tirx`) |
+| `tests/task/test_outlier.py` | 7 | outlier inputs: every residue mod P, alternating row scales, the magnitude ladder, deterministic, never the floor distribution, the generator's `outlier@T` |
 | **total** | **129** | Login node (2026-11-16): **129 run, all pass, 6 skipped** (GPU-only). A100 (job 24048511, before the last 3 tests were added): 126 run, all pass, 2 skipped |
+
+Login node, 2026-11-17, after the IR change analysis (D3); other files' counts have grown since the table: 196 run, all pass, 8 skipped (GPU-only, or `tvm_tirx` / VOLTA missing).
 
 ### Experiments (A100-SXM4-40GB; GPU runs logged in `notes/gpu_results.md`)
 **Setup from scratch:** a fresh clone, `setup_env.sh --tests`, took 8 min 52 s, and all tests passed (86 tests at the time).
@@ -335,6 +412,32 @@ The two mechanisms complement each other:
 The edits are single, local changes. Real agent revisions are often 10–50-line rewrites; the rules then label most
 categories, so the tests are broad rather than targeted. Results: `results/eval/mutants_rules_{before,after}_*.json`.
 
+**IR vs AST classifier on the tirx-lite rows** (`akc mutants --classifier ir|ast`, CPU, 2026-11-17; 106 tirx edits:
+24 on the reference, 82 on the 4 held-out GLM tirx kernels):
+
+| kernels | classifier | right category | wrong | no category | no-op edits labelled | AST fallback | `ir_blind` |
+|---|---|---|---|---|---|---|---|
+| tirx reference (tuning) | AST | 21/21 | 0 | 0 | 0/3 | – | – |
+| tirx reference (tuning) | IR | 21/21 | 0 | 0 | 0/3 | 2 | 0 |
+| 4 GLM tirx (held out) | AST | 70/70 | 0 | 0 | 0/12 | – | – |
+| 4 GLM tirx (held out) | IR | 70/70 | 0 | 0 | 0/12 | 8 | 0 |
+
+- Agreement: every edit has the same verdict in both (91 hit/hit, 15 clean/clean).
+- The category sets differ on 36 of 106 edits, the first category on 16. IR adds categories more often than it
+  drops them, mostly numerical from the reduction rule. Examples:
+  - a guard or loop bound inside a max / sum loop is indexing (or tiling) + numerical;
+  - a shuffle offset `16 → 8` in a warp max is sync + numerical (AST: indexing);
+  - BLOCK 128 → 64 is tiling + indexing + memory + numerical (AST: tiling).
+- Cost of the broader labels: 1409 generated tests vs 1027 with the AST (+37%).
+- The 10 AST fallbacks are all `float32 → float16` edits that TIRx refuses to trace.
+- Analysis time: 1.1–1.4 s per edit when one child traces all edits of a base. A single revision costs about
+  7.7 s (softmax reference vs a bug, 5 shapes), mostly the tvm import; the AST path takes 0.01 s.
+- Not fully held out:
+  - before one fix the IR scored 69/70 held out;
+  - the fix pairs a deleted and an added statement from the same source line. It came from that miss:
+    `red_max[w]` → `[w + 1]` in an unrolled loop showed up as "first iteration deleted, extra iteration added".
+- Results: `results/eval/mutants_rules_ir_{bases,heldout}.json`.
+
 **Detection on the mutants, A vs C** (`akc mutants --detect --per-op 2`, A100, jobs 24051467 / 24052255; C here is
 fixed + change-aware tests, without VOLTA).
 - Only base kernels that pass on their own are used. 3 of the 8 held-out GLM drafts already fail the fixed tests,
@@ -362,8 +465,9 @@ What C's tests still miss (45 edits), checked with VOLTA where possible (job 240
     A CPU model of the edit returns NaN for a row of zeros with a single 100.
   - C classifies these edits as indexing. It gives them normal-valued boundary shapes plus one 2-row `large` floor
     test, and none of those rows has such an outlier.
-  - This is the real-number blind spot that the tests are meant to cover. The planned fix is a `spike` input
-    distribution with one large value per row, at a different lane in each row.
+  - This is the real-number blind spot that the tests are meant to cover. The fix is the `outlier` input family
+    (§2 Task 2): one large value per row, at every position modulo the tile across rows. The IR classifier also
+    labels a changed shuffle in a reduction as numerical, so these edits now get it. Not re-run on the GPU yet.
 - **No change in this kernel: 9 CUDA edits.**
   - VOLTA proves 5 equivalent: xor → down shuffles where only lane 0's value is used, and an extra GEMM K-tile
     whose guarded loads give zeros.
@@ -374,8 +478,8 @@ What C's tests still miss (45 edits), checked with VOLTA where possible (job 240
   - 5 are equivalent: block size changes in kernels that derive everything from the block size.
   - 4 are the same-value races above; 1 is a real race (`tid < s` → `tid <= s` in a tree reduction).
   - 2 read one element past the row inside a max pass. Outputs change only when the next row starts with a value
-    far above this row's max: every exp then underflows and the result is 0/0. The planned `spike` rows can
-    reach that case too.
+    far above this row's max: every exp then underflows and the result is 0/0. The `outlier` family targets this
+    case: adjacent rows are scaled 1 and 1e3. Not re-run yet.
   - 2 change outputs by less than softmax's tolerance (rtol 1e-4):
     - `[r, col]` → `[r, col + 1]` in a sum over 12 285 elements;
     - a float16 sum accumulator.

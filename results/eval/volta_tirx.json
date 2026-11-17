@@ -1,0 +1,1628 @@
+{
+ "date": "2026-11-17T02:40:33",
+ "summary": {
+  "shapes": [
+   {
+    "N": 256
+   },
+   {
+    "N": 584
+   },
+   {
+    "N": 200
+   }
+  ],
+  "kernels": 23,
+  "runs": 69,
+  "decided_runs": 69,
+  "coverage_runs": 1.0,
+  "decided_kernels": 23,
+  "coverage_kernels": 1.0,
+  "as_expected": "26/27",
+  "statuses": {
+   "EQUIV": 38,
+   "NOT_EQUIV": 4,
+   "OUT_OF_BOUNDS": 6,
+   "RACE": 21
+  },
+  "focus_mutants_caught": "5/5",
+  "volta_s_total": 9.34,
+  "build_s_total": 143.61,
+  "seconds": 161.8
+ },
+ "rewrites": [
+  "exp",
+  "ex2",
+  "huge_const",
+  "bar_count",
+  "select_max"
+ ],
+ "rows": [
+  {
+   "kernel": "softmax_txl_ref",
+   "group": "reference",
+   "expect": "EQUIV",
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.039,
+     "build_s": 2.123,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.121,
+     "build_s": 2.166,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 11
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.027,
+     "build_s": 2.146,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 14.81,
+   "hints": []
+  },
+  {
+   "kernel": "softmax_txl_bug_nosync",
+   "group": "bug",
+   "bug": {
+    "category": "sync",
+    "change": "removed the CTA barrier after each tree-reduction step"
+   },
+   "cuda_twin": "softmax_bug_nosync",
+   "cuda_expect": "RACE",
+   "runs": [
+    {
+     "N": 256,
+     "status": "RACE",
+     "volta_s": 0.013,
+     "build_s": 2.15,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": "data race on Shared[0x4]: write by t1 at pc:38 conflicts with read by t0 at pc:93"
+    },
+    {
+     "N": 584,
+     "status": "RACE",
+     "volta_s": 0.018,
+     "build_s": 2.163,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 11
+     },
+     "detail": "data race on Shared[0x4]: write by t1 at pc:78 conflicts with read by t0 at pc:133"
+    },
+    {
+     "N": 200,
+     "status": "RACE",
+     "volta_s": 0.013,
+     "build_s": 2.15,
+     "alone": null,
+     "expect": [
+      "RACE"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": "data race on Shared[0x4]: write by t1 at pc:42 conflicts with read by t0 at pc:97"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 6.53,
+   "hints": [
+    "Two threads access the same address between barriers and at least one writes: add the missing txl.cuda.cta_sync() (or make each thread touch only its own element)."
+   ]
+  },
+  {
+   "kernel": "softmax_txl_bug_tail",
+   "group": "bug",
+   "bug": {
+    "category": "tiling",
+    "change": "partial max/sum loops run n // 128 tiles (tail dropped)"
+   },
+   "cuda_twin": "softmax_bug_tail",
+   "cuda_expect": [
+    {
+     "if": "N % 128 == 0",
+     "then": "EQUIV"
+    },
+    {
+     "then": "NOT_EQUIV"
+    }
+   ],
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.035,
+     "build_s": 2.115,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "NOT_EQUIV",
+     "volta_s": 0.529,
+     "build_s": 2.131,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 10
+     },
+     "detail": "NOT EQUIVALENT: 584 mismatched element"
+    },
+    {
+     "N": 200,
+     "status": "NOT_EQUIV",
+     "volta_s": 0.068,
+     "build_s": 2.121,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 7
+     },
+     "detail": "NOT EQUIVALENT: 200 mismatched element"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 7.02,
+   "hints": [
+    "The verifier proved that some outputs differ from the reference for these exact sizes (real-number arithmetic, so this is a logic error, not rounding)."
+   ]
+  },
+  {
+   "kernel": "softmax_txl_bug_offbyone",
+   "group": "bug",
+   "bug": {
+    "category": "indexing",
+    "change": "sum loop guard col <= n"
+   },
+   "cuda_twin": "softmax_bug_offbyone",
+   "cuda_expect": "NOT_EQUIV",
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.036,
+     "build_s": 2.124,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": false,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "NOT_EQUIV",
+     "volta_s": 0.448,
+     "build_s": 2.143,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 11
+     },
+     "detail": "NOT EQUIVALENT: 584 mismatched element"
+    },
+    {
+     "N": 200,
+     "status": "NOT_EQUIV",
+     "volta_s": 0.062,
+     "build_s": 2.135,
+     "alone": null,
+     "expect": [
+      "NOT_EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": "NOT EQUIVALENT: 200 mismatched element"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 6.97,
+   "hints": [
+    "The verifier proved that some outputs differ from the reference for these exact sizes (real-number arithmetic, so this is a logic error, not rounding)."
+   ]
+  },
+  {
+   "kernel": "softmax_txl_bug_nomax",
+   "group": "bug",
+   "bug": {
+    "category": "numerical",
+    "change": "no max subtraction before exp"
+   },
+   "cuda_twin": "softmax_bug_nomax",
+   "cuda_expect": "EQUIV",
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.042,
+     "build_s": 2.319,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.157,
+     "build_s": 2.146,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 11
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.032,
+     "build_s": 2.136,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 6.85,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_C_r2",
+   "group": "glm",
+   "expect": "EQUIV",
+   "path": "results/pilot/20261115-203843/softmax_txl_r2.py",
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.043,
+     "build_s": 2.265,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.141,
+     "build_s": 2.614,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 17
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.034,
+     "build_s": 2.276,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 7.4,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_D1_r2",
+   "group": "glm",
+   "expect": "EQUIV",
+   "path": "results/pilot/20261115-204306/softmax_txl_r2.py",
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.047,
+     "build_s": 1.972,
+     "alone": "CLEAN",
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 0,
+      "bar_count": 6,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.182,
+     "build_s": 2.016,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 0,
+      "bar_count": 6,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.413,
+     "build_s": 1.976,
+     "alone": "CLEAN",
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 0,
+      "bar_count": 6,
+      "select_max": 0
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 6.65,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_D2_r1",
+   "group": "glm",
+   "expect": "EQUIV",
+   "path": "results/pilot/20261115-205635/softmax_txl_r1.py",
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.051,
+     "build_s": 1.74,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.143,
+     "build_s": 1.775,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.408,
+     "build_s": 1.749,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 5.9,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_D3_r1",
+   "group": "glm",
+   "expect": "EQUIV",
+   "path": "results/pilot/20261115-205831/softmax_txl_r1.py",
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.05,
+     "build_s": 1.775,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 2,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.145,
+     "build_s": 1.766,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 2,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.412,
+     "build_s": 1.755,
+     "alone": null,
+     "expect": [
+      "EQUIV"
+     ],
+     "as_expected": true,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 2,
+      "select_max": 0
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 5.93,
+   "hints": []
+  },
+  {
+   "kernel": "softmax_txl_ref_cmp_L30",
+   "group": "mutant",
+   "base": "softmax_txl_ref",
+   "op": "cmp",
+   "line": 30,
+   "desc": "< -> <=",
+   "focus": true,
+   "runs": [
+    {
+     "N": 256,
+     "status": "OUT_OF_BOUNDS",
+     "volta_s": 0.014,
+     "build_s": 2.131,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": "t64: out-of-bounds Shared access at 0x200 (width 4) at pc:33"
+    },
+    {
+     "N": 584,
+     "status": "OUT_OF_BOUNDS",
+     "volta_s": 0.019,
+     "build_s": 2.155,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 11
+     },
+     "detail": "t64: out-of-bounds Shared access at 0x200 (width 4) at pc:73"
+    },
+    {
+     "N": 200,
+     "status": "OUT_OF_BOUNDS",
+     "volta_s": 0.014,
+     "build_s": 2.043,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 8
+     },
+     "detail": "t64: out-of-bounds Shared access at 0x200 (width 4) at pc:37"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 6.4,
+   "hints": []
+  },
+  {
+   "kernel": "softmax_txl_ref_const_L8",
+   "group": "mutant",
+   "base": "softmax_txl_ref",
+   "op": "const",
+   "line": 8,
+   "desc": "128 -> 64",
+   "focus": false,
+   "runs": [
+    {
+     "N": 256,
+     "status": "OUT_OF_BOUNDS",
+     "volta_s": 0.01,
+     "build_s": 2.062,
+     "alone": "OUT_OF_BOUNDS",
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 10
+     },
+     "detail": "t0: out-of-bounds Shared access at 0x100 (width 4) at pc:49"
+    },
+    {
+     "N": 584,
+     "status": "OUT_OF_BOUNDS",
+     "volta_s": 0.012,
+     "build_s": 2.108,
+     "alone": "OUT_OF_BOUNDS",
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 16
+     },
+     "detail": "t0: out-of-bounds Shared access at 0x100 (width 4) at pc:131"
+    },
+    {
+     "N": 200,
+     "status": "OUT_OF_BOUNDS",
+     "volta_s": 0.01,
+     "build_s": 2.004,
+     "alone": "OUT_OF_BOUNDS",
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 2,
+      "ex2": 0,
+      "huge_const": 1,
+      "bar_count": 0,
+      "select_max": 10
+     },
+     "detail": "t0: out-of-bounds Shared access at 0x100 (width 4) at pc:53"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 6.23,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_C_r2_idx1_L114",
+   "group": "mutant",
+   "base": "glm_txl_C_r2",
+   "op": "idx1",
+   "line": 114,
+   "desc": "[r, col] -> [r, col + 1]",
+   "focus": false,
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.043,
+     "build_s": 2.273,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.141,
+     "build_s": 2.659,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 17
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.033,
+     "build_s": 2.3,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 7.47,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_C_r2_const_L9",
+   "group": "mutant",
+   "base": "glm_txl_C_r2",
+   "op": "const",
+   "line": 9,
+   "desc": "128 -> 64",
+   "focus": false,
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.039,
+     "build_s": 2.335,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 13
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.134,
+     "build_s": 2.529,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 21
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.031,
+     "build_s": 2.336,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 13
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 7.43,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_C_r2_define_L9",
+   "group": "mutant",
+   "base": "glm_txl_C_r2",
+   "op": "define",
+   "line": 9,
+   "desc": "128 -> 256",
+   "focus": false,
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.048,
+     "build_s": 2.259,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 10
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.153,
+     "build_s": 2.302,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 12
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.036,
+     "build_s": 2.146,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 10
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 6.98,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_C_r2_negate_L70",
+   "group": "mutant",
+   "base": "glm_txl_C_r2",
+   "op": "negate",
+   "line": 70,
+   "desc": "if (lane == 0) negated",
+   "focus": true,
+   "runs": [
+    {
+     "N": 256,
+     "status": "RACE",
+     "volta_s": 0.015,
+     "build_s": 2.269,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": "data race on Shared[0x0]: write by t2 at pc:62 conflicts with write by t1 at pc:62"
+    },
+    {
+     "N": 584,
+     "status": "RACE",
+     "volta_s": 0.023,
+     "build_s": 2.631,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 17
+     },
+     "detail": "data race on Shared[0x0]: write by t2 at pc:165 conflicts with write by t1 at pc:165"
+    },
+    {
+     "N": 200,
+     "status": "RACE",
+     "volta_s": 0.014,
+     "build_s": 2.307,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": "data race on Shared[0x0]: write by t2 at pc:62 conflicts with write by t1 at pc:62"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 7.28,
+   "hints": [
+    "Two threads access the same address between barriers and at least one writes: add the missing txl.cuda.cta_sync() (or make each thread touch only its own element)."
+   ]
+  },
+  {
+   "kernel": "glm_txl_C_r2_negate_L81",
+   "group": "mutant",
+   "base": "glm_txl_C_r2",
+   "op": "negate",
+   "line": 81,
+   "desc": "if (lane == 0) negated",
+   "focus": true,
+   "runs": [
+    {
+     "N": 256,
+     "status": "RACE",
+     "volta_s": 0.016,
+     "build_s": 2.151,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": "data race on Shared[0x0]: write by t2 at pc:108 conflicts with write by t1 at pc:108"
+    },
+    {
+     "N": 584,
+     "status": "RACE",
+     "volta_s": 0.024,
+     "build_s": 2.605,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 17
+     },
+     "detail": "data race on Shared[0x0]: write by t2 at pc:213 conflicts with write by t1 at pc:213"
+    },
+    {
+     "N": 200,
+     "status": "RACE",
+     "volta_s": 0.014,
+     "build_s": 2.288,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": "data race on Shared[0x0]: write by t2 at pc:108 conflicts with write by t1 at pc:108"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 7.12,
+   "hints": [
+    "Two threads access the same address between barriers and at least one writes: add the missing txl.cuda.cta_sync() (or make each thread touch only its own element)."
+   ]
+  },
+  {
+   "kernel": "glm_txl_C_r2_dtype_L40",
+   "group": "mutant",
+   "base": "glm_txl_C_r2",
+   "op": "dtype",
+   "line": 40,
+   "desc": "\"float32\" -> \"float16\"",
+   "focus": false,
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.043,
+     "build_s": 2.252,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.141,
+     "build_s": 2.715,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 17
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.033,
+     "build_s": 2.399,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 6,
+      "select_max": 11
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 7.6,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_D1_r2_negate_L63",
+   "group": "mutant",
+   "base": "glm_txl_D1_r2",
+   "op": "negate",
+   "line": 63,
+   "desc": "if (lane == 0) negated",
+   "focus": true,
+   "runs": [
+    {
+     "N": 256,
+     "status": "RACE",
+     "volta_s": 0.01,
+     "build_s": 1.93,
+     "alone": "RACE",
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 0,
+      "bar_count": 6,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x0]: write by t2 at pc:55 conflicts with write by t1 at pc:55"
+    },
+    {
+     "N": 584,
+     "status": "RACE",
+     "volta_s": 0.026,
+     "build_s": 2.022,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 0,
+      "bar_count": 6,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x0]: write by t2 at pc:78 conflicts with write by t1 at pc:78"
+    },
+    {
+     "N": 200,
+     "status": "RACE",
+     "volta_s": 0.01,
+     "build_s": 1.972,
+     "alone": "RACE",
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 0,
+      "bar_count": 6,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x0]: write by t2 at pc:54 conflicts with write by t1 at pc:54"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 6.07,
+   "hints": [
+    "Two threads access the same address between barriers and at least one writes: add the missing txl.cuda.cta_sync() (or make each thread touch only its own element)."
+   ]
+  },
+  {
+   "kernel": "glm_txl_D2_r1_cmp_L151",
+   "group": "mutant",
+   "base": "glm_txl_D2_r1",
+   "op": "cmp",
+   "line": 151,
+   "desc": "< -> <=",
+   "focus": false,
+   "runs": [
+    {
+     "N": 256,
+     "status": "RACE",
+     "volta_s": 0.016,
+     "build_s": 1.762,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x400]: write by t0 at pc:60 conflicts with write by t64 at pc:21"
+    },
+    {
+     "N": 584,
+     "status": "RACE",
+     "volta_s": 0.022,
+     "build_s": 1.776,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x924]: write by t32 at pc:78 conflicts with write by t18 at pc:37"
+    },
+    {
+     "N": 200,
+     "status": "RACE",
+     "volta_s": 0.015,
+     "build_s": 1.763,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x320]: write by t0 at pc:59 conflicts with write by t50 at pc:20"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 5.38,
+   "hints": [
+    "Two threads access the same address between barriers and at least one writes: add the missing txl.cuda.cta_sync() (or make each thread touch only its own element)."
+   ]
+  },
+  {
+   "kernel": "glm_txl_D2_r1_const_L19",
+   "group": "mutant",
+   "base": "glm_txl_D2_r1",
+   "op": "const",
+   "line": 19,
+   "desc": "128 -> 64",
+   "focus": false,
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.039,
+     "build_s": 1.743,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 0.132,
+     "build_s": 1.763,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.406,
+     "build_s": 1.739,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 5.86,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_D2_r1_define_L19",
+   "group": "mutant",
+   "base": "glm_txl_D2_r1",
+   "op": "define",
+   "line": 19,
+   "desc": "128 -> 256",
+   "focus": false,
+   "runs": [
+    {
+     "N": 256,
+     "status": "EQUIV",
+     "volta_s": 0.055,
+     "build_s": 1.776,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 584,
+     "status": "EQUIV",
+     "volta_s": 3.321,
+     "build_s": 1.777,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": ""
+    },
+    {
+     "N": 200,
+     "status": "EQUIV",
+     "volta_s": 0.414,
+     "build_s": 1.806,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": ""
+    }
+   ],
+   "decided": true,
+   "caught": false,
+   "seconds": 9.17,
+   "hints": []
+  },
+  {
+   "kernel": "glm_txl_D2_r1_negate_L127",
+   "group": "mutant",
+   "base": "glm_txl_D2_r1",
+   "op": "negate",
+   "line": 127,
+   "desc": "if (lane == 0) negated",
+   "focus": true,
+   "runs": [
+    {
+     "N": 256,
+     "status": "RACE",
+     "volta_s": 0.015,
+     "build_s": 1.762,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x400]: write by t2 at pc:60 conflicts with write by t1 at pc:60"
+    },
+    {
+     "N": 584,
+     "status": "RACE",
+     "volta_s": 0.021,
+     "build_s": 1.766,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x920]: write by t2 at pc:78 conflicts with write by t1 at pc:78"
+    },
+    {
+     "N": 200,
+     "status": "RACE",
+     "volta_s": 0.014,
+     "build_s": 1.756,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 1,
+      "bar_count": 4,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x320]: write by t2 at pc:59 conflicts with write by t1 at pc:59"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 5.36,
+   "hints": [
+    "Two threads access the same address between barriers and at least one writes: add the missing txl.cuda.cta_sync() (or make each thread touch only its own element)."
+   ]
+  },
+  {
+   "kernel": "glm_txl_D3_r1_cmp_L97",
+   "group": "mutant",
+   "base": "glm_txl_D3_r1",
+   "op": "cmp",
+   "line": 97,
+   "desc": "< -> <=",
+   "focus": false,
+   "runs": [
+    {
+     "N": 256,
+     "status": "RACE",
+     "volta_s": 0.015,
+     "build_s": 1.762,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 2,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x400]: write by t0 at pc:60 conflicts with write by t64 at pc:21"
+    },
+    {
+     "N": 584,
+     "status": "RACE",
+     "volta_s": 0.022,
+     "build_s": 1.766,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 2,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x924]: write by t32 at pc:78 conflicts with write by t18 at pc:37"
+    },
+    {
+     "N": 200,
+     "status": "RACE",
+     "volta_s": 0.014,
+     "build_s": 1.762,
+     "alone": null,
+     "expect": null,
+     "as_expected": null,
+     "rewrites": {
+      "exp": 0,
+      "ex2": 1,
+      "huge_const": 2,
+      "bar_count": 2,
+      "select_max": 0
+     },
+     "detail": "data race on Shared[0x320]: write by t0 at pc:59 conflicts with write by t50 at pc:20"
+    }
+   ],
+   "decided": true,
+   "caught": true,
+   "seconds": 5.37,
+   "hints": [
+    "Two threads access the same address between barriers and at least one writes: add the missing txl.cuda.cta_sync() (or make each thread touch only its own element)."
+   ]
+  }
+ ]
+}

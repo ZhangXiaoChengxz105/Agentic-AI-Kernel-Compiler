@@ -61,8 +61,23 @@ Every validator implements `validate(cand: Candidate, ctx: ValidationContext) ->
 | validator | input it uses | what it does | output specifics |
 |---|---|---|---|
 | `fixed_tests/` (baseline, A) | manifest `fixed_suite` | runs power-of-two N(0,1) tests ×3 | one finding per failing test |
-| `volta/` (mechanism 1, Task 3) | `ctx.volta_shapes` or manifest default | `volta compare` vs the workload reference: equivalence over ℝ + races/deadlocks, CTA 0 | per-shape verdicts in `artifacts.runs`; `hint` in evidence; tirx → info "unsupported" |
-| `changeaware/` (mechanism 2, Task 2) | `parent` vs candidate | diff (reformat / rename = no change) → classify (tiling / indexing / memory / sync / numerical) → targeted tests + always-on floor tests + VOLTA shapes → run tests; optional LLM second opinion (`ctx.extra["llm_classifier"]`: extra labels + risky sizes, union only) | `artifacts.categories`, `labels`, `suggested_volta_shapes`, `llm`; findings carry `related_change` |
+| `volta/` (mechanism 1, Task 3) | `ctx.volta_shapes` or manifest default | `volta compare` vs the workload reference: equivalence over ℝ + races/deadlocks, CTA 0 | per-shape verdicts in `artifacts.runs`; `hint` in evidence; tirx: traced per shape, generated CUDA rewritten for VOLTA (`volta/tirx.py`), compared with `references.tirx` |
+| `changeaware/` (mechanism 2, Task 2) | `parent` vs candidate | diff (tirx-lite: the traced IR, `irdiff.py` in a child process via `ir_worker.py`; CUDA: normalized text; reformat / rename = no change) → classify (tiling / indexing / memory / sync / numerical; tirx by the IR op that changed, `classify_ir.py`) → targeted tests + always-on floor tests + VOLTA shapes → run tests; optional LLM second opinion (`ctx.extra["llm_classifier"]`: extra labels + risky sizes, union only) | `artifacts.categories`, `labels`, `suggested_volta_shapes`, `llm`, `analysis` (ir / ast-fallback / cuda-text, traced shapes, fallback reason, `ir_blind`); findings carry `related_change` |
+
+**Change analysis on the IR (D3).** For tirx-lite, both versions are safety-scanned, traced at up to 8 shapes
+inside the declared domain, and compared statement by statement:
+- variables are renamed in definition order;
+- `get_first_structural_mismatch` names the changed IR node;
+- hunks are merged across shapes and unrolled repeats.
+
+If tracing fails, the Python-AST path is used and the reason is recorded. Reports may map indexing → tiling
+(`proposal_category()`) to show the proposal's 4 categories.
+
+**Value inputs.** `task/inputs.py` has a generic `outlier@P` family:
+- one outlier per row at column ≡ r (mod P);
+- adjacent rows scaled 1 / 1e3.
+
+The numerical tests use it with P = the kernel's tile.
 
 `runners/` executes TestCases for both test validators: `gpu.py` (CUDA via driver API, tirx via TIRx compile;
 sentinel + canaries + repeats; each candidate in a child process) and `numsim.py` (tirx on the CPU, capped).
@@ -108,7 +123,7 @@ CLI: `akc bench --workload W [--lang tirx] [--feedback]`, `akc validate ... --pe
 ## Workloads (`workloads/<op>/`)
 Data, not code: `manifest.json` + `cuda/` (+ `tirx/`) kernels and `bugs/`. Manifest keys:
 `op, description, shape_keys, launch {kind: row|tile2d, block, tile}, tiles, fixed_suite, numerical_dists,
-volta {default, deep, max_N}, tirx {factory_args, tensors}, perf {shape}, references {cuda, tirx}, signature, variants[]`
+volta {default, deep, max_N}, tirx {factory_args, tensors}, domain, perf {shape}, references {cuda, tirx}, signature, variants[]`
 (`variants`: name, lang, file, role, block, bug {category, change}, expect_volta).
 
 Adding a workload = a manifest (required keys: op, description, shape_keys, launch, fixed_suite, variants) + kernels
@@ -117,6 +132,9 @@ reporting "not set up" when absent:
 - VOLTA: `references.cuda` + `volta` in the manifest. The memory layout is derived from the OpSpec
   (`volta/layouts.py: derive_layout`).
 - speed: `perf.shape` + OpSpec flops/bytes/torch_impl.
+- shape domain: `domain` `{key: [lo, hi]}`, the CAKE contract (valid range declared before tuning; speed at
+  `perf.shape`). `Workload.in_domain` / `clip`: change-aware tests, VOLTA shapes, size regimes and LLM sizes stay
+  inside it, `perf.measure` rejects a shape outside it, the agent prompt states it. Absent = no limit.
 - tirx-lite: `tirx`.
 - `tiles` / `numerical_dists`: have defaults.
 - a custom grid: OpSpec `launch`; the default is derived from the manifest's launch kind.
@@ -150,6 +168,7 @@ Kernel conventions: `extern "C" __global__`, write `exp` as `EXP(x)` (`workloads
   - 14 are races or out-of-bounds shared access, and VOLTA catches all of them;
   - 9 change nothing;
   - 8 make the max reduction skip half the warp. These are equal over the reals, but give NaN in float32 on a
-    row with one large value. No test input has such a row yet; a `spike` distribution is the planned fix.
+    row with one large value. The `outlier@P` inputs (D3) have such rows, and a changed shuffle in a reduction is
+    now classified numerical too. Detection has not been re-run on the GPU.
 - Size regimes: `extract_thresholds` only sees comparisons with compile-time constants; a threshold computed at
   run time (e.g. from `cudaDeviceProp`) is not found.
