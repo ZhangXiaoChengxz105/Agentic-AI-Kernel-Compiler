@@ -77,7 +77,7 @@ def make_launcher(workload_name: str, lang: str, kernel_file: str, entry: str | 
         fn = CudaModule(kernel_file).get(entry)
 
         def bind(d_in, out, shape):
-            grid, blk = op.launch(shape, block)
+            grid, blk = wl.launch_dims(shape, block)
             args = op.kernel_args(d_in, out, shape)
             return lambda: fn(grid, blk, args)
         return bind
@@ -123,7 +123,7 @@ def run_tests(workload_name: str, lang: str, kernel_file: str, entry: str | None
 
 
 def run_tests_isolated(workload_name: str, lang: str, kernel_file: str | Path, entry: str | None,
-                       block: tuple[int, ...], tests: list, timeout_s: float = 900.0) -> list[dict]:
+                       block: tuple[int, ...], tests: list, timeout_s: float = 180.0) -> list[dict]:
     (BUILD / "tmp").mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=BUILD / "tmp") as tmp:
         job, out = Path(tmp) / "job.json", Path(tmp) / "out.json"

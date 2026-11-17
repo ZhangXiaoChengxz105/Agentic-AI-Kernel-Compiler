@@ -1,17 +1,22 @@
 """Workloads = one operator each, described by workloads/<op>/manifest.json (data, not code).
 
-A manifest holds everything operator-specific that code should not hard-code:
+REQUIRED manifest keys (testing works with only these + an OpSpec in task/reference.py):
   op, description, shape_keys          e.g. ["rows", "N"] or ["M", "N", "K"]
   launch                               {"kind": "row", "block": [128]} (one CTA per row) or
-                                       {"kind": "tile2d", "block": [16, 16], "tile": 16} (one CTA per output tile)
-  tiles                                sizes around which boundary shapes are generated
+                                       {"kind": "tile2d", "block": [16, 16], "tile": 16} (one CTA per output tile);
+                                       grid = rows (row) or ceil(N/tile) x ceil(M/tile) (tile2d). Any other
+                                       launch needs OpSpec.launch.
   fixed_suite                          configuration A's shapes (power-of-two, N(0,1) data)
-  numerical_dists                      value distributions that stress this op's numerics
-  volta                                {"default": shape, "deep": shape | null, "max_N": int | null}
+  variants                             [{name, lang, file (relative), role, block, bug, expect_volta}]
+OPTIONAL keys (a feature without its key reports "not set up" instead of failing):
+  references                           {"cuda": variant name, "tirx": variant name}: VOLTA's comparison kernel;
+                                       change-aware tests compare a first candidate with it (else: all categories)
+  tiles                                sizes around which boundary shapes are generated (default: the launch block / tile)
+  numerical_dists                      value distributions that stress this op's numerics (default DEFAULT_DISTS)
+  volta                                {"default": shape, "deep": shape | null, "max_N": int | null}  (VOLTA)
   tirx                                 {"factory_args": [...], "tensors": [...]} contract of tirx-lite modules
   perf                                 {"shape": shape} the size kernels are timed at (perf.measure, akc bench)
-  references                           {"cuda": variant name, "tirx": variant name}
-  variants                             [{name, lang, file (relative), role, block, bug, expect_volta}]
+  signature                            kernel signature shown to the agent; its non-const pointer names VOLTA's output
 """
 from __future__ import annotations
 
@@ -20,6 +25,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from ..paths import WORKLOADS
+
+DEFAULT_DISTS = ("large", "neg_large", "tiny", "mixed")
 
 
 @dataclass(frozen=True)
@@ -50,11 +57,42 @@ class Workload:
 
     @property
     def tiles(self) -> list[int]:
-        return list(self.meta.get("tiles", []))
+        if self.meta.get("tiles"):
+            return list(self.meta["tiles"])
+        return [int(self.launch["tile"] if self.launch["kind"] == "tile2d" else self.launch["block"][0])]
 
     @property
-    def perf_shape(self) -> dict:
-        return dict(self.meta["perf"]["shape"])
+    def numerical_dists(self) -> list[str]:
+        return list(self.meta.get("numerical_dists") or DEFAULT_DISTS)
+
+    @property
+    def volta(self) -> dict | None:
+        """The manifest's VOLTA block, or None when VOLTA is not set up for this workload."""
+        return self.meta.get("volta")
+
+    @property
+    def perf_shape(self) -> dict | None:
+        """The benchmark shape, or None when speed is not set up for this workload."""
+        perf = self.meta.get("perf")
+        return dict(perf["shape"]) if perf else None
+
+    def has_reference(self, lang: str = "cuda") -> bool:
+        return lang in (self.meta.get("references") or {})
+
+    def launch_dims(self, shape: dict, block) -> tuple[tuple[int, int, int], tuple[int, int, int]]:
+        """(grid, block) of one launch: OpSpec.launch when set, else derived from the manifest's launch kind."""
+        from .reference import OPS
+        op = OPS.get(self.op)
+        if op is not None and op.launch is not None:
+            return op.launch(shape, block)
+        b = tuple(int(x) for x in block) + (1,) * (3 - len(block))
+        kind = self.launch["kind"]
+        if kind == "row":
+            return (int(shape["rows"]), 1, 1), b
+        if kind == "tile2d":
+            t = int(self.launch["tile"])
+            return (-(-shape["N"] // t), -(-shape["M"] // t), 1), b
+        raise ValueError(f"{self.op}: launch kind {kind!r} is not built in; give the OpSpec a launch function")
 
     def reference(self, lang: str = "cuda") -> Variant:
         name = self.meta["references"][lang]

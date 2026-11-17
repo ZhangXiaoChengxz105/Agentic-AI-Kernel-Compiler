@@ -8,7 +8,10 @@ Output: ValidationReport("volta")
   decided = every shape ended in EQUIV or an error finding (used for "verification coverage").
   Each finding carries the shape, VOLTA's raw detail and an actionable hint (hints.py).
 Limits (also stated in findings): real-number semantics (no rounding/overflow), CTA 0 only, exact sizes only.
-tirx-lite candidates: not supported yet (tirx emits ex2.approx, which VOLTA does not treat as exp) -> info.
+tirx-lite candidates: not wired up yet (Task 3) -> info. TIRx generates CUDA C++ that calls plain `expf`;
+compiled to PTX, `expf` becomes `ex2.approx` + range reduction, which VOLTA does not read as exp. Our CUDA kernels
+avoid this with EXP() -> `__symexpf` under -DVOLTA; the tirx path needs the same substitution on TIRx's generated
+source (verified 2026-11-16: softmax_txl_ref's generated source contains `expf(...)`). Not yet tried on VOLTA.
 """
 from __future__ import annotations
 
@@ -42,7 +45,11 @@ class VoltaValidator:
         wl = load_workload(cand.workload)
         if cand.lang != "cuda":
             f = Finding("unsupported", "info", self.name, "VOLTA path for tirx-lite candidates is not implemented "
-                        "(tirx emits ex2.approx, which VOLTA does not read as exp)")
+                        "(TIRx's generated expf compiles to ex2.approx, which VOLTA does not read as exp)")
+            return ValidationReport.build(self.name, [f], False, t0)
+        if wl.volta is None or not wl.has_reference("cuda"):
+            f = Finding("unsupported", "info", self.name, "VOLTA is not set up for this workload (needs a 'volta' "
+                        "block and a CUDA reference in its manifest)")
             return ValidationReport.build(self.name, [f], False, t0)
         ref = wl.reference("cuda")
         out_dir = BUILD / "ptx" / cand.workload
@@ -57,7 +64,7 @@ class VoltaValidator:
             f = Finding("compile_error", "error", self.name, f"kernel entry {cand.entry} not found; entries: {b.kernels}")
             return ValidationReport.build(self.name, [f], True, t0)
         v = Variant(entry, b.ptx, "cuda", "candidate", cand.block or tuple(wl.launch["block"]))
-        shapes = wl.cap_volta_shapes(ctx.volta_shapes or [wl.meta["volta"]["default"]])
+        shapes = wl.cap_volta_shapes(ctx.volta_shapes or [wl.volta["default"]])
         findings, runs, decided = [], [], True
         for s in shapes:
             r = run_compare(make_case(cand.workload, ref_ptx, ref, b.ptx, v, s, self.timeout_s))

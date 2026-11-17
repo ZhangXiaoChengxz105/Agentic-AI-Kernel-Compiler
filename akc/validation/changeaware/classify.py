@@ -10,6 +10,12 @@ How rules are applied (same for both languages; only the vocabulary in LANGS dif
         so editing a loop bound on a line that happens to contain fmaxf(...) is NOT "numerical"
       - pair rules look at the differing tokens: comparison operator, +1/-1, loop bound / trip count,
         guard, subscript (array index) expression
+      - loop / if headers are split off a line first: a changed loop condition is "loop-bound", a changed loop
+        start or step ("s >>= 1" -> "s >>= 2") "loop-step", a changed if-condition "guard"; the statement after
+        the headers is compared with array subscripts removed. If no other rule fired on the pair: assigning a
+        float (a float variable, an element of a float array / pointer, a float store) makes it numerical
+        "arith", anything else (index / pointer arithmetic) indexing "index-arith"
+  * classify(..., src=new source) uses the source to know which names are floats
   * categories() ranks categories by amount of evidence
 
 Languages
@@ -20,13 +26,14 @@ Languages
 
 category   fires when the changed code ...
 sync       adds/removes/moves barriers (__syncthreads / cta_sync / bar.sync), fences, mbarriers,
-           async copies, atomics
+           async copies, atomics, warp shuffles / votes
 tiling     touches tile/block constants, launch geometry, tile counts / loop trip counts, or rounds a
            size to a tile multiple
-indexing   changes a comparison operator, a +1/-1, a loop bound, a guard, or a subscript expression
+indexing   changes a comparison operator, a +1/-1, a loop bound / start / step, a guard, a subscript
+           expression, or integer index / pointer arithmetic
 memory     touches shared/local allocations, vector/aliasing forms, global/shared load/store forms
-numerical  changes a math call (exp/log/sqrt/rsqrt/max/min/fma/ex2...), infinities/eps constants, or a
-           precision (half/bf16/double)
+numerical  changes a math call (exp/log/sqrt/rsqrt/max/min/fma/ex2...), float arithmetic, infinities/eps
+           constants, or a precision (half/bf16/double)
 """
 from __future__ import annotations
 
@@ -58,7 +65,10 @@ CUDA_RULES = [  # (category, rule name, regex)
     ("sync", "barrier", r"__syncthreads|__syncwarp|bar\.sync|barrier\.sync|__threadfence|cuda::barrier|mbarrier"),
     ("sync", "async-copy", r"cp\.async|__pipeline_\w+|cp_async|commit_group|wait_group"),
     ("sync", "atomic", r"\batomic\w+\s*\("),
-    ("tiling", "tile-constant", r"#\s*define\s+\w*(TILE|BLOCK|BM|BN|BK|WARPS?|THREADS|STAGES)\w*"),
+    ("sync", "warp-shuffle", r"__shfl\w*|__ballot_sync|__any_sync|__all_sync|__match_\w+_sync|__reduce_\w+_sync|__activemask|cooperative_groups|\bcg::"),
+    ("tiling", "tile-constant", r"#\s*define\s+\w*(TILE|BLOCK|BM|BN|BK|WARPS?|THREADS|STAGES|TPB|NWARP|UNROLL|VEC)\w*"),
+    ("tiling", "compile-constant", r"#\s*define\s+\w+\s+\(?\s*\d+|\bconstexpr\s+(int|unsigned)\s+\w+\s*=\s*\d+"),
+    ("memory", "smem-size", r"#\s*define\s+\w*(SMEM|SHARED|SHM)\w*"),
     ("tiling", "launch-geometry", r"\bblockDim\b|\bgridDim\b|__launch_bounds__"),
     ("tiling", "tile-count", r"\bn?tiles?\b|\bnum_tiles\b|/\s*\(?\s*(TILE|BLOCK|BM|BN|BK)\b"),
     ("tiling", "round-to-tile", r"\(\s*\w+\s*/\s*\w+\s*\)\s*\*\s*\w+"),
@@ -96,6 +106,7 @@ TIRX_MATH_NAMES = re.compile(r"^txl\.(exp2?|log2?|max|min|rsqrt|sqrt|fma|tanh|ab
 TIRX_RULES = [
     ("sync", "barrier", r"\w*sync\w*\(|bar\.(sync|arrive)|MBarrier|mbarrier|fence|PipelineState|elect_sync"),
     ("sync", "async-copy", r"cp\.async|cp_async|\btma\b|wait_group|commit_group|TensorMap"),
+    ("sync", "warp-shuffle", r"shfl|warp_reduce|redux|ballot|activemask"),
     ("tiling", "launch-geometry", r"LaunchConfig|\bgrid\s*=|\bblock\s*=|\bBLOCK\s*=|\bTILE\s*=|\bNWARP\w*\s*="),
     ("tiling", "tile-size", r"\b(BLOCK|TILE|BM|BN|BK|NWARPS?|n_tiles|num_tiles|NTILE|iters)\b|ceildiv|//\s*(BLOCK|TILE)\b"),
     ("tiling", "trip-count", r"txl\.(serial|unroll)\("),
@@ -126,8 +137,11 @@ def tirx_math_calls(line: str) -> list[str]:
     tree = _parse_stmt(line)
     if tree is None:
         return []
-    return sorted(ast.unparse(n) for n in ast.walk(tree)
-                  if isinstance(n, ast.Call) and TIRX_MATH_NAMES.match(_dotted(n.func)))
+    calls = [ast.unparse(n) for n in ast.walk(tree)
+             if isinstance(n, ast.Call) and TIRX_MATH_NAMES.match(_dotted(n.func))]
+    refs = [_dotted(n) for n in ast.walk(tree)                      # passed as a value: reduce(m, txl.max)
+            if isinstance(n, ast.Attribute) and TIRX_MATH_NAMES.match(_dotted(n))]
+    return sorted(calls + refs)
 
 
 def _tirx_subscripts(line: str) -> list[str]:
@@ -144,15 +158,90 @@ class LangSpec:
     rules: list
     math_calls: Callable[[str], list[str]]
     subscripts: Callable[[str], list[str]]
-    loop_bound: re.Pattern
-    guard: re.Pattern
+    split: Callable[[str], tuple[list[tuple[str, str, str]], str]]     # line -> (headers, statement)
+    lhs: Callable[[str], str | None]                                   # statement -> assigned name ("" = float store)
+    float_names: Callable[[str], set[str]]                             # source -> names holding floats
+
+
+def _balanced(text: str, open_at: int) -> int:
+    """Index just past the parenthesis group starting at text[open_at] == '('."""
+    depth = 0
+    for j in range(open_at, len(text)):
+        depth += {"(": 1, ")": -1}.get(text[j], 0)
+        if depth == 0:
+            return j + 1
+    return len(text)
+
+
+_CUDA_HEAD = re.compile(r"^\s*(?:\}\s*)?(?:else\s+)?(for|while|if)\s*\(")
+
+
+def _cuda_split(line: str):
+    """'for (int i = t; i < N; i += B) if (c) y[i] = v;' -> ([('for', 'i < N', header), ('if', 'c', header)], 'y[i] = v;')"""
+    heads, rest = [], line
+    while True:
+        m = _CUDA_HEAD.match(rest)
+        if not m:
+            return heads, rest.strip()
+        end = _balanced(rest, m.end() - 1)
+        inner = rest[m.end():end - 1]
+        cond = inner.split(";")[1].strip() if m.group(1) == "for" and inner.count(";") >= 2 else inner.strip()
+        heads.append((m.group(1), cond, inner.strip()))
+        rest = rest[end:].lstrip(" {")
+
+
+def _tirx_split(line: str):
+    t = line.strip()
+    m = re.search(r"txl\.if_\(", t)
+    if m:
+        end = _balanced(t, m.end() - 1)
+        return [("if", t[m.end():end - 1].strip(), t)], ""
+    m = re.match(r"(if|elif|while)\s+(.*):$", t)
+    if m:
+        return [("if" if m.group(1) != "while" else "while", m.group(2), t)], ""
+    if re.match(r"(for\s|with\s+txl\.(serial|unroll)\()", t):
+        return [("for", t, t)], ""
+    return [], t
+
+
+_CUDA_ASSIGN = re.compile(r"(?<![=!<>+\-*/&|^%])(=|\+=|-=|\*=|/=)(?!=)")
+
+
+def _cuda_lhs(stmt: str) -> str | None:
+    """Assigned name; 'name[]' when an element is assigned (y[i] = ...)."""
+    m = _CUDA_ASSIGN.search(stmt)
+    if not m:
+        return None
+    names = re.findall(r"(\w+)\s*(\[[^\]]*\])?\s*$", stmt[:m.start()])
+    return (names[0][0] + ("[]" if names[0][1] else "")) if names else None
+
+
+def _tirx_lhs(stmt: str) -> str | None:
+    if re.search(r"\.st\.\w+\.f(16|32|64)\(", stmt):
+        return ""                                        # float store
+    m = re.match(r"txl\.assign\(\s*(\w+)\s*,", stmt) or re.match(r"(\w+)\s*=(?!=)", stmt)
+    return m.group(1) if m else None
+
+
+def _cuda_floats(src: str) -> set[str]:
+    """Float scalars ('m') and float arrays / pointers, whose ELEMENTS are floats ('red[]', 'y[]')."""
+    t = r"\b(?:float|double|half|__half)"
+    scalars = set(re.findall(t + r"\s+(\w+)\b(?!\s*\[)", src))
+    arrays = set(re.findall(t + r"\s+(\w+)\s*\[", src)) | \
+        set(re.findall(t + r"\s*\*\s*(?:const\s+)?(?:__restrict__\s+)?(\w+)", src))
+    return scalars | {a + "[]" for a in arrays}
+
+
+def _tirx_floats(src: str) -> set[str]:
+    return set(re.findall(r"^\s*(\w+)\s*=\s*txl\.(?:local_scalar|float32|float16)\(\s*(?:\"float|NEG|[-\d])", src, re.M)) | \
+        set(re.findall(r"^\s*(\w+)\s*=\s*txl\.smem_pool\(\)\.alloc\([^)]*float", src, re.M))
 
 
 LANGS = {
     "cuda": LangSpec(CUDA_RULES, math_calls, _cuda_subscripts,
-                     re.compile(r"\bfor\s*\(.*;.*[<>]=?.*;"), re.compile(r"\bif\s*\(.*[<>]=?")),
+                     _cuda_split, _cuda_lhs, _cuda_floats),
     "tirx": LangSpec(TIRX_RULES, tirx_math_calls, _tirx_subscripts,
-                     re.compile(r"txl\.(serial|unroll)\(|\bfor\s+\w+\s+in\s+range\("), re.compile(r"txl\.if_\(.*[<>]=?|^if\s.*[<>]")),
+                     _tirx_split, _tirx_lhs, _tirx_floats),
 }
 
 
@@ -193,16 +282,29 @@ def _line_rules(spec: LangSpec, ln: int, text: str) -> list[Label]:
     return out
 
 
-def _loop_header(spec: LangSpec, line: str) -> str | None:
-    m = spec.loop_bound.search(line)
-    if not m:
-        return None
-    return line.split(";")[1] if ";" in line else line[m.start():]
+_SHUFFLE = re.compile(r"(?:__shfl\w*|\w*shfl\w*)\s*\(")
 
 
-def _pair_rules(spec: LangSpec, o_ln: int, old: str, new: str) -> list[Label]:
+def _calls(line: str, start_re: re.Pattern) -> list[str]:
+    return _balanced_calls(line, start_re)
+
+
+def _strip_subscripts(text: str) -> str:
+    prev = None
+    while prev != text:
+        prev, text = text, re.sub(r"\[[^\[\]]*\]", "[]", text)
+    return text
+
+
+def _pair_rules(spec: LangSpec, o_ln: int, old: str, new: str, floats: set[str] = frozenset()) -> list[Label]:
     ev = f"{old}  ->  {new}"
-    labels = [Label(c, r, o_ln, ev) for c, r, rx in spec.rules if re.search(rx, old) or re.search(rx, new)]
+    labels = []
+    for c, r, rx in spec.rules:
+        if not (re.search(rx, old) or re.search(rx, new)):
+            continue
+        if r == "warp-shuffle" and _calls(old, _SHUFFLE) == _calls(new, _SHUFFLE):
+            continue                       # the shuffle itself is unchanged: the edit is around it
+        labels.append(Label(c, r, o_ln, ev))
     if spec.math_calls(old) != spec.math_calls(new):
         labels.append(Label("numerical", "math-call", o_ln, ev))
     rem, add = _token_delta(old, new)
@@ -211,25 +313,38 @@ def _pair_rules(spec: LangSpec, o_ln: int, old: str, new: str) -> list[Label]:
         labels.append(Label("indexing", "comparison-op", o_ln, ev))
     if "1" in changed and ("+" in changed or "-" in changed):
         labels.append(Label("indexing", "plus-minus-one", o_ln, ev))
-    lo, ln_ = _loop_header(spec, old), _loop_header(spec, new)
-    if lo is not None and ln_ is not None and lo != ln_:
-        labels.append(Label("indexing", "loop-bound", o_ln, ev))
-    if spec.guard.search(old) and spec.guard.search(new) and changed:
-        labels.append(Label("indexing", "guard", o_ln, ev))
+    ho, so_ = spec.split(old)
+    hn, sn_ = spec.split(new)
+    for (ko, co, fo), (kn, cn, fn) in zip(ho, hn):
+        if ko in ("for", "while") and kn in ("for", "while"):
+            if co != cn:
+                labels.append(Label("indexing", "loop-bound", o_ln, ev))
+            elif fo != fn:
+                labels.append(Label("indexing", "loop-step", o_ln, ev))
+        elif ko == kn == "if" and co != cn:
+            labels.append(Label("indexing", "guard", o_ln, ev))
+    if len(ho) != len(hn):
+        labels.append(Label("indexing", "guard" if "if" in {k for k, _, _ in ho + hn} else "loop-bound", o_ln, ev))
+    if not labels and so_ != sn_ and _strip_subscripts(so_) != _strip_subscripts(sn_):   # fallback rule
+        lhs = spec.lhs(sn_) if spec.lhs(sn_) is not None else spec.lhs(so_)
+        if lhs is not None:
+            is_float = lhs == "" or lhs in floats or (not floats and re.search(r"\bfloat\b|\d\.\d*f?\b", sn_))
+            labels.append(Label("numerical", "arith", o_ln, ev) if is_float else Label("indexing", "index-arith", o_ln, ev))
     so, sn = spec.subscripts(old), spec.subscripts(new)
     if so and len(so) == len(sn) and so != sn:
         labels.append(Label("indexing", "index-expr", o_ln, ev))
     return labels
 
 
-def classify(hunks: list[Hunk], lang: str = "cuda") -> list[Label]:
+def classify(hunks: list[Hunk], lang: str = "cuda", src: str = "") -> list[Label]:
     spec = LANGS[lang]
+    floats = spec.float_names(src) if src else set()
     labels: list[Label] = []
     for h in hunks:
         if h.kind == "mod":
             pairs, unpaired = _pair_lines(h.old, h.new)
             for (o_ln, o), (_, n) in pairs:
-                labels.extend(_pair_rules(spec, o_ln, o, n))
+                labels.extend(_pair_rules(spec, o_ln, o, n, floats))
             for ln, t in unpaired:
                 labels.extend(_line_rules(spec, ln, t))
         else:

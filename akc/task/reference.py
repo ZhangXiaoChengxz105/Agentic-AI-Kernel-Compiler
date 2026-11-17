@@ -1,15 +1,17 @@
 """PyTorch reference ("golden") implementations + everything the test executors need per workload.
 
-OpSpec fields
+OpSpec fields. REQUIRED (enough for every test, and for VOLTA: its memory layout is derived from them):
   shape keys   : softmax/layernorm {"rows", "N"}; gemm {"M", "N", "K"}  (any positive sizes, incl.
                  non-divisible ones like N=1000 or K=40)
-  make_inputs  : (shape, dist, seed) -> dict of float32 CPU tensors, deterministic
+  make_inputs  : (shape, dist, seed) -> dict of float32 CPU tensors, deterministic; keys = kernel argument names
   golden       : inputs -> float64 result computed with PyTorch (the "standard answer")
   out_shape    : shape -> output tensor shape
   kernel_args  : (device inputs, device output, shape) -> [(value, ctype)] in kernel-signature order
-  launch       : (shape, block from manifest) -> (grid, block)
-  flops/bytes  : for the benchmark (1.6)
-  tolerance    : float32 (atol, rtol); `magnitude` (when set) replaces |golden| as the quantity rtol multiplies,
+  tolerance    : float32 (atol, rtol)
+OPTIONAL:
+  launch       : (shape, block) -> (grid, block); default: from the manifest's launch kind (Workload.launch_dims)
+  flops/bytes/torch_impl : speed measurement (perf); without them speed reports "not set up"
+  magnitude    : (when set) replaces |golden| as the quantity rtol multiplies,
                  so the bound follows the error any float32 implementation must make:
                  gemm      |A|@|B|: grows with K the way float accumulation error does;
                  layernorm |y| + (log2 N + 4) u |mean|/std |w| / rtol: rounding the row mean to float32
@@ -34,10 +36,6 @@ LN_RTOL = 1e-3
 U32 = 2.0 ** -24          # float32 unit roundoff
 
 
-def _cdiv(a: int, b: int) -> int:
-    return -(-a // b)
-
-
 def _gen(seed: int) -> torch.Generator:
     g = torch.Generator()
     g.manual_seed(seed)
@@ -52,22 +50,21 @@ class OpSpec:
     golden: Callable[[dict], torch.Tensor]
     out_shape: Callable[[dict], tuple[int, ...]]
     kernel_args: Callable[[dict, torch.Tensor, dict], list]
-    launch: Callable[[dict, tuple[int, ...]], tuple[tuple[int, int, int], tuple[int, int, int]]]
-    flops: Callable[[dict], float]
-    bytes: Callable[[dict], float]
     atol: float
     rtol: float
-    torch_impl: Callable[[dict], torch.Tensor]       # fast PyTorch version (benchmark baseline)
+    launch: Callable[[dict, tuple[int, ...]], tuple[tuple[int, int, int], tuple[int, int, int]]] | None = None
+    flops: Callable[[dict], float] | None = None
+    bytes: Callable[[dict], float] | None = None
+    torch_impl: Callable[[dict], torch.Tensor] | None = None   # fast PyTorch version (benchmark baseline)
     magnitude: Callable[[dict], torch.Tensor] | None = None
+
+    @property
+    def has_perf(self) -> bool:
+        return None not in (self.flops, self.bytes, self.torch_impl)
 
 
 def _ptr(t: torch.Tensor):
     return (t.data_ptr(), ctypes.c_void_p)
-
-
-def _dims3(t: tuple[int, ...]) -> tuple[int, int, int]:
-    t = tuple(t) + (1,) * (3 - len(t))
-    return t[0], t[1], t[2]
 
 
 # ---- softmax ---------------------------------------------------------------------------------
@@ -81,7 +78,6 @@ SOFTMAX = OpSpec(
     golden=lambda i: torch.softmax(i["x"].double(), dim=-1),
     out_shape=lambda s: (s["rows"], s["N"]),
     kernel_args=lambda d, out, s: [_ptr(d["x"]), _ptr(out), (s["N"], ctypes.c_int)],
-    launch=lambda s, block: ((s["rows"], 1, 1), _dims3(block)),
     flops=lambda s: 5.0 * s["rows"] * s["N"],
     bytes=lambda s: 8.0 * s["rows"] * s["N"],
     atol=1e-6, rtol=1e-4,
@@ -115,7 +111,6 @@ LAYERNORM = OpSpec(
     out_shape=lambda s: (s["rows"], s["N"]),
     kernel_args=lambda d, out, s: [_ptr(d["x"]), _ptr(d["w"]), _ptr(d["b"]), _ptr(out),
                                    (s["N"], ctypes.c_int), (LN_EPS, ctypes.c_float)],
-    launch=lambda s, block: ((s["rows"], 1, 1), _dims3(block)),
     flops=lambda s: 8.0 * s["rows"] * s["N"],
     bytes=lambda s: 4.0 * (2 * s["rows"] * s["N"] + 2 * s["N"]),
     atol=1e-4, rtol=LN_RTOL,
@@ -137,7 +132,6 @@ GEMM = OpSpec(
     out_shape=lambda s: (s["M"], s["N"]),
     kernel_args=lambda d, out, s: [_ptr(d["A"]), _ptr(d["B"]), _ptr(out),
                                    (s["M"], ctypes.c_int), (s["N"], ctypes.c_int), (s["K"], ctypes.c_int)],
-    launch=lambda s, block: ((_cdiv(s["N"], 16), _cdiv(s["M"], 16), 1), _dims3(block)),
     flops=lambda s: 2.0 * s["M"] * s["N"] * s["K"],
     bytes=lambda s: 4.0 * (s["M"] * s["K"] + s["K"] * s["N"] + s["M"] * s["N"]),
     atol=1e-5, rtol=1e-5,

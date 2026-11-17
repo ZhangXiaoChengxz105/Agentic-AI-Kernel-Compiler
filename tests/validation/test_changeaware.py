@@ -14,12 +14,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from akc.validation.changeaware import plan  # noqa: E402
 from akc.validation.changeaware.classify import categories, classify, math_calls  # noqa: E402
 from akc.validation.changeaware.diff import diff_sources, normalize  # noqa: E402
-from akc.validation.changeaware.generate import extract_tiles, generate_tests, volta_shapes  # noqa: E402
+from akc.validation.changeaware.generate import extract_thresholds, extract_tiles, generate_tests, volta_shapes  # noqa: E402
 from akc.task.workload import load_workload  # noqa: E402
 from akc.validation.volta.layouts import FAIL_STATUSES, make_case  # noqa: E402
 from akc.validation.volta.runner import VOLTA_BIN  # noqa: E402
 
 OPT = Path(__file__).resolve().parents[2] / "workloads" / "softmax" / "cuda" / "softmax_opt.cu"
+TXL = Path(__file__).resolve().parents[2] / "workloads" / "softmax" / "tirx"
 
 
 def _bug_pairs():
@@ -68,6 +69,123 @@ class ClassifyTests(unittest.TestCase):
         self.assertEqual(set(cats), {"memory", "sync"})
 
 
+class CosmeticAndRobustnessTests(unittest.TestCase):
+    def test_reformat_and_consistent_rename_are_cosmetic(self):
+        import re
+        src = OPT.read_text()
+        self.assertEqual(diff_sources(src, src.replace("; ", ";\n    ")), [])
+        self.assertEqual(diff_sources(src, re.sub(r"\bm\b", "row_max", src)), [])
+
+    def test_api_swap_and_partial_rename_are_real_changes(self):
+        src = OPT.read_text()
+        self.assertTrue(diff_sources(src, src.replace("fmaxf", "fminf")))            # API names may not be renamed
+        self.assertTrue(diff_sources(src, src.replace("red[0]", "q[0]")))             # not consistent everywhere
+
+    def test_unparsable_tirx_assumes_every_category(self):
+        ref = (TXL / "softmax_txl_ref.py").read_text()
+        p = plan("softmax", ref, ref.replace("NEG_BIG", "0.0f", 1), "tirx")
+        self.assertEqual(set(p.cats), {"tiling", "indexing", "memory", "sync", "numerical"})
+
+
+class NewRuleTests(unittest.TestCase):
+    """Edits the first rule set missed (notes/build_log.md section 8)."""
+    def cats(self, old, new, src=None):
+        return categories(classify(diff_sources(old, new), "cuda", src or (old + "\n" + new)))
+
+    def test_reduction_stride_and_start_are_loop_steps(self):
+        src = OPT.read_text()
+        self.assertIn("indexing", self.cats(src, src.replace("s >>= 1) {\n    if (tid < s) red[tid] +=",
+                                                             "s >>= 2) {\n    if (tid < s) red[tid] +=")))
+        tail = src[src.index("// 2)"):]
+        self.assertIn("indexing", self.cats(src, src[:src.index("// 2)")] + tail.replace("BLOCK / 2", "BLOCK / 4", 1)))
+
+    def test_while_bound_constant(self):
+        old = "float l = 0.0f;\nwhile (N - i > 384) {\n  l = l + x;\n}\n"
+        self.assertEqual(self.cats(old, old.replace("384", "383")), ["indexing"])
+
+    def test_float_arithmetic_is_numerical_index_arithmetic_is_not(self):
+        src = OPT.read_text()
+        self.assertEqual(self.cats(src, src.replace("red[tid] += red[tid + s]", "red[tid] = red[tid + s]")), ["numerical"])
+        self.assertEqual(self.cats(src, src.replace("* inv;", "* inv * inv;")), ["numerical"])
+        self.assertEqual(self.cats(src, src.replace("x + (size_t)blockIdx.x * N", "x + (size_t)blockIdx.x * (N + 1)")),
+                         ["indexing"])
+
+    def test_glm_dropped_term_is_numerical(self):
+        old = "float l = 0.0f;\nfloat e3;\nl = l + ((e0 + e1) + (e2 + e3));\n"
+        self.assertEqual(self.cats(old, old.replace("l = l + ((e0 + e1) + (e2 + e3));", "l = (e0 + e1) + (e2 + l);")),
+                         ["numerical"])
+
+    def test_warp_shuffle_is_sync_only_when_the_shuffle_changes(self):
+        old = "float m;\nm = fmaxf(m, __shfl_xor_sync(0xffffffffu, m, off));\nfloat s;\ns += __shfl_xor_sync(0xffffffffu, s, off);\n"
+        self.assertIn("sync", self.cats(old, old.replace("__shfl_xor_sync(0xffffffffu, m", "__shfl_down_sync(0xffffffffu, m")))
+        self.assertEqual(self.cats(old, old.replace("s += __shfl", "s = __shfl")), ["numerical"])
+
+    def test_tirx_math_function_passed_as_argument(self):
+        ref = (TXL / "softmax_txl_ref.py").read_text()
+        p = plan("softmax", ref, ref.replace("mx = block_reduce(m, txl.max)", "mx = block_reduce(m, txl.min)"), "tirx")
+        self.assertEqual(p.cats, ["numerical"])
+
+
+class _FakeReply:
+    def __init__(self, content):
+        self.content, self.cost, self.latency_s, self.model = content, 0.01, 0.1, "fake"
+        self.finish_reason, self.dry_run = "stop", False
+
+
+class _FakeClient:
+    def __init__(self, content):
+        self.content, self.calls = content, 0
+
+    def chat(self, messages, **kw):
+        self.calls += 1
+        return _FakeReply(self.content)
+
+
+class LlmClassifierTests(unittest.TestCase):
+    """No network, no coins: a fake client stands in for Lumen."""
+    def setUp(self):
+        import tempfile
+        self.tmp = tempfile.TemporaryDirectory()
+        self.src = OPT.read_text()
+        self.new = self.src.replace("for (int i = tid; i < N; i += BLOCK) sum", "for (int i = tid; i < N - 1; i += BLOCK) sum")
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def llm(self, content):
+        from akc.validation.changeaware.llm_classify import LlmClassifier
+        return LlmClassifier(client=_FakeClient(content), cache_dir=Path(self.tmp.name))
+
+    def test_union_with_rules_and_risky_shapes_become_tests(self):
+        reply = ('Sure: {"changes": [{"line": 32, "categories": ["indexing", "numerical"], "why": "sum bound"}], '
+                 '"risky_shapes": [{"shape": {"N": 512}, "category": "indexing", "why": "one element past"}, '
+                 '{"shape": {"N": 129}, "category": "indexing", "why": "already a floor test"}, '
+                 '{"shape": {"N": 99999}, "category": "indexing", "why": "too big"}]}')
+        p = plan("softmax", self.src, self.new, "cuda", llm=self.llm(reply))
+        self.assertIn("indexing", p.cats)                                    # rules
+        self.assertIn("numerical", p.cats)                                   # added by the LLM
+        llm_tests = [t for t in p.tests if "LLM-suggested" in t.tag]
+        self.assertEqual([t.shape for t in llm_tests], [{"rows": 2, "N": 512}])   # rows defaulted; dup and too-big dropped
+        self.assertEqual(p.llm["error"], "")
+
+    def test_garbage_reply_falls_back_to_rules(self):
+        rules = plan("softmax", self.src, self.new, "cuda")
+        p = plan("softmax", self.src, self.new, "cuda", llm=self.llm("I think it is fine."))
+        self.assertEqual(p.cats, rules.cats)
+        self.assertIn("no JSON", p.llm["error"])
+
+    def test_cache_and_no_call_for_cosmetic_edits(self):
+        reply = '{"changes": [{"line": 32, "categories": ["indexing"], "why": "x"}], "risky_shapes": []}'
+        llm = self.llm(reply)
+        plan("softmax", self.src, self.new, "cuda", llm=llm)
+        p2 = plan("softmax", self.src, self.new, "cuda", llm=llm)
+        self.assertEqual(llm.client.calls, 1)
+        self.assertTrue(p2.llm["cached"])
+        p3 = plan("softmax", self.src, self.src.replace("; ", ";\n"), "cuda", llm=llm)
+        self.assertIsNone(p3.llm)                                            # nothing changed: no call
+        self.assertEqual(llm.client.calls, 1)
+
+
 class GenerateTests(unittest.TestCase):
     def test_tiling_row_op_covers_partial_and_sub_block_sizes(self):
         ns = {t.shape["N"] for t in generate_tests("softmax", ["tiling"], (128,))}
@@ -84,17 +202,50 @@ class GenerateTests(unittest.TestCase):
         self.assertIn("offset", {t.dist for t in generate_tests("layernorm", ["numerical"], (128,))})
 
     def test_sync_repeats(self):
-        self.assertTrue(all(t.repeat >= 3 for t in generate_tests("gemm", ["sync"], (16, 16))))
+        sync = [t for t in generate_tests("gemm", ["sync"], (16, 16)) if t.tag.startswith("sync")]
+        self.assertTrue(sync and all(t.repeat >= 3 for t in sync))
 
     def test_deterministic_and_budget(self):
         a = generate_tests("softmax", ["tiling", "numerical", "sync"], (128,), budget=7)
         b = generate_tests("softmax", ["tiling", "numerical", "sync"], (128,), budget=7)
         self.assertEqual(a, b)
-        self.assertEqual(len(a), 7)
-        self.assertEqual({t.tag.split(":")[0] for t in a}, {"tiling", "numerical", "sync"})  # round-robin
+        targeted = [t for t in a if not t.tag.startswith("floor")]
+        self.assertEqual(len(targeted), 7)                                  # the budget limits targeted tests only
+        self.assertEqual({t.tag.split(":")[0] for t in targeted}, {"tiling", "numerical", "sync"})  # round-robin
 
-    def test_no_category_gives_sanity_tests(self):
-        self.assertEqual(len(generate_tests("gemm", [], (16, 16))), 2)
+    def test_floor_runs_even_without_a_category(self):
+        for op, tiles in (("gemm", (16, 16)), ("softmax", (128,))):
+            tests = generate_tests(op, [], tiles)
+            self.assertTrue(tests and all(t.tag.startswith("floor") for t in tests))
+            last = "K" if op == "gemm" else "N"
+            self.assertTrue(any(t.shape[last] % tiles[0] for t in tests))     # a non-divisible size
+            self.assertTrue(any(t.dist != "normal" for t in tests))           # an extreme value distribution
+
+    def test_floor_is_not_duplicated(self):
+        keys = [(tuple(sorted(t.shape.items())), t.dist, t.misalign) for t in generate_tests("softmax", ["tiling"], (128,))]
+        self.assertEqual(len(keys), len(set(keys)))
+
+    def test_size_regime_switches_are_found(self):
+        cuda = ("#define SMEM_FLOATS 8192\n#define CAP (48 * 1024 / sizeof(float))\n"
+                "extern \"C\" __global__ void k(const float* x, float* y, int N) {\n"
+                "  const bool use_smem = (N <= SMEM_FLOATS);\n  for (int i = tid; i < N; i += 128) {}\n"
+                "  for (int k = 0; k < 16; ++k) {}\n  if (N > CAP) return;\n}\n")
+        self.assertEqual(extract_thresholds(cuda, "cuda", ["rows", "N"]), [("N", 8192), ("N", 12288)])
+        txl = ("def make_kernel(rows: int, n: int):\n    BLOCK = 128\n    NWARP = BLOCK // 32\n"
+               "    USE_SMEM = (n * 4 + NWARP * 4) <= (48 * 1024)\n    with txl.if_(col < n), txl.then_():\n        pass\n")
+        self.assertEqual(extract_thresholds(txl, "tirx", ["rows", "N"]), [("N", 12284)])
+        gemm = (Path(__file__).resolve().parents[2] / "workloads" / "gemm" / "cuda" / "gemm_opt.cu").read_text()
+        self.assertEqual(extract_thresholds(gemm, "cuda", ["M", "N", "K"], "tile2d"), [])   # loop var k is not K
+        self.assertEqual(extract_thresholds(OPT.read_text(), "cuda", ["rows", "N"]), [])
+
+    def test_regime_tests_run_both_code_paths(self):
+        tests = generate_tests("softmax", [], (128,), regimes=[("N", 8192)])
+        ns = {t.shape["N"] for t in tests if "switches code path" in t.tag}
+        self.assertEqual(ns, {8192, 8193})
+        src = OPT.read_text().replace("float m = -INFINITY;", "float m = -INFINITY;\n  const bool big = (N > 9000);")
+        p = plan("softmax", OPT.read_text(), src)
+        self.assertEqual(p.regimes, [("N", 9000)])
+        self.assertTrue({9000, 9001} <= {t.shape["N"] for t in p.tests})
 
     def test_volta_shapes_put_boundary_in_cta0(self):
         self.assertTrue(any(s["N"] % 128 for s in volta_shapes("softmax", ["tiling"], (128,))))

@@ -7,6 +7,7 @@
   bench      speed of kernels on the GPU: time, x PyTorch, roofline (% of peak), practical floor
   volta      VOLTA on every CUDA variant of a workload, checked against manifest expectations (CPU)
   eval-bugs  configurations A/B/C on the injected bugs (detection, coverage, overhead)
+  mutants    mutation benchmark: is each generated edit classified right (CPU), caught by A / C (GPU)?
   tirx-gpu   tirx-lite kernels on the GPU (correctness + speed)
   pilot      GLM pilot loop (spends Lumen coins)
   lumen      Lumen client: models | usage | chat
@@ -45,6 +46,9 @@ def cmd_validate(argv):
     ap.add_argument("--config", default="C", choices=["A", "B", "C"])
     ap.add_argument("--device", default="auto", choices=["auto", "gpu", "cpu"])
     ap.add_argument("--perf", action="store_true", help="if validation passes, measure speed too (GPU)")
+    ap.add_argument("--llm-classify", action="store_true",
+                    help="configuration C: also ask an LLM for change categories and risky sizes (spends Lumen coins)")
+    ap.add_argument("--llm-model", default="glm-5.3")
     ap.add_argument("--json")
     a = ap.parse_args(argv)
     from .feedback.render import render_observation
@@ -52,7 +56,11 @@ def cmd_validate(argv):
     from .validation import Candidate, ValidationContext, run_pipeline
     parent = Candidate.from_file(a.workload, a.parent, label="parent") if a.parent else None
     cand = Candidate.from_file(a.workload, a.kernel, parent=parent)
-    res = run_pipeline(cand, a.config, ValidationContext(device=a.device))
+    extra = {}
+    if a.llm_classify:
+        from .validation.changeaware.llm_classify import LlmClassifier
+        extra["llm_classifier"] = LlmClassifier(model=a.llm_model)
+    res = run_pipeline(cand, a.config, ValidationContext(device=a.device, extra=extra))
     for r in res.reports:
         print(f"{r.validator:12s} {'PASS' if r.passed else 'FAIL'} decided={r.decided} errors={len(r.errors)} {r.seconds:.1f}s")
     perf = measure(cand, device=a.device) if a.perf and res.passed else None   # speed only for passing kernels
@@ -169,6 +177,8 @@ def main(argv: list[str] | None = None) -> int:
         from .evaluation.volta_matrix import main as m
     elif cmd == "eval-bugs":
         from .evaluation.bugset import main as m
+    elif cmd == "mutants":
+        from .evaluation.mutants import main as m
     elif cmd == "tirx-gpu":
         from .evaluation.gpu_tirx import main as m
     elif cmd == "pilot":

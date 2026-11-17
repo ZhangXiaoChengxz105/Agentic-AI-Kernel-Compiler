@@ -35,11 +35,17 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--with-fixed", action="store_true", help="also run the fixed suite (configuration A's tests)")
     ap.add_argument("--budget", type=int, default=16)
     ap.add_argument("--json", help="write the full reports here")
+    ap.add_argument("--llm-classify", action="store_true", help="also ask an LLM (spends Lumen coins)")
+    ap.add_argument("--llm-model", default="glm-5.3")
     a = ap.parse_args(argv)
 
     parent = Candidate.from_file(a.workload, a.old, label="old") if a.old else None
     cand = Candidate.from_file(a.workload, a.new, entry=a.entry, parent=parent, label=Path(a.new).stem)
-    ctx = ValidationContext(config="C", device=a.device, extra={"budget": a.budget})
+    extra = {"budget": a.budget}
+    if a.llm_classify:
+        from .llm_classify import LlmClassifier
+        extra["llm_classifier"] = LlmClassifier(model=a.llm_model)
+    ctx = ValidationContext(config="C", device=a.device, extra=extra)
     reports = []
     ca = ChangeAwareValidator().validate(cand, ctx)
     reports.append(ca)
@@ -53,6 +59,11 @@ def main(argv: list[str] | None = None) -> int:
     print(f"change categories: {', '.join(art['categories']) or 'none'}   tiles seen in kernel: {art['tiles'] or '-'}")
     for lab in art["labels"][:8]:
         print(f"   {lab['category']:9s} {lab['rule']:16s} L{lab['line']}: {lab['evidence'][:90]}")
+    if art.get("llm"):
+        li = art["llm"]
+        print(f"LLM ({li['model']}): {li['n_labels']} labels, risky sizes {li['shapes'] or '-'}, "
+              f"{li['cost']:.4f} coins, {li['latency_s']:.1f}s{' (cached)' if li['cached'] else ''}"
+              f"{'  ERROR ' + li['error'] if li['error'] else ''}")
     ran = sum(o.get("reason") != "skipped" for o in art["outcomes"])
     print(f"targeted tests: {len(art['tests'])} generated, {ran} executed   VOLTA shapes: {art['suggested_volta_shapes'] or '-'}")
     for r in reports:

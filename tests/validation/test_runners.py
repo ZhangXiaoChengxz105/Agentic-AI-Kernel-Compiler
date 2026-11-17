@@ -59,8 +59,9 @@ class GoldenTests(unittest.TestCase):
         self.assertEqual(tuple(op.golden(op.make_inputs(s, "normal", 0)).shape), op.out_shape(s))
 
     def test_launch_configs(self):
-        self.assertEqual(OPS["gemm"].launch({"M": 12, "N": 33, "K": 5}, (16, 16)), ((3, 1, 1), (16, 16, 1)))
-        self.assertEqual(OPS["softmax"].launch({"rows": 64, "N": 1000}, (128,)), ((64, 1, 1), (128, 1, 1)))
+        from akc.task.workload import load_workload           # grid derived from the manifest's launch kind
+        self.assertEqual(load_workload("gemm").launch_dims({"M": 12, "N": 33, "K": 5}, (16, 16)), ((3, 1, 1), (16, 16, 1)))
+        self.assertEqual(load_workload("softmax").launch_dims({"rows": 64, "N": 1000}, (128,)), ((64, 1, 1), (128, 1, 1)))
 
 
 class CheckTests(unittest.TestCase):

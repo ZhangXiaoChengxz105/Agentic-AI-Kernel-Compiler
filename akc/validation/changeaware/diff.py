@@ -10,6 +10,9 @@ Normalization before diffing (so cosmetic edits do not count as changes). CUDA:
   * the name of each `__global__` function replaced by KERNEL (renaming is not a semantic change)
 tirx-lite: the Python parser does it (normalize_python): one entry per statement, headers of compound
 statements, comments/docstrings/formatting gone, @txl.kernel functions renamed KERNEL.
+Cosmetic revisions give NO hunks: if the two token streams are equal up to line breaks and a consistent
+(one-to-one) renaming of local identifiers, nothing changed semantically. Keywords, CUDA builtins, math
+functions, `__`-names and attribute names (after a dot) may not be renamed.
 """
 from __future__ import annotations
 
@@ -87,9 +90,42 @@ def normalize(src: str, lang: str = "cuda") -> list[tuple[int, str]]:
     return out
 
 
+_TOK = re.compile(r"[A-Za-z_]\w*|\d+\.?\d*(?:[eE][-+]?\d+)?[fFuUlL]?|\S")
+_FIXED_NAMES = set("""
+for while do if else switch case default break continue return goto int unsigned signed long short char bool
+float double void const volatile static extern inline struct union typedef sizeof size_t auto true false
+nullptr template typename define include ifndef ifdef endif undef pragma unroll threadIdx blockIdx blockDim
+gridDim warpSize KERNEL INFINITY NAN FLT_MAX FLT_MIN EXP float2 float4 int2 int4 half bfloat16
+import from as def with in range lambda None True False and or not is pass yield txl T tirx_kernels
+exp expf exp2 exp2f log logf log2 log2f sqrt sqrtf rsqrt rsqrtf fmax fmaxf fmin fminf fma fmaf tanh tanhf pow powf
+fabs fabsf max min abs
+""".split())
+
+
+def cosmetic_only(a: list[tuple[int, str]], b: list[tuple[int, str]]) -> bool:
+    """True if the normalized sources differ only in line breaks / a consistent renaming of local names."""
+    ta, tb = _TOK.findall(" ".join(t for _, t in a)), _TOK.findall(" ".join(t for _, t in b))
+    if len(ta) != len(tb):
+        return False
+    fwd, back = {}, {}
+    for i, (x, y) in enumerate(zip(ta, tb)):
+        ident = re.fullmatch(r"[A-Za-z_]\w*", x) and re.fullmatch(r"[A-Za-z_]\w*", y)
+        if x == y and not ident:
+            continue
+        fixed = x in _FIXED_NAMES or y in _FIXED_NAMES or x.startswith("__") or y.startswith("__") or \
+            (i > 0 and ta[i - 1] == ".")
+        if not ident or (fixed and x != y):
+            return False
+        if fwd.setdefault(x, y) != y or back.setdefault(y, x) != x:
+            return False
+    return True
+
+
 def diff_sources(old_src: str, new_src: str, lang: str | None = None) -> list[Hunk]:
     lang = lang or detect_lang(old_src + "\n" + new_src)
     a, b = normalize(old_src, lang), normalize(new_src, lang)
+    if cosmetic_only(a, b):
+        return []
     sm = difflib.SequenceMatcher(a=[t for _, t in a], b=[t for _, t in b], autojunk=False)
     hunks = []
     for tag, i1, i2, j1, j2 in sm.get_opcodes():

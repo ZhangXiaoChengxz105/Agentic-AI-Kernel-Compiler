@@ -2,7 +2,8 @@
 
 Input : Candidate with `parent` = last ACCEPTED version (None -> the workload reference in the same
         language; if the workload has no reference in that language, every category is assumed);
-        ctx.device; ctx.extra["budget"] (max tests, default 16)
+        ctx.device; ctx.extra["budget"] (max targeted tests, default 16; floor tests come on top);
+        ctx.extra["llm_classifier"] (optional LlmClassifier: extra categories + risky sizes, spends coins)
 Steps : diff(parent, candidate) -> classify -> generate targeted tests + VOLTA shapes -> run the tests with
         the shared executor (GPU, or NumSim for tirx on CPU) -> findings
 Output: ValidationReport("changeaware")
@@ -40,7 +41,8 @@ class ChangeAwareValidator:
     def validate(self, cand: Candidate, ctx: ValidationContext) -> ValidationReport:
         t0 = time.perf_counter()
         old, parent_label = parent_source(cand)
-        p = plan(cand.workload, old, cand.source, cand.lang, ctx.extra.get("budget", 16))
+        p = plan(cand.workload, old, cand.source, cand.lang, ctx.extra.get("budget", 16),
+                 llm=ctx.extra.get("llm_classifier"))
         outcomes = run(cand, p.tests, ctx.resolved_device())
         findings = []
         for o in outcomes:
@@ -59,4 +61,4 @@ class ChangeAwareValidator:
         return ValidationReport.build(
             self.name, findings, executed > 0, t0, parent=parent_label, categories=p.cats,
             labels=[asdict(lab) for lab in p.labels], tiles=p.tiles, tests=[t.to_dict() for t in p.tests],
-            suggested_volta_shapes=p.volta, outcomes=outcomes)
+            suggested_volta_shapes=p.volta, outcomes=outcomes, llm=p.llm)
