@@ -29,7 +29,13 @@ from .classify import CATEGORIES, Label
 from .diff import Hunk
 
 MAX_SHAPES = 4
-DIM_CAP = {"rows": 256, "N": 16384, "M": 2048, "K": 4096}
+DIM_CAP = {"rows": 256, "N": 16384, "M": 2048, "K": 4096}   # only for a manifest without a declared "domain"
+
+
+def _dim_range(wl, key: str) -> tuple[int, int]:
+    """Allowed sizes for a risky shape: the workload's declared domain, else 1..DIM_CAP (default 4096)."""
+    return (wl.domain or {}).get(key, (1, DIM_CAP.get(key, 4096)))
+
 
 SYSTEM = """You review one revision of a GPU kernel inside a kernel compiler. An agent edited the kernel; you see \
 the diff between the last accepted version and the new revision. Do NOT judge whether the new code is correct. \
@@ -74,7 +80,7 @@ def _diff_text(hunks: list[Hunk]) -> str:
 
 def build_messages(workload: str, lang: str, new_src: str, hunks: list[Hunk]) -> list[dict]:
     wl = load_workload(workload)
-    keys = ", ".join(f'"{k}" (1..{DIM_CAP.get(k, 4096)})' for k in wl.shape_keys)
+    keys = ", ".join('"{}" ({}..{})'.format(k, *_dim_range(wl, k)) for k in wl.shape_keys)
     numbered = "\n".join(f"{i:4d}  {line}" for i, line in enumerate(new_src.splitlines(), 1))
     user = (f"Operator: {workload}: {wl.meta.get('description', '')}\nLanguage: {lang}. Launch: {json.dumps(wl.launch)}. "
             f"Shape keys for risky_shapes: {keys}.\n\nDiff (normalized: comments and spacing removed):\n"
@@ -103,7 +109,8 @@ def parse_reply(text: str, workload: str) -> tuple[list[Label], list[tuple[dict,
         shape = {}
         for k in wl.shape_keys:
             v = raw.get(k, 2 if k == "rows" else None)
-            if not isinstance(v, int) or not 1 <= v <= DIM_CAP.get(k, 4096):
+            lo, hi = _dim_range(wl, k)
+            if not isinstance(v, int) or not lo <= v <= hi:
                 shape = None
                 break
             shape[k] = v

@@ -202,5 +202,251 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(self._run("layernorm_bug_nosync", {"N": 100}).status, "RACE")
 
 
+# ---- tirx-lite path (akc/validation/volta/tirx.py, layouts.make_tirx_case, VoltaValidator._validate_tirx) ----
+
+from akc.validation.volta import tirx as vtirx  # noqa: E402
+from akc.validation.volta.layouts import make_tirx_case  # noqa: E402
+from akc.validation.volta.runner import build_analyze_command, parse_analyze_output  # noqa: E402
+
+# Excerpts of TIRx's generated CUDA (tvm-tirx 0.1.0, 2026-11-17).
+EX2_HELPER = ("__forceinline__ __device__ void tvm_builtin_ptx_ex2_approx_f32(float& __d, float __value) {\n"
+              '  asm volatile("ex2.approx.f32 %0, %1;" : "=f"(__d) : "f"(__value));\n}\n')
+BAR_HELPER = ("__forceinline__ __device__ void tvm_builtin_ptx_bar_sync_count_sync(uint32_t __a, uint32_t __b) {\n"
+              '  asm volatile("bar.sync %0, %1;" :  : "r"(__a), "r"(__b) : "memory");\n}\n')
+KERNEL_HEAD = ('extern "C" __global__ void __launch_bounds__(128) softmax_txl_kernel(float* __restrict__ x_ptr, '
+               'float* __restrict__ y_ptr) {\n')
+
+
+class TirxRewriteTests(unittest.TestCase):
+    def test_expf_becomes_symexpf(self):
+        src = KERNEL_HEAD + "  a = expf((x - m)); b = __expf(y); c = __symexpf(z); d = myexpf(w);\n}\n"
+        out, n = vtirx.volta_rewrite(src, ("exp",))
+        self.assertEqual(n, {"exp": 2})
+        self.assertIn("a = __symexpf((x - m))", out)
+        self.assertIn("b = __symexpf(y)", out)
+        self.assertIn("c = __symexpf(z)", out)        # untouched
+        self.assertIn("d = myexpf(w)", out)          # not exp
+        self.assertIn('extern "C" __device__ float __symexpf(float x);', out)   # prelude added once
+        self.assertLess(out.index("__symexpf(float x)"), out.index("__global__"))
+
+    def test_ex2_is_read_as_exp_over_log2e(self):
+        src = EX2_HELPER + KERNEL_HEAD + "  t = exp2f(u);\n}\n"
+        out, n = vtirx.volta_rewrite(src, ("ex2",))
+        self.assertEqual(n, {"ex2": 2})
+        self.assertIn("__d = __volta_ex2(__value);", out)
+        self.assertIn("t = __volta_ex2(u)", out)
+        self.assertNotIn("ex2.approx", out)
+        self.assertIn(f"__symexpf(t / {vtirx.LOG2E_F32})", out)
+        self.assertEqual(float.fromhex(vtirx.LOG2E_F32[:-1]), 1.44269502162933349609375)   # fl32(log2 e)
+
+    def test_huge_constants_become_infinity(self):
+        src = (KERNEL_HEAD + "  m = -0x1.fffffep+127f/*-3.402823e+38*/;\n  k = -0x1.ff933c78cdfadp+127f;\n"
+               "  ok = 0x1.fffffep+126f;\n  d = 3.4e+38f;\n  e = 1.5e+38f;\n"
+               "    uint v_ = (uint)4286578687;\n  r = (*(float *)(&(v_)));\n"      # -FLT_MAX bits, read as float
+               "    uint v__1 = (uint)4286578688;\n  q = (*(float *)(&(v__1)));\n"  # already -inf: unchanged
+               "    uint v__2 = (uint)4286578687;\n  w = v__2 + 1;\n}\n")             # used as an integer: unchanged
+        out, n = vtirx.volta_rewrite(src, ("huge_const",))
+        self.assertEqual(n, {"huge_const": 4})
+        self.assertIn("m = -__VOLTA_INF;", out)
+        self.assertIn("k = -__VOLTA_INF;", out)
+        self.assertIn("ok = 0x1.fffffep+126f;", out)  # 2^126 * 1.99 < 2^127: VOLTA can represent it
+        self.assertIn("d = __VOLTA_INF;", out)
+        self.assertIn("e = 1.5e+38f;", out)
+        self.assertIn("uint v_ = (uint)4286578688;", out)
+        self.assertIn("uint v__1 = (uint)4286578688;", out)
+        self.assertIn("uint v__2 = (uint)4286578687;", out)
+
+    def test_full_cta_counted_barrier_becomes_bar_sync(self):
+        src = BAR_HELPER + KERNEL_HEAD + ("  tvm_builtin_ptx_bar_sync_count_sync((uint)0, (uint)128);\n"
+                                          "  tvm_builtin_ptx_bar_sync_count_sync((uint)1, (uint)64);\n}\n")
+        out, n = vtirx.volta_rewrite(src, ("bar_count",), nthreads=128)
+        self.assertEqual(n, {"bar_count": 1})
+        self.assertIn('asm volatile("bar.sync 0;" ::: "memory");', out)
+        self.assertIn("tvm_builtin_ptx_bar_sync_count_sync((uint)1, (uint)64);", out)   # partial CTA: kept
+
+    def test_no_rewrite_no_prelude(self):
+        src = KERNEL_HEAD + "  y = x;\n}\n"
+        out, n = vtirx.volta_rewrite(src)
+        self.assertEqual(out, src)
+        self.assertFalse(any(n.values()))
+        with self.assertRaises(ValueError):
+            vtirx.volta_rewrite(src, ("nope",))
+
+    def test_select_to_minmax_on_ptx(self):
+        ptx = ("\tsetp.lt.f32 \t%p2, %f11, %f9;\n\tselp.f32 \t%f12, %f9, %f11, %p2;\n"     # f11 < f9 ? f9 : f11
+               "\tsetp.gt.f32 \t%p3, %f12, %f13;\n\tselp.f32 \t%f14, %f13, %f12, %p3;\n"   # f12 > f13 ? f13 : f12
+               # txl.max's NaN-propagating form: (a > b || a != a) ? a : b
+               "\tsetp.gt.f32 \t%p4, %f5, %f3;\n\tsetp.nan.f32 \t%p5, %f5, %f5;\n"
+               "\tor.pred \t%p6, %p4, %p5;\n\tselp.f32 \t%f4, %f5, %f3, %p6;\n"
+               # predicate also used by a branch: left alone
+               "\tsetp.lt.f32 \t%p7, %f1, %f2;\n\tselp.f32 \t%f6, %f2, %f1, %p7;\n@%p7 bra \t$L__BB0_2;\n"
+               # operands do not match the comparison: left alone
+               "\tsetp.lt.f32 \t%p8, %f1, %f2;\n\tselp.f32 \t%f7, %f2, %f9, %p8;\n")
+        out, n = vtirx.ptx_select_to_minmax(ptx)
+        self.assertEqual(n, 3)
+        self.assertIn("max.f32 \t%f12, %f11, %f9;", out)
+        self.assertIn("min.f32 \t%f14, %f12, %f13;", out)
+        self.assertIn("max.f32 \t%f4, %f5, %f3;", out)
+        self.assertIn("selp.f32 \t%f6, %f2, %f1, %p7;", out)
+        self.assertIn("selp.f32 \t%f7, %f2, %f9, %p8;", out)
+
+    def test_parse_entry(self):
+        name, params = vtirx.parse_entry(BAR_HELPER + KERNEL_HEAD + "}\n")
+        self.assertEqual((name, params), ("softmax_txl_kernel", [("ptr", "x"), ("ptr", "y")]))
+        _, params = vtirx.parse_entry('extern "C" __global__ void k(float* __restrict__ a_ptr, int n) {}')
+        self.assertEqual(params, [("ptr", "a"), ("scalar", "int n")])
+        with self.assertRaises(vtirx.TirxBuildError):
+            vtirx.parse_entry("__global__ void k() {}")
+
+
+class TirxCaseTests(unittest.TestCase):
+    def _b(self, label, smem=512, params=("x", "y"), grid=(2,), block=(128,)):
+        return vtirx.TirxPtx(label, Path(f"{label}.ptx"), Path(f"{label}.cu"), f"{label}_kernel", grid, block,
+                             smem, params)
+
+    def test_case_from_two_builds(self):
+        case = make_tirx_case("softmax", self._b("ref", 512), self._b("cand", 1040), {"N": 200})
+        self.assertEqual([(a.name, a.length, a.kind) for a in case.arrays], [("x", 400, "in"), ("y", 400, "out")])
+        self.assertEqual(case.params, ("ptr:x", "ptr:y"))           # static shapes: no int:N
+        self.assertEqual(case.check_arrays, ("y",))
+        self.assertEqual(case.dyn_shared, 1040)
+        cmd = build_command(case)
+        self.assertEqual(cmd[cmd.index("--dyn-shared") + 1], "1040")
+        self.assertEqual(cmd[cmd.index("-g") + 1], "2")
+
+    def test_rejects_different_parameter_order(self):
+        with self.assertRaises(ValueError):
+            make_tirx_case("softmax", self._b("ref"), self._b("cand", params=("y", "x")), {"N": 200})
+
+    def test_analyze_command_uses_the_candidates_own_smem(self):
+        case = make_tirx_case("softmax", self._b("ref", 512), self._b("cand", 16), {"N": 256})
+        cmd = build_analyze_command(case, 16)
+        self.assertEqual(cmd[2:5], ["analyze", "cand.ptx", "-k"])
+        self.assertEqual(cmd[cmd.index("--dyn-shared") + 1], "16")
+        self.assertNotIn("--check-array", cmd)
+
+    def test_parse_analyze_output(self):
+        ok = parse_analyze_output("t", 0, "Analysis complete: no data races or deadlocks detected.\n", "")
+        self.assertEqual((ok.status, ok.which), ("CLEAN", "candidate"))
+        bad = parse_analyze_output("t", 1, "", "analysis failed: t64: out-of-bounds Shared access at 0x100 "
+                                               "(width 4) at pc:27\n")
+        self.assertEqual((bad.status, bad.which), ("OUT_OF_BOUNDS", "candidate"))
+        self.assertTrue(bad.detail.startswith("t64:"))
+        # real output (GLM kernel C before the select_max rewrite)
+        self.assertEqual(parse_output("t", 1, "", "error: equivalence check failed: non-finite constant -inf in "
+                                                  "expression\n").status, "UNSUPPORTED")
+
+    def test_specific_hints_win_over_lowering_failed(self):
+        from akc.validation.volta.hints import hint_for
+        # real outputs (ablation job 24060724: a rewrite switched off)
+        bar = parse_output("t", 1, "", "Error: optimized kernel: lowering failed: Unsupported instruction: bar.sync\n"
+                                       "Reason: register barrier id (Ident(AsciiString { data: ['%', 'r'] }))\n")
+        self.assertEqual(bar.status, "UNSUPPORTED")
+        self.assertIn("literal constant", hint_for(bar, "tirx"))
+        ex2 = parse_output("t", 1, "", "Error: optimized kernel: lowering failed: Unsupported instruction: "
+                                       "Ex2(Float32 { ftz: false })\n")
+        self.assertIn("txl.exp", hint_for(ex2, "tirx"))
+        self.assertIn("EXP(x)", hint_for(ex2, "cuda"))
+        other = parse_output("t", 1, "", "Error: optimized kernel: lowering failed: Unsupported instruction: cp.async\n")
+        self.assertIn("cp.async", hint_for(other, "tirx"))
+        self.assertIn("Avoid inline PTX", hint_for(other, "cuda"))
+
+    def test_workload_without_tirx_reference_is_unsupported(self):
+        # since Task 1 (2026-11-17) every workload has a tirx reference, so the manifest's tirx parts are stripped
+        from unittest import mock
+
+        from akc.task.workload import Workload
+        from akc.validation.interface import Candidate, ValidationContext
+        from akc.validation.volta import validator as vmod
+        wl = load_workload("gemm")
+        meta = {k: v for k, v in wl.meta.items() if k != "tirx"}
+        meta["references"] = {k: v for k, v in meta["references"].items() if k != "tirx"}
+        with mock.patch.object(vmod, "load_workload", return_value=Workload(wl.op, wl.dir, meta, wl.variants)):
+            rep = vmod.VoltaValidator().validate(Candidate("gemm", "tirx", "x = 1\n", label="t"), ValidationContext())
+        self.assertFalse(rep.decided)
+        self.assertEqual([f.kind for f in rep.findings], ["unsupported"])
+
+
+def _have_tirx() -> bool:
+    try:
+        import tirx_kernels.tirx_lite  # noqa: F401
+        import tvm_tirx  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+@unittest.skipUnless(HAVE_TOOLS and _have_tirx(), "needs nvcc, built VOLTA and tvm_tirx")
+class TirxIntegrationTests(unittest.TestCase):
+    """End to end through VoltaValidator (trace -> generated CUDA -> rewrites -> PTX -> volta compare), N <= 256."""
+
+    @classmethod
+    def setUpClass(cls):
+        from akc.validation.volta.validator import VoltaValidator
+        cls.validator = VoltaValidator(timeout_s=120)
+        cls.tirx = WORKSPACE / "workloads" / "softmax" / "tirx"
+
+    def _run(self, src: str, label: str, n: int):
+        from akc.validation.interface import Candidate, ValidationContext
+        rep = self.validator.validate(Candidate("softmax", "tirx", src, label=label),
+                                      ValidationContext(volta_shapes=[{"N": n}]))
+        return rep, [r["status"] for r in rep.artifacts["runs"]]
+
+    def test_reference_equiv_and_all_rewrites_used(self):
+        rep, st = self._run((self.tirx / "softmax_txl_ref.py").read_text(), "ref", 200)
+        self.assertEqual(st, ["EQUIV"])
+        self.assertTrue(rep.passed and rep.decided)
+        rw = rep.artifacts["runs"][0]["rewrites"]["candidate"]
+        self.assertEqual(rw["exp"], 2)
+        self.assertEqual(rw["huge_const"], 1)         # NEG_BIG = -3.4e38
+        self.assertGreater(rw["select_max"], 0)       # txl.max
+        ptx = Path(rep.artifacts["runs"][0]["ptx"]["candidate"]).read_text()
+        self.assertIn("call.uni", ptx)
+        self.assertNotIn(".loc", ptx)
+        self.assertNotIn("ex2.approx", ptx)
+
+    def test_injected_bugs(self):
+        bugs = self.tirx / "bugs"
+        rep, st = self._run((bugs / "softmax_txl_bug_nosync.py").read_text(), "nosync", 128)
+        self.assertEqual(st, ["RACE"])
+        self.assertEqual(rep.findings[0].kind, "race")
+        self.assertIn("txl.cuda.cta_sync()", rep.findings[0].evidence["hint"])
+        self.assertEqual(self._run((bugs / "softmax_txl_bug_tail.py").read_text(), "tail", 200)[1], ["NOT_EQUIV"])
+        self.assertEqual(self._run((bugs / "softmax_txl_bug_tail.py").read_text(), "tail", 128)[1], ["EQUIV"])  # hidden
+        self.assertEqual(self._run((bugs / "softmax_txl_bug_nomax.py").read_text(), "nomax", 128)[1], ["EQUIV"])  # blind
+
+    def test_glm_kernel_with_ex2_and_its_missing_log2e_mutant(self):
+        src = (WORKSPACE / "results" / "pilot" / "20261115-205831" / "softmax_txl_r1.py").read_text()   # glm_txl_D3_r1
+        rep, st = self._run(src, "glm_d3", 128)
+        self.assertEqual(st, ["EQUIV"])
+        self.assertEqual(rep.artifacts["runs"][0]["rewrites"]["candidate"]["ex2"], 1)
+        bad = src.replace(" * txl.float32(LOG2E)", "")           # ex2(x - m): base-2 softmax, a real bug
+        self.assertNotEqual(bad, src)
+        self.assertEqual(self._run(bad, "glm_d3_nolog2e", 128)[1], ["NOT_EQUIV"])
+
+    def test_candidate_with_less_smem_is_checked_alone(self):
+        src = (WORKSPACE / "results" / "pilot" / "20261115-204306" / "softmax_txl_r2.py").read_text()   # glm_txl_D1_r2
+        rep, st = self._run(src, "glm_d1", 128)
+        run = rep.artifacts["runs"][0]
+        self.assertEqual(st, ["EQUIV"])
+        self.assertLess(run["dyn_smem"]["candidate"], run["dyn_smem"]["reference"])
+        self.assertEqual(run["alone"]["status"], "CLEAN")
+
+    def test_access_past_the_candidates_own_smem_is_out_of_bounds(self):
+        # mutant of the reference: BLOCK 128 -> 64 halves the smem array, the hard-coded first tree step (s = 64)
+        # then reads red[64..127]; within the reference's 512 bytes VOLTA's compare would only see UNINIT
+        src = (self.tirx / "softmax_txl_ref.py").read_text().replace("BLOCK = 128", "BLOCK = 64")
+        rep, st = self._run(src, "ref_block64", 128)
+        self.assertEqual(st, ["OUT_OF_BOUNDS"])
+        self.assertEqual(rep.artifacts["runs"][0]["alone"]["status"], "OUT_OF_BOUNDS")
+
+    def test_trace_failure_is_a_compile_error(self):
+        rep, st = self._run("import tirx_kernels.tirx_lite as txl\n\ndef make_kernel(rows, n):\n"
+                            "    raise ValueError('no kernel for this n')\n", "broken", 128)
+        self.assertEqual(st, ["BUILD_TRACE"])
+        self.assertEqual([f.kind for f in rep.findings], ["compile_error"])
+        self.assertFalse(rep.passed)
+
+
 if __name__ == "__main__":
     unittest.main()

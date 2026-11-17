@@ -57,6 +57,12 @@ def main(argv: list[str] | None = None) -> int:
     art = ca.artifacts
     print(f"== hottest: {a.new}  (workload {a.workload}, {cand.lang}, compared with {art['parent']}, device {ctx.resolved_device()})")
     print(f"change categories: {', '.join(art['categories']) or 'none'}   tiles seen in kernel: {art['tiles'] or '-'}")
+    an = art.get("analysis") or {}
+    if an:
+        shapes = "; ".join(",".join(f"{k}={v}" for k, v in s.items()) for s in an.get("shapes", []))
+        print(f"change analysis: {an.get('mode')}" + (f" at {shapes}" if shapes else "") +
+              (" (IR identical; AST labels kept)" if an.get("ir_blind") else "") +
+              (f"  fallback: {str(an['fallback_reason'])[:160]}" if an.get("mode") == "ast-fallback" else ""))
     for lab in art["labels"][:8]:
         print(f"   {lab['category']:9s} {lab['rule']:16s} L{lab['line']}: {lab['evidence'][:90]}")
     if art.get("llm"):

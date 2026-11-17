@@ -55,9 +55,15 @@ class InterfaceTests(unittest.TestCase):
         p = c.materialize()
         self.assertEqual(p.read_text(), "// hello\n")
 
-    def test_tirx_candidate_is_unsupported_for_volta(self):
+    @unittest.skipUnless(HAVE_VOLTA, "needs nvcc and built VOLTA")
+    def test_tirx_candidate_is_verified_by_volta(self):
+        # Task 3: tirx-lite candidates go through VOLTA (before 2026-11-17 this was "unsupported")
+        try:
+            import tvm_tirx  # noqa: F401
+        except ImportError:
+            self.skipTest("needs tvm_tirx")
         r = VoltaValidator().validate(_cand("softmax", "softmax_txl_ref"), CPU)
-        self.assertEqual((r.passed, r.decided, r.findings[0].kind), (True, False, "unsupported"))
+        self.assertEqual((r.passed, r.decided, r.findings), (True, True, []))
 
 
 class GeneratorFeatureTests(unittest.TestCase):

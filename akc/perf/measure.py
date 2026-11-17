@@ -2,7 +2,9 @@
 
 measure(cand, shape=None, *, iters=50, warmup=10, check=True, device="auto") -> PerfReport
   1. shape: the manifest's "perf.shape" unless given (softmax/layernorm rows=4096,N=1024; gemm 1024^3);
-     a workload without perf.shape or without OpSpec flops/bytes/torch_impl -> measured=False, "not set up"
+     a workload without perf.shape or without OpSpec flops/bytes/torch_impl -> measured=False, "not set up";
+     a shape outside the manifest's declared "domain" -> measured=False (speed counts only where correctness
+     is checked: the CAKE contract)
   2. no GPU here -> PerfReport(measured=False, reason="no GPU ...") (VOLTA runs on the CPU, speed cannot)
   3. build: CUDA -> PTX (same build as the GPU tests); compile error -> measured=False
   4. child process (like the GPU test runner: a crashing kernel must not take the caller down):
@@ -35,12 +37,16 @@ def measure(cand, shape: dict | None = None, *, iters: int = 50, warmup: int = 1
     from ..validation.interface import ValidationContext
     from ..validation.runners import BuildError, build_for_gpu
     t0 = time.perf_counter()
-    shape = dict(shape or load_workload(cand.workload).perf_shape or {})
+    wl = load_workload(cand.workload)
+    shape = dict(shape or wl.perf_shape or {})
     skip = lambda why: PerfReport.not_measured(cand.workload, cand.label, cand.lang, shape, why,  # noqa: E731
                                                time.perf_counter() - t0)
     if not shape or not OPS[cand.workload].has_perf:
         return skip("speed is not set up for this workload (needs perf.shape in the manifest and "
                     "flops/bytes/torch_impl in its OpSpec)")
+    if not wl.in_domain(shape):
+        return skip(f"shape {shape} is outside the declared shape domain ({wl.domain_text()}): correctness is "
+                    "only checked inside it, so speed is not measured outside it")
     if ValidationContext(device=device).resolved_device() != "gpu":
         return skip("no GPU here: speed can only be measured on a GPU node")
     try:

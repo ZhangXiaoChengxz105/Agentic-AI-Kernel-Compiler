@@ -31,6 +31,10 @@ the fixed tests and the change-aware floor tests; a base that fails by itself is
 GLM held-out drafts are wrong already), and when A already catches a mutant C is not re-run (C includes A's tests).
 
 CLI:  akc mutants [--set bases|heldout|all] [--llm-classify [--llm-model M]] [--per-op 3]   (CPU; LLM spends coins)
+      akc mutants --classifier ast|ir [--only LABELS] [--compare-with OTHER.json]
+          ir (default): tirx-lite rows use the IR change analysis (changeaware.irdiff / classify_ir; CUDA rows keep
+          the text classifier); ast: tirx-lite rows use the Python-AST classifier as before. --compare-with prints
+          an agreement matrix (verdict here vs verdict there, matched by base / operator / line / edit).
       akc mutants --set all --per-op 1 --detect --device gpu                (GPU: is each mutant caught by A / C?)
       e.g. sbatch --time=00:55:00 scripts/slurm/gpu_job.sbatch akc mutants --set all --per-op 1 --detect --device gpu
 """
@@ -338,21 +342,25 @@ def mutants(src: str, lang: str = "cuda", per_op: int = PER_OP) -> list[Mutant]:
     return out
 
 
-def classify_mutant(workload: str, base_src: str, m: Mutant, lang: str, llm=None) -> dict:
+def classify_mutant(workload: str, base_src: str, m: Mutant, lang: str, llm=None, classifier: str = "auto") -> dict:
     from ..validation.changeaware import plan
-    p = plan(workload, base_src, m.src, lang, llm=llm) if llm else plan(workload, base_src, m.src, lang)
+    p = plan(workload, base_src, m.src, lang, llm=llm, classifier=classifier) if llm else \
+        plan(workload, base_src, m.src, lang, classifier=classifier)
     cats = list(p.cats)
     if m.accept:
         verdict = "hit" if set(cats) & set(m.accept) else ("none" if not cats else "wrong")
     else:
         verdict = "clean" if not cats else "spurious"
     info = getattr(p, "llm", None) or {}
+    an = p.analysis or {}
     return {"op": m.op, "line": m.line, "desc": m.desc, "accept": list(m.accept), "bug": m.bug, "categories": cats,
-            "verdict": verdict, "llm": info, "n_tests": len(p.tests)}
+            "verdict": verdict, "llm": info, "n_tests": len(p.tests),
+            "analysis": {"mode": an.get("mode"), "ir_blind": an.get("ir_blind", False),
+                         "fallback_reason": (an.get("fallback_reason") or None) and str(an["fallback_reason"])[:200]}}
 
 
 def _detect(workload: str, base_label: str, base_src: str, lang: str, m: Mutant, device: str, volta: bool,
-            llm=None) -> dict:
+            llm=None, classifier: str = "auto") -> dict:
     """Is the mutant caught by A (fixed tests) and by C (fixed + change-aware tests [+ VOLTA])?"""
     from ..validation.changeaware.validator import ChangeAwareValidator
     from ..validation.fixed_tests.validator import FixedTestsValidator
@@ -360,7 +368,7 @@ def _detect(workload: str, base_label: str, base_src: str, lang: str, m: Mutant,
     from ..validation.pipeline import run_pipeline
     parent = Candidate(workload, lang, base_src, label=base_label)
     cand = Candidate(workload, lang, m.src, parent=parent, label=f"{base_label}_{m.op}_{m.line}")
-    ctx = ValidationContext(device=device, extra={"llm_classifier": llm} if llm else {})
+    ctx = ValidationContext(device=device, extra={"classifier": classifier, **({"llm_classifier": llm} if llm else {})})
     t0 = time.perf_counter()
     fixed = FixedTestsValidator().validate(cand, ctx)
     out = {"A": {"caught": not fixed.passed, "seconds": fixed.seconds}}
@@ -405,6 +413,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--detect", action="store_true", help="run configurations A and C on every mutant (GPU)")
     ap.add_argument("--device", default="auto", choices=["auto", "gpu", "cpu"])
     ap.add_argument("--volta", action="store_true", help="with --detect: include VOLTA in C (slow)")
+    ap.add_argument("--classifier", default="ir", choices=["ir", "ast"],
+                    help="tirx-lite rows: IR change analysis (default) or the Python-AST classifier")
+    ap.add_argument("--compare-with", default=None, help="another mutants JSON: print an agreement matrix")
     ap.add_argument("--out", default=None)
     a = ap.parse_args(argv)
     llm = None
@@ -415,7 +426,8 @@ def main(argv: list[str] | None = None) -> int:
     out = Path(a.out) if a.out else RESULTS / "eval" / f"mutants_{'llm_' if llm else ''}{datetime.now():%Y%m%d-%H%M%S}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     save = lambda done: out.write_text(json.dumps({"rows": rows, "seconds": time.perf_counter() - t0,  # noqa: E731
-                                                   "llm_model": getattr(llm, "model", None), "complete": done}, indent=1))
+                                                   "llm_model": getattr(llm, "model", None), "classifier": a.classifier,
+                                                   "complete": done}, indent=1))
     sets = {"bases": BASES, "heldout": HELDOUT, "all": BASES + HELDOUT}[a.set]
     for label, workload, rel in sets:
         if a.only and label not in a.only.split(","):
@@ -428,19 +440,67 @@ def main(argv: list[str] | None = None) -> int:
         ok, why = _base_ok(workload, label, src, lang, a.device) if a.detect else (True, "")
         if not ok:
             print(f"  {label}: the base kernel itself fails ({why}); its mutants are classified but not run", flush=True)
-        for m in mutants(src, lang, a.per_op):
-            r = {"base": label, "workload": workload, "lang": lang, **classify_mutant(workload, src, m, lang, llm)}
+        muts = mutants(src, lang, a.per_op)
+        if lang == "tirx" and a.classifier == "ir":          # trace all mutants of this base in one child process
+            from ..validation.changeaware import ir_worker
+            ir_worker.prefetch(workload, [(src, m.src, ir_worker.trace_shapes(workload, src, m.src)) for m in muts
+                                          if src != m.src], timeout_s=ir_worker.TIMEOUT_S)
+        for m in muts:
+            r = {"base": label, "workload": workload, "lang": lang,
+                 **classify_mutant(workload, src, m, lang, llm, "ast" if a.classifier == "ast" else "auto")}
             if a.detect:
                 r["base_ok"] = ok
                 if ok:
-                    r["detect"] = _detect(workload, label, src, lang, m, a.device, a.volta, llm)
+                    r["detect"] = _detect(workload, label, src, lang, m, a.device, a.volta, llm,
+                                          "ast" if a.classifier == "ast" else "auto")
             rows.append(r)
         save(False)                                   # partial results survive a Slurm time limit
         print(f"  {label}: done ({len(rows)} mutants so far, {time.perf_counter() - t0:.0f}s)", flush=True)
     _report(rows, a.llm_classify)
     save(True)
     print(f"saved {out}")
+    if a.compare_with:
+        other = json.loads(Path(a.compare_with).read_text())["rows"]
+        print(f"\nagreement with {a.compare_with} (rows: that file's verdict, columns: this run's):")
+        print(agreement_text(other, rows))
     return 0
+
+
+VERDICTS = ("hit", "wrong", "none", "clean", "spurious")
+
+
+def _mutant_key(r: dict) -> tuple:
+    return (r["base"], r["op"], r["line"], r["desc"])
+
+
+def agreement(rows_a: list[dict], rows_b: list[dict]) -> dict:
+    """Verdict pairs for the mutants present in both runs: {"matrix": {(va, vb): n}, "n": shared, "only_a", "only_b",
+    "summary_a"/"summary_b": summarize() of the shared rows, "ir_blind_b": rows of b kept on AST labels}."""
+    a = {_mutant_key(r): r for r in rows_a}
+    b = {_mutant_key(r): r for r in rows_b}
+    shared = [k for k in a if k in b]
+    matrix: dict[tuple, int] = {}
+    for k in shared:
+        key = (a[k]["verdict"], b[k]["verdict"])
+        matrix[key] = matrix.get(key, 0) + 1
+    return {"matrix": matrix, "n": len(shared), "only_a": len(a) - len(shared), "only_b": len(b) - len(shared),
+            "summary_a": summarize([a[k] for k in shared])["total"], "summary_b": summarize([b[k] for k in shared])["total"],
+            "ir_blind_b": sum(bool((b[k].get("analysis") or {}).get("ir_blind")) for k in shared),
+            "fallback_b": sum((b[k].get("analysis") or {}).get("mode") == "ast-fallback" for k in shared)}
+
+
+def agreement_text(rows_a: list[dict], rows_b: list[dict]) -> str:
+    ag = agreement(rows_a, rows_b)
+    used = [v for v in VERDICTS if any(v in k for k in ag["matrix"])]
+    lines = [f"{'':10s}" + "".join(f"{v:>9s}" for v in used)]
+    for va in used:
+        lines.append(f"{va:10s}" + "".join(f"{ag['matrix'].get((va, vb), 0):9d}" for vb in used))
+    sa, sb = ag["summary_a"], ag["summary_b"]
+    lines.append(f"shared mutants {ag['n']} (only in the other file {ag['only_a']}, only here {ag['only_b']}); "
+                 f"hit {sa['hit']} -> {sb['hit']} / {sa['semantic']}, wrong {sa['wrong']} -> {sb['wrong']}, "
+                 f"none {sa['none']} -> {sb['none']}, spurious {sa['spurious']} -> {sb['spurious']} / {sa['noop']}; "
+                 f"here: ir_blind {ag['ir_blind_b']}, AST fallback {ag['fallback_b']}")
+    return "\n".join(lines)
 
 
 def summarize(rows: list[dict]) -> dict:

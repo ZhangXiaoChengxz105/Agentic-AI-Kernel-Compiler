@@ -16,7 +16,8 @@ Strategy per category (B = row-op block / tile, T = 2-D tile):
   memory    odd sizes (N % 4 != 0) and misaligned pointers (misalign=1 element: breaks float4 alignment)
   sync      large sizes and repeats (nondeterminism = race), plus a grid sweep (1 CTA with many
             iterations, many CTAs with few) -- GPU tests are weak at races; VOLTA is the main race check
-  numerical value distributions from the manifest at a modest shape
+  numerical value distributions from the manifest at a modest shape; "outlier" becomes outlier@T (T = first tile)
+            with rows >= T, so every position modulo the kernel's tile holds a row outlier somewhere (inputs.py)
   floor     ALWAYS added (not counted in the budget): sizes 1, T-1, T+1, 1000 (row ops) or 1x1x1, (T+1)x(T-1)xT,
             100x100x40 (tile2d), plus one extreme distribution, so a misclassified edit still meets a boundary;
             plus both sides of every size regime switch in the kernel (extract_thresholds): a kernel that takes
@@ -26,6 +27,11 @@ Strategy per category (B = row-op block / tile, T = 2-D tile):
 VOLTA runs only CTA 0 at exact sizes, so volta_shapes = default + "deep" shape (exercises unrolled /
 multi-iteration paths; GLM pilot: a 4x-unrolled loop that only runs for N > 384 hid a bug) + shapes that put a
 tile boundary inside CTA 0. Shapes are capped by the manifest (layernorm VCs grow ~N^2).
+
+Declared shape domain (manifest "domain", the CAKE contract): no test or VOLTA shape leaves it. A generated size
+outside it is clamped to the nearest edge (the tag says so; duplicates are dropped), a size regime whose other side
+lies outside it is ignored (that code path never runs inside the domain), and extract_thresholds searches only
+inside it. Without a domain, sizes are not limited and the regime search uses REGIME_CAP, as before.
 """
 from __future__ import annotations
 
@@ -33,6 +39,7 @@ import ast
 import operator
 import re
 import zlib
+from dataclasses import replace
 
 from ...task.testcase import TestCase
 from ...task.workload import load_workload
@@ -138,12 +145,16 @@ def _operand(s: str, i: int, step: int) -> str:
     return (pieces[-1] if step < 0 else pieces[0]).strip()
 
 
-def extract_thresholds(src: str, lang: str, shape_keys: list[str], kind: str = "row") -> list[tuple[str, int]]:
+def extract_thresholds(src: str, lang: str, shape_keys: list[str], kind: str = "row",
+                       domain: dict | None = None) -> list[tuple[str, int]]:
     """[(shape key, v)]: the kernel compares that size with a constant and the comparison flips between v and v+1.
     Only comparisons whose other names all resolve to constants (#define, constexpr, UPPER_CASE = ...) count, so
-    loop bounds like `i < N` are ignored. Evaluation is a small AST interpreter (no eval of kernel text)."""
+    loop bounds like `i < N` are ignored. Evaluation is a small AST interpreter (no eval of kernel text).
+    domain: Workload.domain ({key: (lo, hi)}); the flip is searched inside [lo, hi], so v and v+1 both lie in the
+    domain and a switch beyond it is not reported. Keys it does not name (or no domain) use [1, REGIME_CAP]."""
     env = _constants(src, lang)
     caps = REGIME_CAP.get(kind, {})
+    domain = domain or {}
     # a size is a name equal to a shape key, or a function parameter equal to one ignoring case (tirx's `n`);
     # a loop variable `k` is not the size K
     if lang == "cuda":
@@ -171,10 +182,10 @@ def extract_thresholds(src: str, lang: str, shape_keys: list[str], kind: str = "
             if len(free) != 1 or free[0] not in keys:
                 continue
             var, key = free[0], keys[free[0]]
-            cap = caps.get(key, 4096)
+            lo0, cap = domain.get(key, (1, caps.get(key, 4096)))
             f = lambda v: bool(_eval(tree, {**env, var: v}))   # noqa: E731
             try:
-                lo, hi = 1, cap
+                lo, hi = lo0, cap
                 if f(lo) == f(hi):
                     continue
                 while hi - lo > 1:                     # monotone in the size: bisect the flip
@@ -194,7 +205,27 @@ def _boundary(tiles: list[int]) -> list[int]:
     return sorted(s for s in sizes if s >= 1)
 
 
+def _into_domain(wl, tests: list[TestCase]) -> list[TestCase]:
+    """Clamp every test shape into the workload's declared domain (tag notes it) and drop the duplicates this makes.
+    Without a domain the list is returned unchanged."""
+    if wl.domain is None:
+        return tests
+    out: list[TestCase] = []
+    for t in tests:
+        shape = wl.clip(t.shape)
+        if shape != t.shape:
+            t = replace(t, shape=shape, tag=f"{t.tag} (clamped into the declared domain {wl.domain_text()})")
+        if not any(_same_test(t, o) for o in out):
+            out.append(t)
+    return out
+
+
 def _tests_for(wl, cat: str, tiles: list[int]) -> list[TestCase]:
+    """The targeted tests of one category, inside the declared domain."""
+    return _into_domain(wl, _category_tests(wl, cat, tiles))
+
+
+def _category_tests(wl, cat: str, tiles: list[int]) -> list[TestCase]:
     op, kind = wl.op, wl.launch["kind"]
     tc = lambda shape, dist="normal", repeat=1, why="", mis=0: TestCase(  # noqa: E731
         op, shape, dist, _seed(op, cat, sorted(shape.items()), dist, mis), repeat, f"{cat}: {why}", mis)
@@ -225,14 +256,28 @@ def _tests_for(wl, cat: str, tiles: list[int]) -> list[TestCase]:
                 tc({"M": 16, "N": 16, "K": 2048}, repeat=10, why="grid sweep: 1 CTA, 128 K-tiles, x10")]
     if cat == "numerical":
         shape = {"rows": 8, "N": 1000} if kind == "row" else {"M": 128, "N": 128, "K": 256}
-        return [tc(shape, dist=d, why=f"value range '{d}'") for d in wl.numerical_dists]
+        return [_outlier_test(tc, shape, kind, tiles) if d == "outlier" else
+                tc(shape, dist=d, why=f"value range '{d}'") for d in wl.numerical_dists]
     raise ValueError(cat)
+
+
+def _outlier_test(tc, shape: dict, kind: str, tiles: list[int]) -> TestCase:
+    """'outlier' -> outlier@P with P = the first tile, and at least P rows, so every position modulo the kernel's own
+    block / tile holds the row outlier in some row (inputs.py). Clamped into the domain later like every test."""
+    p = tiles[0]
+    if kind == "row":
+        shape = {**shape, "rows": max(shape["rows"], p)}
+    else:                                        # A [M, K] and B [K, N]: rows of A are M, rows of B are K
+        shape = {**shape, "M": max(shape["M"], p), "K": max(shape["K"], p)}
+    return tc(shape, dist=f"outlier@{p}",
+              why=f"one outlier per row at column r mod {p} (+{p}k), adjacent rows scaled 1 / 1e3")
 
 
 def floor_tests(wl, tiles: list[int], regimes: list[tuple[str, int]] | None = None) -> list[TestCase]:
     """Run on EVERY revision, whatever the classifier says: a few boundary sizes around the main tile, one extreme
     value distribution, and both sides of each size regime switch. A misclassified edit then still meets a
-    non-divisible size, and an edit on a large-size code path still runs."""
+    non-divisible size, and an edit on a large-size code path still runs. All inside the declared domain; a regime
+    switch with a side outside it is skipped."""
     op, t = wl.op, (tiles or wl.tiles)[0]
     stress = wl.numerical_dists[0]
     tc = lambda shape, dist="normal", why="runs every revision": TestCase(  # noqa: E731
@@ -245,10 +290,12 @@ def floor_tests(wl, tiles: list[int], regimes: list[tuple[str, int]] | None = No
         out = [tc(s) for s in ({"M": 1, "N": 1, "K": 1}, {"M": t + 1, "N": t - 1, "K": t}, {"M": 100, "N": 100, "K": 40})]
         out.append(tc({"M": 100, "N": 100, "K": 40}, stress))
     for key, v in regimes or []:
+        if not (wl.in_domain({key: v}) and wl.in_domain({key: v + 1})):
+            continue                                   # the other code path never runs inside the domain
         for n in (v, v + 1):
             shape = {**({"rows": 2, "N": 1000} if row else {"M": 33, "N": 33, "K": 33}), key: n}
             out.append(tc(shape, why=f"the kernel switches code path between {key}={v} and {key}={v + 1}"))
-    return out
+    return _into_domain(wl, out)
 
 
 def _same_test(a: TestCase, b: TestCase) -> bool:
@@ -295,4 +342,4 @@ def volta_shapes(workload: str, cats: list[str], tiles: list[int] | None = None)
                 shapes += [{"M": 2 * t, "N": 2 * t, "K": 2 * t + 8}, {"M": t - 4, "N": t - 4, "K": 2 * t + 8}]
             if "sync" in cats:
                 shapes.append({"M": t, "N": t, "K": 4 * t})
-    return wl.cap_volta_shapes(shapes)
+    return wl.cap_volta_shapes([wl.clip(s) for s in shapes])          # clip: inside the declared domain

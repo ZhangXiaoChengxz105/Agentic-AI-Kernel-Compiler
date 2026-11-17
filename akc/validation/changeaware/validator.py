@@ -3,14 +3,16 @@
 Input : Candidate with `parent` = last ACCEPTED version (None -> the workload reference in the same
         language; if the workload has no reference in that language, every category is assumed);
         ctx.device; ctx.extra["budget"] (max targeted tests, default 16; floor tests come on top);
-        ctx.extra["llm_classifier"] (optional LlmClassifier: extra categories + risky sizes, spends coins)
+        ctx.extra["llm_classifier"] (optional LlmClassifier: extra categories + risky sizes, spends coins);
+        ctx.extra["classifier"] ("auto" = IR analysis for tirx-lite, "ast" = Python-AST rules)
 Steps : diff(parent, candidate) -> classify -> generate targeted tests + VOLTA shapes -> run the tests with
         the shared executor (GPU, or NumSim for tirx on CPU) -> findings
 Output: ValidationReport("changeaware")
   findings     one per failing test; evidence includes the test's purpose (tag) and the related change
                lines (labels of the same category), so feedback can say "your edit on line 20 broke N=129"
   artifacts    categories, labels, tests, suggested_volta_shapes (the pipeline hands these to VOLTA),
-               tiles found in the kernel, outcomes
+               tiles found in the kernel, outcomes, analysis (mode ir / ast-fallback / cuda-text, traced shapes,
+               hunk counts, fallback reason, ir_blind)
   decided      at least one generated test executed
 """
 from __future__ import annotations
@@ -42,7 +44,7 @@ class ChangeAwareValidator:
         t0 = time.perf_counter()
         old, parent_label = parent_source(cand)
         p = plan(cand.workload, old, cand.source, cand.lang, ctx.extra.get("budget", 16),
-                 llm=ctx.extra.get("llm_classifier"))
+                 llm=ctx.extra.get("llm_classifier"), classifier=ctx.extra.get("classifier", "auto"))
         outcomes = run(cand, p.tests, ctx.resolved_device())
         findings = []
         for o in outcomes:
@@ -61,4 +63,4 @@ class ChangeAwareValidator:
         return ValidationReport.build(
             self.name, findings, executed > 0, t0, parent=parent_label, categories=p.cats,
             labels=[asdict(lab) for lab in p.labels], tiles=p.tiles, tests=[t.to_dict() for t in p.tests],
-            suggested_volta_shapes=p.volta, outcomes=outcomes, llm=p.llm)
+            suggested_volta_shapes=p.volta, outcomes=outcomes, llm=p.llm, analysis=p.analysis)

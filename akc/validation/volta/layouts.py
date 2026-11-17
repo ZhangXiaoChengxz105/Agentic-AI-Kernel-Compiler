@@ -1,6 +1,9 @@
 """Per-operator VOLTA setups (memory layout, params, launch dims) + expectations.
 
-make_case(op, ref_ptx, ref, cand_ptx, cand, shape) -> VoltaCase for ONE comparison.
+make_case(op, ref_ptx, ref, cand_ptx, cand, shape) -> VoltaCase for ONE comparison (CUDA kernels).
+make_tirx_case(op, ref_build, cand_build, shape) -> VoltaCase for two tirx-lite kernels traced at `shape`
+  (volta.tirx.TirxPtx): arrays from the OpSpec + manifest `tirx.tensors`, params = tensor pointers in kernel
+  order (static shapes: no scalar params), grid/block/dynamic shared memory from each kernel's LaunchConfig.
 
 layout_for(op) -> OpLayout, as a function of the shape dict:
   arrays : (name, elem_bytes, length, kind) in kernel-parameter order; base addresses are assigned
@@ -134,6 +137,60 @@ def make_case(op: str, ref_ptx: Path, ref: Variant, cand_ptx: Path, cand: Varian
         arrays=place_arrays(lay.arrays(shape)),
         params=tuple(lay.params(shape)),
         check_arrays=lay.check,
+        timeout_s=timeout_s,
+    )
+
+
+def volta_shape(op: str, shape: dict) -> dict:
+    """The shape a kernel is built / launched at for VOLTA (row-wise ops: rows = ROWS)."""
+    from ...task.reference import OPS
+    return _volta_shape(OPS[op], shape)
+
+
+def tirx_arrays(op: str, shape: dict) -> list[tuple[str, int, int, str]]:
+    """VOLTA arrays for a tirx-lite kernel: one per manifest `tirx.tensors` entry, inputs from the OpSpec's
+    make_inputs (in), every other tensor sized by out_shape (out; the contract is inputs first, output last)."""
+    import math
+
+    from ...task.reference import OPS
+    from ...task.workload import load_workload
+    spec, wl = OPS[op], load_workload(op)
+    s = _volta_shape(spec, shape)
+    inputs = spec.make_inputs(s, "normal", 0)
+    out = []
+    for name in wl.meta["tirx"]["tensors"]:
+        if name in inputs:
+            t = inputs[name]
+            out.append((name, t.element_size(), t.numel(), "in"))
+        else:
+            out.append((name, 4, math.prod(spec.out_shape(s)), "out"))
+    return out
+
+
+def make_tirx_case(op: str, ref, cand, shape: dict, timeout_s: float = 600.0) -> VoltaCase:
+    """VoltaCase for two tirx-lite builds (volta.tirx.TirxPtx) traced at the same shape.
+
+    Both kernels must take the same tensors in the same order (VOLTA shares --param between the two kernels).
+    Launch dims come from each kernel's own LaunchConfig. VOLTA also shares --dyn-shared: the larger of the two
+    requirements is used, so a candidate needing less is first checked alone at its own size
+    (validator, `run_analyze`)."""
+    if tuple(ref.params) != tuple(cand.params):
+        raise ValueError(f"tensor parameter order differs: reference {list(ref.params)}, candidate "
+                         f"{list(cand.params)}")
+    arrays = tirx_arrays(op, shape)
+    kinds = {n: k for n, _, _, k in arrays}
+    unknown = [p for p in cand.params if p not in kinds]
+    if unknown:
+        raise ValueError(f"kernel tensors {unknown} are not in the manifest's tirx.tensors {list(kinds)}")
+    return VoltaCase(
+        label=f"{ref.label} vs {cand.label} @{shape_label(shape)}",
+        ref_ptx=ref.ptx, ref_kernel=ref.kernel, cand_ptx=cand.ptx, cand_kernel=cand.kernel,
+        ref_block=tuple(ref.block), cand_block=tuple(cand.block),
+        grid=tuple(ref.grid), cand_grid=tuple(cand.grid),
+        arrays=place_arrays(arrays),
+        params=tuple(f"ptr:{p}" for p in cand.params),
+        check_arrays=tuple(n for n, k in kinds.items() if k == "out"),
+        dyn_shared=max(ref.dyn_smem, cand.dyn_smem),
         timeout_s=timeout_s,
     )
 

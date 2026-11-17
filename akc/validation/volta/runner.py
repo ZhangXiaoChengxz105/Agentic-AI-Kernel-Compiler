@@ -5,6 +5,10 @@ Input : VoltaCase = two PTX files + kernel names + launch dims + the memory/para
 Output: VoltaResult with a normalized `status` plus details (mismatching elements, race location,
         timing, raw stdout/stderr, exact command).
 
+run_analyze(case, dyn_shared) -> VoltaResult for the candidate alone (`volta analyze`): status CLEAN, or one of the
+error statuses below. Used when the two kernels need different dynamic shared memory (VOLTA's compare takes one
+size for both, so the candidate is re-checked at its own size).
+
 Status values (normalized from VOLTA's text output, see third_party/volta/crates/volta_cli/src/main.rs
 and crates/volta_analysis/src/eval/error.rs):
   EQUIV          every checked output element proved equal (over the reals)       exit 0
@@ -149,6 +153,21 @@ def _volta_env() -> dict:
     return env
 
 
+def build_analyze_command(case: VoltaCase, dyn_shared: int, volta_bin: Path = VOLTA_BIN) -> list[str]:
+    """`volta analyze` of the candidate alone (races, deadlocks, out-of-bounds) with its own dynamic shared size."""
+    case.validate()
+    cmd = [str(volta_bin), "--no-log-file", "analyze", str(case.cand_ptx), "-k", case.cand_kernel,
+           "-b", _dims(case.cand_block), "-g", _dims(case.cand_grid or case.grid), "--no-profile",
+           "--print-outputs", "0"]
+    for a in case.arrays:
+        cmd += ["--array", a.to_arg()]
+    for p in case.params:
+        cmd += ["--param", p]
+    if dyn_shared:
+        cmd += ["--dyn-shared", str(dyn_shared)]
+    return cmd
+
+
 # ---- parsing (pure functions, unit-tested) ----------------------------------------------------
 
 _EXEC_RE = re.compile(r"Exec: ([\d.]+)s\s+instructions: (\d+)\s+block syncs: (\d+)")
@@ -172,6 +191,7 @@ _ERROR_PATTERNS = [  # (status, substring) checked in order
     ("UNSUPPORTED", "trap reached"),
     ("UNSUPPORTED", "overflowed i128"),          # decision procedure's exact rationals overflow (e.g. -FLT_MAX)
     ("UNSUPPORTED", "monomial power overflowed"),
+    ("UNSUPPORTED", "non-finite constant"),       # an inf the canonicalizer cannot fold (e.g. inside a select)
     ("UNSUPPORTED", "VC too large"),               # canon term-operation budget exhausted
     ("DIV_BY_ZERO", "division by a symbolically zero value"),
     ("UNINIT", "cannot check equivalence of undefined values"),
@@ -216,6 +236,17 @@ def parse_output(label: str, exit_code: int, stdout: str, stderr: str) -> VoltaR
     return r
 
 
+def parse_analyze_output(label: str, exit_code: int, stdout: str, stderr: str) -> VoltaResult:
+    """`volta analyze` verdict: CLEAN (no race / deadlock / out-of-bounds) or an error status as in parse_output,
+    always attributed to the candidate."""
+    if exit_code == 0 and "no data races or deadlocks" in stdout:
+        return VoltaResult(label=label, status="CLEAN", which="candidate", exit_code=0, stdout=stdout, stderr=stderr)
+    r = parse_output(label, exit_code, stdout, stderr)
+    r.which = "candidate"
+    r.detail = re.sub(r"^analysis failed:\s*", "", r.detail)
+    return r
+
+
 # ---- runner ------------------------------------------------------------------------------------
 
 def run_compare(case: VoltaCase, volta_bin: Path = VOLTA_BIN) -> VoltaResult:
@@ -229,6 +260,21 @@ def run_compare(case: VoltaCase, volta_bin: Path = VOLTA_BIN) -> VoltaResult:
                            stdout=(e.stdout or b"").decode() if isinstance(e.stdout, bytes) else (e.stdout or ""),
                            stderr=(e.stderr or b"").decode() if isinstance(e.stderr, bytes) else (e.stderr or ""))
     r = parse_output(case.label, proc.returncode, proc.stdout, proc.stderr)
+    r.wall_s = time.perf_counter() - t0
+    r.cmd = cmd
+    return r
+
+
+def run_analyze(case: VoltaCase, dyn_shared: int, volta_bin: Path = VOLTA_BIN) -> VoltaResult:
+    cmd = build_analyze_command(case, dyn_shared, volta_bin)
+    t0 = time.perf_counter()
+    label = case.label + " (candidate alone)"
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=case.timeout_s, env=_volta_env())
+    except subprocess.TimeoutExpired:
+        return VoltaResult(label=label, status="TIMEOUT", which="candidate", detail=f"> {case.timeout_s}s",
+                           wall_s=time.perf_counter() - t0, cmd=cmd)
+    r = parse_analyze_output(label, proc.returncode, proc.stdout, proc.stderr)
     r.wall_s = time.perf_counter() - t0
     r.cmd = cmd
     return r

@@ -36,6 +36,7 @@
   ],
   "numerical_dists": [
     "large",
+    "outlier",
     "mixed",
     "tiny"
   ],
@@ -52,14 +53,29 @@
     },
     "max_N": null
   },
+  "tirx": {
+    "factory_args": [
+      "M",
+      "N",
+      "K"
+    ],
+    "tensors": [
+      "A",
+      "B",
+      "C"
+    ]
+  },
+  "domain": {"M": [1, 4096], "N": [1, 4096], "K": [1, 4096]},
   "perf": {
     "shape": {"M": 1024, "N": 1024, "K": 1024}
   },
   "references": {
-    "cuda": "gemm_ref"
+    "cuda": "gemm_ref",
+    "tirx": "gemm_txl_ref"
   },
   "signature": {
-    "cuda": "extern \"C\" __global__ void <name>(const float* A, const float* B, float* C, int M, int N, int K)"
+    "cuda": "extern \"C\" __global__ void <name>(const float* A, const float* B, float* C, int M, int N, int K)",
+    "tirx": "make_kernel(m, n, k) -> @txl.kernel (A: [m, k] f32, B: [k, n] f32, C: [m, n] f32)"
   },
   "variants": [
     {
@@ -147,6 +163,104 @@
       "bug": {
         "category": "indexing",
         "change": "output guard row <= M && col <= N (off-by-one)"
+      },
+      "expect_volta": [
+        {
+          "if": "M < 16 or N < 16",
+          "then": [
+            "RACE",
+            "OUT_OF_BOUNDS",
+            "FOOTPRINT",
+            "NOT_EQUIV"
+          ]
+        },
+        {
+          "then": "EQUIV"
+        }
+      ],
+      "expect_note": "VOLTA runs only CTA 0, so the edge must lie inside CTA 0 (M or N < 16)"
+    },
+    {
+      "name": "gemm_txl_ref",
+      "lang": "tirx",
+      "file": "tirx/gemm_txl_ref.py",
+      "role": "reference",
+      "block": [
+        256
+      ],
+      "bug": null,
+      "notes": "one thread per output element, no shared memory; 256 threads read as 16 x 16, grid (ceil(N/16), ceil(M/16)) (mirrors gemm_ref.cu)"
+    },
+    {
+      "name": "gemm_txl_opt",
+      "lang": "tirx",
+      "file": "tirx/gemm_txl_opt.py",
+      "role": "candidate",
+      "block": [
+        256
+      ],
+      "bug": null,
+      "expect_volta": "EQUIV",
+      "expect_note": "correct optimization (false-alarm control)",
+      "notes": "16 x 16 shared-memory tiling, zero-padded tiles (mirrors gemm_opt.cu)"
+    },
+    {
+      "name": "gemm_txl_bug_nosync",
+      "lang": "tirx",
+      "file": "tirx/bugs/gemm_txl_bug_nosync.py",
+      "role": "candidate",
+      "block": [
+        256
+      ],
+      "bug": {
+        "category": "sync",
+        "change": "removed the CTA barrier after the inner-product loop"
+      },
+      "expect_volta": [
+        {
+          "if": "K > 16",
+          "then": "RACE"
+        },
+        {
+          "then": "EQUIV"
+        }
+      ],
+      "expect_note": "WAR race on As/Bs needs >= 2 K-tiles"
+    },
+    {
+      "name": "gemm_txl_bug_ktail",
+      "lang": "tirx",
+      "file": "tirx/bugs/gemm_txl_bug_ktail.py",
+      "role": "candidate",
+      "block": [
+        256
+      ],
+      "bug": {
+        "category": "tiling",
+        "change": "ntiles = k // 16 instead of ceil(k / 16)"
+      },
+      "expect_volta": [
+        {
+          "if": "K % 16 == 0",
+          "then": "EQUIV"
+        },
+        {
+          "then": "NOT_EQUIV"
+        }
+      ],
+      "expect_note": "only exists when K % 16 != 0"
+    },
+    {
+      "name": "gemm_txl_bug_guard",
+      "lang": "tirx",
+      "file": "tirx/bugs/gemm_txl_bug_guard.py",
+      "role": "candidate",
+      "block": [
+        256
+      ],
+      "bug": {
+        "category": "indexing",
+        "change": "output guard row <= m, col <= n (off-by-one)"
       },
       "expect_volta": [
         {

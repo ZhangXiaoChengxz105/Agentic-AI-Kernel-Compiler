@@ -1,6 +1,9 @@
 """Task 2.2: classify a revision's changes into tiling / indexing / memory / sync / numerical.
 
 classify(hunks, lang="cuda"|"tirx") -> list[Label]   (one Label per (category, rule, line), with evidence)
+proposal_category(cat)                               indexing -> tiling: the proposal's 4 categories, for reports
+(tirx-lite revisions are normally classified on the IR, classify_ir.py; this text / AST classifier is the
+CUDA path and the tirx fallback when tracing fails)
 
 How rules are applied (same for both languages; only the vocabulary in LANGS differs)
   * pure additions / deletions: every line rule is checked against the whole line
@@ -46,6 +49,14 @@ from typing import Callable
 from .diff import Hunk
 
 CATEGORIES = ("tiling", "indexing", "memory", "sync", "numerical")
+# The proposal names 4 categories (tiling, memory access, synchronization, numerical); indexing is kept separate
+# inside the tool (its tests differ a little: rows > 1 so an off-by-one read hits real data) but reported as tiling.
+PROPOSAL_CATEGORIES = ("tiling", "memory", "sync", "numerical")
+
+
+def proposal_category(cat: str) -> str:
+    """Report view of a category: indexing -> tiling; the other four are the proposal's own."""
+    return "tiling" if cat == "indexing" else cat
 
 _TOKEN = re.compile(r"[A-Za-z_]\w*|\d+\.?\d*[fF]?|<=|>=|==|!=|<<|>>|//|\+=|-=|\*=|/=|&&|\|\||[-+*/%<>=!&|^~?:;,.()\[\]{}]")
 _COMPARISON = {"<", "<=", ">", ">=", "==", "!="}

@@ -12,10 +12,18 @@ OPTIONAL keys (a feature without its key reports "not set up" instead of failing
   references                           {"cuda": variant name, "tirx": variant name}: VOLTA's comparison kernel;
                                        change-aware tests compare a first candidate with it (else: all categories)
   tiles                                sizes around which boundary shapes are generated (default: the launch block / tile)
-  numerical_dists                      value distributions that stress this op's numerics (default DEFAULT_DISTS)
+  numerical_dists                      value distributions that stress this op's numerics (default DEFAULT_DISTS);
+                                       the first one is also the floor tests' stress distribution, so it must
+                                       not be "outlier"
   volta                                {"default": shape, "deep": shape | null, "max_N": int | null}  (VOLTA)
   tirx                                 {"factory_args": [...], "tensors": [...]} contract of tirx-lite modules
   perf                                 {"shape": shape} the size kernels are timed at (perf.measure, akc bench)
+  domain                               {"rows": [1, 4096], "N": [1, 16384]}: the declared shape range (inclusive),
+                                       fixed before tuning (CAKE contract). The kernel must be correct on all of it
+                                       and is timed at perf.shape inside it; generated tests, VOLTA shapes, size
+                                       regimes and LLM-suggested sizes stay inside it, and perf.measure rejects a
+                                       shape outside it. A key it does not name is unbounded. Without `domain`,
+                                       nothing is checked and each caller keeps its own size cap (as before).
   signature                            kernel signature shown to the agent; its non-const pointer names VOLTA's output
 """
 from __future__ import annotations
@@ -26,7 +34,9 @@ from pathlib import Path
 
 from ..paths import WORKLOADS
 
-DEFAULT_DISTS = ("large", "neg_large", "tiny", "mixed")
+# "outlier" is never first: floor_tests uses numerical_dists[0] as its one stress distribution, and the outlier
+# family (rows >= the tile) belongs to the numerical tests only.
+DEFAULT_DISTS = ("large", "outlier", "neg_large", "tiny", "mixed")
 
 
 @dataclass(frozen=True)
@@ -75,6 +85,35 @@ class Workload:
         """The benchmark shape, or None when speed is not set up for this workload."""
         perf = self.meta.get("perf")
         return dict(perf["shape"]) if perf else None
+
+    @property
+    def domain(self) -> dict[str, tuple[int, int]] | None:
+        """The declared shape domain {key: (lo, hi)} (inclusive), or None when the manifest declares none."""
+        d = self.meta.get("domain")
+        if not d:
+            return None
+        out = {}
+        for k, rng in d.items():
+            lo, hi = (int(x) for x in rng)
+            if k not in self.shape_keys or not 1 <= lo <= hi:
+                raise ValueError(f"{self.op}: bad domain entry {k}: {rng} "
+                                 f"(shape keys {self.shape_keys}, need 1 <= lo <= hi)")
+            out[k] = (lo, hi)
+        return out
+
+    def in_domain(self, shape: dict) -> bool:
+        """Every size of `shape` that the domain names lies in its range. Partial shapes (VOLTA's {"N": 256}) are
+        checked on the keys they have. Always True without a domain."""
+        return all(lo <= shape[k] <= hi for k, (lo, hi) in (self.domain or {}).items() if k in shape)
+
+    def clip(self, shape: dict) -> dict:
+        """`shape` with every size clamped into the domain (a copy, unchanged without a domain)."""
+        d = self.domain or {}
+        return {k: min(max(v, d[k][0]), d[k][1]) if k in d else v for k, v in shape.items()}
+
+    def domain_text(self) -> str:
+        """e.g. "rows in [1, 4096], N in [1, 16384]" ("" without a domain)."""
+        return ", ".join(f"{k} in [{lo}, {hi}]" for k, (lo, hi) in (self.domain or {}).items())
 
     def has_reference(self, lang: str = "cuda") -> bool:
         return lang in (self.meta.get("references") or {})

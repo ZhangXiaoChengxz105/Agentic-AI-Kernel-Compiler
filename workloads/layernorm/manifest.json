@@ -30,6 +30,7 @@
   ],
   "numerical_dists": [
     "offset",
+    "outlier",
     "constant",
     "tiny",
     "large"
@@ -41,14 +42,29 @@
     "deep": null,
     "max_N": 200
   },
+  "tirx": {
+    "factory_args": [
+      "rows",
+      "N"
+    ],
+    "tensors": [
+      "x",
+      "w",
+      "b",
+      "y"
+    ]
+  },
+  "domain": {"rows": [1, 4096], "N": [1, 16384]},
   "perf": {
     "shape": {"rows": 4096, "N": 1024}
   },
   "references": {
-    "cuda": "layernorm_ref"
+    "cuda": "layernorm_ref",
+    "tirx": "layernorm_txl_ref"
   },
   "signature": {
-    "cuda": "extern \"C\" __global__ void <name>(const float* x, const float* w, const float* b, float* y, int N, float eps)"
+    "cuda": "extern \"C\" __global__ void <name>(const float* x, const float* w, const float* b, float* y, int N, float eps)",
+    "tirx": "make_kernel(rows, n) -> @txl.kernel (x: [rows, n] f32, w: [n] f32, b: [n] f32, y: [rows, n] f32); eps = 1e-5 constant"
   },
   "variants": [
     {
@@ -131,6 +147,98 @@
       "name": "layernorm_bug_onepass",
       "lang": "cuda",
       "file": "cuda/bugs/layernorm_bug_onepass.cu",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "numerical",
+        "change": "one-pass variance E[x^2] - mean^2 (catastrophic cancellation)"
+      },
+      "expect_volta": "EQUIV",
+      "expect_note": "BLIND SPOT: equal over the reals; float cancellation not modeled"
+    },
+    {
+      "name": "layernorm_txl_ref",
+      "lang": "tirx",
+      "file": "tirx/layernorm_txl_ref.py",
+      "role": "reference",
+      "block": [
+        32
+      ],
+      "bug": null,
+      "notes": "thread 0 of a 32-thread CTA does the whole row, two-pass mean/variance (mirrors layernorm_ref.cu)"
+    },
+    {
+      "name": "layernorm_txl_opt",
+      "lang": "tirx",
+      "file": "tirx/layernorm_txl_opt.py",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": null,
+      "expect_volta": "EQUIV",
+      "expect_note": "correct optimization (false-alarm control)",
+      "notes": "two-pass with shared-memory tree reductions (mirrors layernorm_opt.cu)"
+    },
+    {
+      "name": "layernorm_txl_bug_nosync",
+      "lang": "tirx",
+      "file": "tirx/bugs/layernorm_txl_bug_nosync.py",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "sync",
+        "change": "removed the CTA barrier between reading the sum from red[0] and reusing red"
+      },
+      "expect_volta": "RACE",
+      "expect_note": "WAR race on red[0]"
+    },
+    {
+      "name": "layernorm_txl_bug_tail",
+      "lang": "tirx",
+      "file": "tirx/bugs/layernorm_txl_bug_tail.py",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "tiling",
+        "change": "mean/variance loops run n // 128 tiles (tail dropped)"
+      },
+      "expect_volta": [
+        {
+          "if": "N % 128 == 0",
+          "then": "EQUIV"
+        },
+        {
+          "then": "NOT_EQUIV"
+        }
+      ],
+      "expect_note": "only exists when N % 128 != 0"
+    },
+    {
+      "name": "layernorm_txl_bug_offbyone",
+      "lang": "tirx",
+      "file": "tirx/bugs/layernorm_txl_bug_offbyone.py",
+      "role": "candidate",
+      "block": [
+        128
+      ],
+      "bug": {
+        "category": "indexing",
+        "change": "variance loop covers col = 0..n (i <= N: one element of the next row)"
+      },
+      "expect_volta": "NOT_EQUIV",
+      "expect_note": "variance includes one element of the next row (at every N, like the CUDA bug)"
+    },
+    {
+      "name": "layernorm_txl_bug_onepass",
+      "lang": "tirx",
+      "file": "tirx/bugs/layernorm_txl_bug_onepass.py",
       "role": "candidate",
       "block": [
         128

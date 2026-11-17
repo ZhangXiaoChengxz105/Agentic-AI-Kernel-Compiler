@@ -6,8 +6,9 @@ The module is safety-scanned, then imported in a child process (`python -m akc.v
 with RUSTUP_TOOLCHAIN=1.95.0 (NumSim builds its Rust engine; cargo 1.100's new build-dir layout breaks
 tirx-harness's artifact lookup) and CARGO_BUILD_JOBS=4 (be gentle on the login node).
 Costs: every distinct shape is transpiled to a native artifact (~0.5-1 min first time, cached), so the runner
-caps work: at most `max_shapes` distinct shapes, rows <= `max_rows`, N <= `max_n`; other tests come back
-"skipped" (an info finding, never a pass). Racecheck runs on the first shape and on tests tagged "sync".
+caps work: at most `max_shapes` distinct shapes, rows <= `max_rows`, N <= `max_n` and, for matrix ops (gemm),
+M <= `max_m`, K <= `max_k` (a 1-CTA gemm at M = N = 12, K = 40 takes ~1 min to build + ~1.5 min of Racecheck);
+other tests come back "skipped" (an info finding, never a pass). Racecheck runs on the first shape and on tests tagged "sync".
 The output buffer is sentinel-filled before simulation, so unwritten elements are still detected; NumSim
 itself reports out-of-bounds accesses (exact byte range), which become "out_of_bounds" outcomes.
 """
@@ -27,7 +28,13 @@ from ...paths import BUILD, ROOT
 from .check import CheckResult, alloc_output, compare
 
 
-def _evaluate(workload_name: str, module_path: str, tests: list, max_shapes: int, max_rows: int, max_n: int) -> list:
+def size_caps(max_rows: int = 4, max_n: int = 2048, max_m: int = 64, max_k: int = 512) -> dict[str, int]:
+    """Per shape key upper bounds for NumSim (a key a shape does not have is not limited)."""
+    return {"rows": max_rows, "N": max_n, "M": max_m, "K": max_k}
+
+
+def _evaluate(workload_name: str, module_path: str, tests: list, max_shapes: int, max_rows: int, max_n: int,
+              max_m: int = 64, max_k: int = 512) -> list:
     import numpy as np
     import torch
 
@@ -40,12 +47,14 @@ def _evaluate(workload_name: str, module_path: str, tests: list, max_shapes: int
     op, wl = OPS[workload_name], load_workload(workload_name)
     names = wl.meta["tirx"]["tensors"]
     mod = load_module(module_path)
+    caps = size_caps(max_rows, max_n, max_m, max_k)
     cache, raced, out = {}, set(), []
     for i, tc in enumerate(tests):
         key = tuple(sorted(tc.shape.items()))
-        too_big = tc.shape.get("rows", 1) > max_rows or tc.shape.get("N", 0) > max_n
+        over = [f"{k} > {c}" for k, c in caps.items() if tc.shape.get(k, 0) > c]
+        too_big = bool(over)
         if too_big or (key not in cache and len(cache) >= max_shapes):
-            why = "shape exceeds NumSim caps" if too_big else f"more than {max_shapes} distinct shapes"
+            why = f"shape exceeds NumSim caps ({', '.join(over)})" if too_big else f"more than {max_shapes} distinct shapes"
             out.append({**tc.to_dict(), **CheckResult(False, "skipped", message=f"not simulated on CPU: {why}").to_dict()})
             continue
         t0 = time.perf_counter()
@@ -84,7 +93,8 @@ def _evaluate(workload_name: str, module_path: str, tests: list, max_shapes: int
 
 
 def run_tests_numsim_isolated(workload_name: str, module_path: str | Path, tests: list, max_shapes: int = 4,
-                              max_rows: int = 4, max_n: int = 2048, timeout_s: float = 2400.0) -> list[dict]:
+                              max_rows: int = 4, max_n: int = 2048, timeout_s: float = 2400.0,
+                              max_m: int = 64, max_k: int = 512) -> list[dict]:
     problems = safety_scan(Path(module_path).read_text())
     if problems:
         return [{**t.to_dict(), **CheckResult(False, "compile_error", message="refused to import: " + "; ".join(problems)).to_dict()}
@@ -93,7 +103,8 @@ def run_tests_numsim_isolated(workload_name: str, module_path: str | Path, tests
     with tempfile.TemporaryDirectory(dir=BUILD / "tmp") as tmp:
         job, res_file = Path(tmp) / "job.json", Path(tmp) / "out.json"
         job.write_text(json.dumps({"workload": workload_name, "module": str(module_path), "tests": [t.to_dict() for t in tests],
-                                   "max_shapes": max_shapes, "max_rows": max_rows, "max_n": max_n}))
+                                   "max_shapes": max_shapes, "max_rows": max_rows, "max_n": max_n,
+                                   "max_m": max_m, "max_k": max_k}))
         env = {**os.environ, "RUSTUP_TOOLCHAIN": "1.95.0", "CARGO_BUILD_JOBS": "4"}
         cmd = [sys.executable, "-m", "akc.validation.runners.numsim", str(job), str(res_file)]
         try:
@@ -112,5 +123,5 @@ if __name__ == "__main__":
     from ...task.testcase import TestCase
     j = json.loads(Path(sys.argv[1]).read_text())
     res = _evaluate(j["workload"], j["module"], [TestCase.from_dict(t) for t in j["tests"]],
-                    j["max_shapes"], j["max_rows"], j["max_n"])
+                    j["max_shapes"], j["max_rows"], j["max_n"], j.get("max_m", 64), j.get("max_k", 512))
     Path(sys.argv[2]).write_text(json.dumps(res, default=str))

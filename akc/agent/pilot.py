@@ -25,6 +25,7 @@ from ..feedback.render import render
 from ..llm.lumen import LumenClient
 from ..paths import RESULTS, THIRD_PARTY
 from ..task.testcase import TestCase
+from ..task.workload import load_workload
 from ..validation.fixed_tests.validator import FixedTestsValidator
 from ..validation.interface import Candidate, ValidationContext
 from ..validation.volta.validator import VoltaValidator
@@ -41,10 +42,13 @@ CUDA_TASK = """Write ONE CUDA C++ kernel for an NVIDIA A100 (sm_80).
 Task: row-wise softmax over a row-major float32 matrix x[rows, N]; output y[rows, N]:
     y[r, i] = exp(x[r, i] - max_j x[r, j]) / sum_j exp(x[r, j] - max_j x[r, j])
 
+{contract}
+
 Requirements
 - Exact signature: extern "C" __global__ void softmax_glm(const float* __restrict__ x, float* __restrict__ y, int N)
 - Launch: grid = rows (one CTA per row), blockDim.x = 128 exactly.
-- Correct for ANY N >= 1 (N is often not a multiple of 128) and numerically stable for large |x| (e.g. x ~ 100).
+- Correct for every shape in the range above (N is often not a multiple of 128) and numerically stable for
+  large |x| (e.g. x ~ 100).
 - Write every exponential as EXP(v), a macro from "common.cuh" (you must #include "common.cuh");
   do not call expf/__expf directly. Our formal verifier needs this.
 - Control flow may depend only on threadIdx/blockIdx/blockDim/N, never on data values
@@ -58,13 +62,39 @@ TIRX_SYSTEM = ("You are an expert GPU kernel engineer. You write kernels in tirx
                "over the TIRx compiler that emits CUDA/PTX. You follow the documentation exactly and never invent APIs.")
 
 
+def contract_text(wl, lang: str) -> str:
+    """The CAKE shape contract for the agent's prompt: the declared shape range (correctness is checked across
+    shapes and input distributions in it) and the one benchmark shape (speed)."""
+    if wl.domain:
+        lines = [f"Shape contract: the kernel must be correct for EVERY shape with {wl.domain_text()} (the declared "
+                 "shape domain). Correctness is checked across different shapes and input distributions in this "
+                 "range, including sizes that are not multiples of your tile or block sizes."]
+    else:
+        lines = ["Shape contract: no shape range is declared; the kernel must be correct for every shape."]
+    if lang == "tirx":
+        lines.append("make_kernel is traced once per shape (static shapes), so it must build a correct kernel for "
+                     "every shape in the range, not only the benchmark shape.")
+    if wl.perf_shape:
+        bench = ", ".join(f"{k}={v}" for k, v in wl.perf_shape.items())
+        lines.append(f"Speed is measured at {bench}: tune for that shape, but stay correct on the whole range.")
+    return "\n".join(lines)
+
+
+def cuda_task() -> str:
+    return CUDA_TASK.format(contract=contract_text(load_workload("softmax"), "cuda"))
+
+
 def tirx_task() -> str:
     readme = (TXL_DIR / "tirx_lite" / "README.md").read_text()
     example = (TXL_DIR / "norm" / "rmsnorm.py").read_text()
+    contract = contract_text(load_workload("softmax"), "tirx")
     return f"""Write a tirx-lite kernel for an NVIDIA A100 (sm_80).
 
 Task: row-wise softmax over a row-major float32 matrix x[rows, n]; output y[rows, n]:
     y[r, i] = exp(x[r, i] - max_j x[r, j]) / sum_j exp(x[r, j] - max_j x[r, j])
+(The shape contract below calls n "N".)
+
+{contract}
 
 Required module interface (static shapes; one kernel is traced per (rows, n)):
 
@@ -81,7 +111,8 @@ def make_kernel(rows: int, n: int):
 ```
 
 Requirements
-- Correct for ANY n >= 1 (n is often not a multiple of 128) and numerically stable for large |x| (x ~ 100).
+- Correct for every shape in the range above (n is often not a multiple of 128) and numerically stable for
+  large |x| (x ~ 100).
 - Target is sm_80 (Ampere): do NOT use Blackwell/Hopper-only features (tcgen05, TMA/TensorMap, wgmma, clusters,
   packed f32x2 instructions such as mul.rz.ftz.f32x2, mbarrier pipelines). Plain f32 scalar ops, shared memory,
   CTA barriers and warp shuffles are fine.
@@ -150,7 +181,7 @@ def feedback(ev: dict) -> str:
 
 
 LANGS = {
-    "cuda": {"system": CUDA_SYSTEM, "task": lambda: CUDA_TASK, "ext": ".cu", "eval": eval_cuda, "feedback": feedback},
+    "cuda": {"system": CUDA_SYSTEM, "task": cuda_task, "ext": ".cu", "eval": eval_cuda, "feedback": feedback},
     "tirx": {"system": TIRX_SYSTEM, "task": tirx_task, "ext": ".py", "eval": eval_tirx, "feedback": feedback},
 }
 

@@ -8,6 +8,7 @@
   volta      VOLTA on every CUDA variant of a workload, checked against manifest expectations (CPU)
   eval-bugs  configurations A/B/C on the injected bugs (detection, coverage, overhead)
   mutants    mutation benchmark: is each generated edit classified right (CPU), caught by A / C (GPU)?
+             (--classifier ir|ast: tirx-lite rows use the IR change analysis or the Python-AST rules)
   tirx-gpu   tirx-lite kernels on the GPU (correctness + speed)
   pilot      GLM pilot loop (spends Lumen coins)
   lumen      Lumen client: models | usage | chat

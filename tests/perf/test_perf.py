@@ -118,6 +118,22 @@ class MeasureTests(unittest.TestCase):
         self.assertFalse(r.measured)
         self.assertIn("no GPU", r.reason)
 
+    def test_shape_outside_the_domain_is_rejected(self):
+        from unittest import mock
+
+        from akc.task import workload as wmod
+        wl = load_workload("softmax")
+        cand = Candidate.from_file("softmax", wl.variant("softmax_opt").file, entry="softmax_opt")
+        for shape in ({"rows": 4096, "N": 16385}, {"rows": 4097, "N": 1024}):
+            r = measure(cand, shape, device="gpu")                       # rejected before any GPU work
+            self.assertFalse(r.measured)
+            self.assertIn("outside the declared shape domain", r.reason)
+            self.assertIn("N in [1, 16384]", r.reason)
+        bare = wmod.Workload(wl.op, wl.dir, {k: v for k, v in wl.meta.items() if k != "domain"}, wl.variants)
+        with mock.patch.object(wmod, "load_workload", return_value=bare):      # no domain: not checked (as before)
+            r = measure(cand, {"rows": 4096, "N": 16385}, device="cpu")
+        self.assertNotIn("domain", r.reason)
+
     def test_compile_error_is_reported(self):
         c = Candidate("softmax", "cuda", 'extern "C" __global__ void k(float* x) { this is not C }', label="broken")
         r = measure(c, device="gpu")

@@ -15,12 +15,13 @@ from akc.validation.changeaware import plan  # noqa: E402
 from akc.validation.changeaware.classify import categories, classify, math_calls  # noqa: E402
 from akc.validation.changeaware.diff import diff_sources, normalize  # noqa: E402
 from akc.validation.changeaware.generate import extract_thresholds, extract_tiles, generate_tests, volta_shapes  # noqa: E402
-from akc.task.workload import load_workload  # noqa: E402
+from akc.task.workload import Workload, load_workload  # noqa: E402
 from akc.validation.volta.layouts import FAIL_STATUSES, make_case  # noqa: E402
 from akc.validation.volta.runner import VOLTA_BIN  # noqa: E402
 
 OPT = Path(__file__).resolve().parents[2] / "workloads" / "softmax" / "cuda" / "softmax_opt.cu"
 TXL = Path(__file__).resolve().parents[2] / "workloads" / "softmax" / "tirx"
+PILOT = Path(__file__).resolve().parents[2] / "results" / "pilot"          # GLM pilot kernels (2026-11-15)
 
 
 def _bug_pairs():
@@ -256,6 +257,101 @@ class GenerateTests(unittest.TestCase):
 
     def test_deep_shape_runs_unrolled_paths(self):
         self.assertTrue(any(s["N"] > 4 * 128 for s in volta_shapes("softmax", [], (128,))))
+
+
+def _no_domain(op: str):
+    wl = load_workload(op)
+    return Workload(wl.op, wl.dir, {k: v for k, v in wl.meta.items() if k != "domain"}, wl.variants)
+
+
+def _cap_src(cap: int) -> str:
+    return (f"#define CAP {cap}\nextern \"C\" __global__ void k(const float* x, float* y, int N) {{\n"
+            "  if (N > CAP) return;\n}\n")
+
+
+class DomainTests(unittest.TestCase):
+    """D1: tests, VOLTA shapes, size regimes and LLM sizes stay inside the manifest's declared shape domain."""
+    ALL = ["tiling", "indexing", "memory", "sync", "numerical"]
+
+    def test_generator_never_leaves_the_domain(self):
+        for op in ("softmax", "layernorm", "gemm"):
+            wl = load_workload(op)
+            his = {k: hi for k, (_, hi) in wl.domain.items()}
+            regimes = [(k, v) for k, hi in his.items() for v in (hi - 1, hi, 2 * hi)]   # near / at / beyond the max
+            for t in (8, 16, 32, 64, 100, 128, 256, 512, 683, 1000, 1024, 2048, 4096):
+                for cats in [[c] for c in self.ALL] + [self.ALL, []]:
+                    with self.subTest(op=op, tile=t, cats=cats):
+                        tests = generate_tests(op, cats, (t,), budget=100, regimes=regimes)
+                        self.assertTrue(tests)
+                        bad = [x.shape for x in tests if not wl.in_domain(x.shape) or set(x.shape) != set(wl.shape_keys)]
+                        self.assertEqual(bad, [])
+                        bad = [s for s in volta_shapes(op, cats, (t,)) if not wl.in_domain(s)]
+                        self.assertEqual(bad, [])
+
+    def test_clamped_tests_are_tagged_and_not_duplicated(self):
+        tests = generate_tests("gemm", ["tiling"], (4096,))
+        self.assertTrue(any("clamped into the declared domain" in t.tag for t in tests))
+        keys = [(tuple(sorted(t.shape.items())), t.dist, t.misalign) for t in tests]
+        self.assertEqual(len(keys), len(set(keys)))
+
+    def test_regime_near_the_max_runs_both_sides_beyond_is_ignored(self):
+        def regime_ns(v):
+            return {t.shape["N"] for t in generate_tests("softmax", [], (128,), regimes=[("N", v)])
+                    if "switches code path" in t.tag}
+        self.assertEqual(regime_ns(16383), {16383, 16384})
+        self.assertEqual(regime_ns(16384), set())             # N = 16385 is outside: that path never runs
+        self.assertEqual(regime_ns(20000), set())
+
+    def test_threshold_beyond_the_domain_is_ignored(self):
+        dom = load_workload("softmax").domain
+        self.assertEqual(extract_thresholds(_cap_src(16383), "cuda", ["rows", "N"], "row", dom), [("N", 16383)])
+        self.assertEqual(extract_thresholds(_cap_src(16384), "cuda", ["rows", "N"], "row", dom), [])
+        self.assertEqual(extract_thresholds(_cap_src(20000), "cuda", ["rows", "N"], "row", dom), [])
+        self.assertEqual(extract_thresholds(_cap_src(20000), "cuda", ["rows", "N"], "row"), [("N", 20000)])  # REGIME_CAP
+        opt = OPT.read_text()
+        big = opt.replace("float m = -INFINITY;", "float m = -INFINITY;\n  const bool big = (N > 20000);")
+        self.assertEqual(plan("softmax", opt, big).regimes, [])          # plan() uses the manifest's domain
+
+    @unittest.skipUnless(list(PILOT.glob("*/softmax_txl_r*.py")), "needs results/pilot")
+    def test_glm_tirx_thresholds_are_inside_the_domain(self):
+        dom = load_workload("softmax").domain
+        found = []
+        for f in sorted(PILOT.glob("*/softmax_txl_r*.py")):
+            src = f.read_text()
+            with_dom = extract_thresholds(src, "tirx", ["rows", "N"], "row", dom)
+            self.assertEqual(with_dom, extract_thresholds(src, "tirx", ["rows", "N"], "row"), f)
+            found += [v for _, v in with_dom]
+        self.assertTrue(found)
+        self.assertTrue(all(12268 <= v and v + 1 <= 16384 for v in found), found)
+
+    def test_llm_sizes_use_the_domain(self):
+        import json
+        from unittest import mock
+
+        from akc.validation.changeaware import llm_classify as lc
+        reply = json.dumps({"changes": [], "risky_shapes": [
+            {"shape": {"rows": r, "N": n}, "category": "indexing", "why": "x"}
+            for r, n in ((4096, 16384), (300, 100), (2, 16385), (2, 512))]})
+        self.assertEqual([s for s, _, _ in lc.parse_reply(reply, "softmax")[1]],
+                         [{"rows": 4096, "N": 16384}, {"rows": 300, "N": 100}, {"rows": 2, "N": 512}])
+        prompt = lambda: lc.build_messages("softmax", "cuda", "int x;\n", [])[1]["content"]  # noqa: E731
+        self.assertIn('"rows" (1..4096), "N" (1..16384)', prompt())
+        with mock.patch.object(lc, "load_workload", return_value=_no_domain("softmax")):      # no domain: DIM_CAP
+            self.assertEqual([s for s, _, _ in lc.parse_reply(reply, "softmax")[1]], [{"rows": 2, "N": 512}])
+            self.assertIn('"rows" (1..256), "N" (1..16384)', prompt())
+
+    def test_without_domain_generator_is_unchanged(self):
+        from unittest import mock
+
+        from akc.validation.changeaware import generate as gen
+        with mock.patch.object(gen, "load_workload", return_value=_no_domain("gemm")):
+            shapes = [t.shape for t in gen.generate_tests("gemm", ["tiling"], (4096,))]
+            vshapes = gen.volta_shapes("gemm", ["tiling"], (4096,))
+        self.assertIn({"M": 24580, "N": 24580, "K": 8200}, shapes)     # sizes are not limited without a domain
+        self.assertIn({"M": 8192, "N": 8192, "K": 8200}, vshapes)
+        with mock.patch.object(gen, "load_workload", return_value=_no_domain("softmax")):
+            ns = {t.shape["N"] for t in gen.generate_tests("softmax", [], (128,), regimes=[("N", 20000)])}
+        self.assertTrue({20000, 20001} <= ns)
 
 
 @unittest.skipUnless(shutil.which("nvcc") and VOLTA_BIN.exists(), "needs nvcc and VOLTA")

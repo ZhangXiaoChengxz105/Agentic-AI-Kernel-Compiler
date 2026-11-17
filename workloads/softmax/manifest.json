@@ -30,6 +30,7 @@
   ],
   "numerical_dists": [
     "large",
+    "outlier",
     "neg_large",
     "mixed",
     "constant"
@@ -53,6 +54,7 @@
       "y"
     ]
   },
+  "domain": {"rows": [1, 4096], "N": [1, 16384]},
   "perf": {
     "shape": {"rows": 4096, "N": 1024}
   },
@@ -177,7 +179,9 @@
       "bug": {
         "category": "sync",
         "change": "removed the CTA barrier after each tree-reduction step"
-      }
+      },
+      "expect_volta": "RACE",
+      "expect_note": "missing barrier -> race on shared memory"
     },
     {
       "name": "softmax_txl_bug_tail",
@@ -190,7 +194,17 @@
       "bug": {
         "category": "tiling",
         "change": "partial max/sum loops run n // 128 tiles (tail dropped)"
-      }
+      },
+      "expect_volta": [
+        {
+          "if": "N % 128 == 0",
+          "then": "EQUIV"
+        },
+        {
+          "then": "NOT_EQUIV"
+        }
+      ],
+      "expect_note": "bug only exists when N % 128 != 0"
     },
     {
       "name": "softmax_txl_bug_offbyone",
@@ -203,7 +217,17 @@
       "bug": {
         "category": "indexing",
         "change": "sum loop guard col <= n"
-      }
+      },
+      "expect_volta": [
+        {
+          "if": "N % 128 == 0",
+          "then": "EQUIV"
+        },
+        {
+          "then": "NOT_EQUIV"
+        }
+      ],
+      "expect_note": "the loop runs ceil(n / 128) tiles, so col == n is reached only when N % 128 != 0 (unlike the CUDA i <= N loop)"
     },
     {
       "name": "softmax_txl_bug_nomax",
@@ -216,7 +240,9 @@
       "bug": {
         "category": "numerical",
         "change": "no max subtraction before exp"
-      }
+      },
+      "expect_volta": "EQUIV",
+      "expect_note": "BLIND SPOT: equal over the reals; only float overflow differs"
     }
   ]
 }

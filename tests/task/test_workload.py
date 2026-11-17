@@ -13,7 +13,7 @@ from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from akc.task.reference import OPS  # noqa: E402
-from akc.task.workload import DEFAULT_DISTS, Workload, load_workload  # noqa: E402
+from akc.task.workload import DEFAULT_DISTS, Workload, list_workloads, load_workload  # noqa: E402
 from akc.validation.interface import Candidate, ValidationContext  # noqa: E402
 from akc.validation.volta.layouts import derive_layout  # noqa: E402
 
@@ -89,6 +89,72 @@ class OptionalPartsTests(unittest.TestCase):
             r = measure(cand, device="gpu")
         self.assertFalse(r.measured)
         self.assertIn("not set up", r.reason)
+
+
+class DomainTests(unittest.TestCase):
+    """D1: the declared shape range (CAKE: "the valid shape domain is declared before tuning") + one benchmark shape."""
+    RANGES = {"softmax": {"rows": (1, 4096), "N": (1, 16384)}, "layernorm": {"rows": (1, 4096), "N": (1, 16384)},
+              "gemm": {"M": (1, 4096), "N": (1, 4096), "K": (1, 4096)}}
+
+    def test_declared_ranges(self):
+        for op, want in self.RANGES.items():
+            self.assertEqual(load_workload(op).domain, want, op)
+
+    def test_manifest_shapes_are_inside_the_domain(self):
+        from akc.validation.changeaware.generate import volta_shapes
+        from akc.validation.fixed_tests.suite import fixed_suite
+        for op in list_workloads():
+            wl = load_workload(op)
+            self.assertIsNotNone(wl.domain, op)
+            v = wl.volta or {}
+            shapes = ([wl.perf_shape] + [t.shape for t in fixed_suite(op)] + list(wl.meta["fixed_suite"])
+                      + [s for s in (v.get("default"), v.get("deep")) if s]
+                      + volta_shapes(op, ["tiling", "indexing", "memory", "sync", "numerical"]))
+            for s in shapes:
+                with self.subTest(op=op, shape=s):
+                    self.assertTrue(wl.in_domain(s))
+
+    def test_in_domain_and_clip(self):
+        wl = load_workload("softmax")
+        self.assertTrue(wl.in_domain({"rows": 4096, "N": 16384}))
+        self.assertTrue(wl.in_domain({"rows": 1, "N": 1}))
+        self.assertTrue(wl.in_domain({"N": 256}))                       # partial shape (VOLTA): checked on N only
+        for bad in ({"rows": 4097, "N": 1}, {"rows": 2, "N": 16385}, {"rows": 2, "N": 0}):
+            self.assertFalse(wl.in_domain(bad), bad)
+        self.assertEqual(wl.clip({"rows": 5000, "N": 0}), {"rows": 4096, "N": 1})
+        self.assertEqual(wl.clip({"N": 300}), {"N": 300})
+        self.assertEqual(wl.domain_text(), "rows in [1, 4096], N in [1, 16384]")
+
+    def test_bad_domain_is_rejected(self):
+        wl = load_workload("softmax")
+        for d in ({"rows": [10, 1]}, {"rows": [0, 4]}, {"B": [1, 2]}):
+            with self.subTest(domain=d), self.assertRaises(ValueError):
+                Workload(wl.op, wl.dir, {**wl.meta, "domain": d}, wl.variants).domain
+
+    def test_without_domain_nothing_is_limited(self):
+        wl = _stripped("gemm", ("domain",))
+        self.assertIsNone(wl.domain)
+        self.assertTrue(wl.in_domain({"M": 10 ** 6, "N": 1, "K": 1}))
+        self.assertEqual(wl.clip({"M": 10 ** 6, "N": 0}), {"M": 10 ** 6, "N": 0})
+        self.assertEqual(wl.domain_text(), "")
+
+    def test_contract_text_states_range_and_benchmark_shape(self):
+        from akc.agent.pilot import contract_text
+        for op, rng, bench in (("softmax", "rows in [1, 4096], N in [1, 16384]", "rows=4096, N=1024"),
+                               ("gemm", "M in [1, 4096], N in [1, 4096], K in [1, 4096]", "M=1024, N=1024, K=1024")):
+            for lang in ("tirx", "cuda"):
+                with self.subTest(op=op, lang=lang):
+                    text = contract_text(load_workload(op), lang)
+                    self.assertIn(rng, text)
+                    self.assertIn(f"Speed is measured at {bench}", text)
+        self.assertIn("traced once per shape", contract_text(load_workload("softmax"), "tirx"))
+        self.assertIn("no shape range is declared", contract_text(_stripped("softmax", ("domain",)), "tirx"))
+
+    def test_pilot_prompts_carry_the_contract(self):
+        from akc.agent import pilot
+        self.assertIn("N in [1, 16384]", pilot.cuda_task())                  # string building only: no Lumen call
+        if (pilot.TXL_DIR / "tirx_lite" / "README.md").exists():
+            self.assertIn("Speed is measured at rows=4096, N=1024", pilot.tirx_task())
 
 
 if __name__ == "__main__":
