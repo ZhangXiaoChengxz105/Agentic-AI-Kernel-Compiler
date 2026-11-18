@@ -12,10 +12,12 @@ validation configurations:
 
 The proposal's "candidates that pass CAKE's existing compiler checks will be checked by VOLTA" is the gate (§2 D2).
 
-Status (2026-11-16): **Tasks 1–2 done** (environment, baseline harness, change-aware testing; details in §2).
-2026-11-17: the compiler-checks gate (D2) and configurations A0/A/B/C are in place (§2 D2, results in §4).
-Tasks 3–5 have groundwork in place (a VOLTA validator, the A/B/C pipeline, feedback text, a GLM pilot loop,
-bug-set evaluation); their owners will extend it.
+Status (2026-11-17): **the whole chain runs on tirx-lite**, the agent's language (proposal: the agent writes CAKE IR;
+tirx-lite stands in for CAKE, see §2). Tasks 1–3 are done for three kernels (softmax, LayerNorm, GEMM): baseline,
+change-aware testing on the IR, VOLTA on the compiled tirx-lite kernels, and the compiler-checks gate that runs
+first. Task 5's detection / coverage / overhead experiment has been run on tirx-lite (§4). Task 4 (the repair loop)
+is implemented (`akc/agent/loop.py`, `akc agent`, §2 Task 4); runs with the real model and repair-success numbers are
+still open.
 
 More detail: [`docs/architecture.md`](docs/architecture.md) (module contracts), [`docs/setup.md`](docs/setup.md)
 (setup troubleshooting), `notes/` (dated experiment logs; `notes/gpu_results.md` has the A100 runs).
@@ -46,7 +48,7 @@ source env.sh               # in EVERY new shell: paths, caches, libz3, activate
 bash setup_env.sh --check   # re-verify an existing setup later
 ```
 The script is idempotent: it skips finished steps and logs to `logs/setup_<timestamp>.log`.
-LLM calls (`akc pilot`, `akc lumen`) use your own Lumen key: put `export LUMEN_API_KEY=...` in
+LLM calls (`akc agent`, `akc pilot`, `akc lumen`) use your own Lumen key: put `export LUMEN_API_KEY=...` in
 `.secrets/lumen.env` (git-ignored; `env.sh` loads it).
 
 ### Notes
@@ -65,8 +67,10 @@ LLM calls (`akc pilot`, `akc lumen`) use your own Lumen key: put `export LUMEN_A
 In its place we use **tirx-lite** from MLC's TIRx-harness. It plays the same role, a "CAKE-style" kernel IR plus
 compiler, and it works on sm_80.
 
-We also support plain **CUDA**. Every component handles both languages; VOLTA reads tirx-lite through rewrites of
-its generated code (see Open items). Which language the agent writes in the final experiments is still a team decision.
+Following the proposal, **the agent writes tirx-lite only**: change analysis works on the tirx-lite IR, the gate is
+tirx-lite's own checks plus compute-sanitizer on the CUDA it generates, and VOLTA checks that compiled code. The
+hand-written CUDA kernels and their results are **legacy**: they were our first baseline, they stay in the repository,
+but they get no new features and are not part of configurations A0/A/B/C.
 
 ### Task 1: environment and baseline
 - **One-command environment.** `setup_env.sh` builds VOLTA, Rust, libz3, TIRx and torch inside the cloned folder.
@@ -90,19 +94,16 @@ its generated code (see Open items). Which language the agent writes in the fina
   - Each kernel runs in a child process, so a crashing kernel cannot take the caller down.
   - The tolerance depends on the op and on how sensitive its result is to rounding.
 
-  Configuration A's fixed test suite is in `akc/validation/fixed_tests/`. tirx-lite kernels can also run on the CPU
+  The fixed test suite (every configuration has it) is in `akc/validation/fixed_tests/`. tirx-lite kernels can also run on the CPU
   through NumSim.
 - **Speed measurement.** `akc/perf/` times a kernel with CUDA events: warmup, L2 cache flushed before every launch,
   median of 50 runs. It compares the time with three things:
   - PyTorch;
   - the A100's peak bandwidth and FLOP/s;
   - a device copy of the same bytes, which is the practical floor.
-- **VOLTA check.** VOLTA can analyze all three CUDA kernels: 32/32 verdicts matched our expectations
-  (`notes/volta_scope.md`). Its limits:
-  - real-number arithmetic;
-  - only thread block 0;
-  - exact sizes only;
-  - `exp` must be written as `EXP()`.
+- **VOLTA check.** VOLTA can analyze all three tirx-lite kernels (Task 3 below): every run on the references,
+  optimized versions and bugs is decided, and the verdicts match the manifest's expectations
+  (`results/eval/tirx_task1.json`, `notes/volta_scope.md`). The legacy CUDA kernels: 32/32 verdicts as expected.
 - **Slurm scripts and LLM client.** `scripts/slurm/` holds the GPU jobs. `akc/llm/lumen.py` is the Lumen client:
   budget guard, dry-run, retries, and a log of every call.
 
@@ -144,7 +145,8 @@ that passed validation and tests what changed:
 3. **Generate tests** (`generate.py`). Each label gets its own tests, and tile sizes are read from the kernel itself:
    - tiling / indexing → sizes at tile boundaries and sizes that are not multiples of the tile (1, T±1, 2T±1, 1000;
      for GEMM also K % T ≠ 0);
-   - memory → odd sizes and pointers misaligned by one element;
+   - memory → odd sizes (legacy CUDA also: pointers misaligned by one element; a TIRx-compiled function refuses
+     misaligned tensors before the kernel runs, so tirx-lite gets no such test);
    - sync → large sizes, repeated runs, many vs. few thread blocks;
    - numerical → large, negative, offset, tiny, mixed and constant values, plus the **outlier family** below.
 
@@ -186,13 +188,15 @@ that passed validation and tests what changed:
 - Turn it on with `--llm-classify` on `akc validate`, `akc hottest` or `akc mutants`.
 - Not yet tried with real calls.
 
-Example: the change-aware report (`akc hottest`) for `softmax_bug_tail`. That bug changes the loop bound from
-`i < N` to `i < (N / BLOCK) * BLOCK`, so the last N % 128 elements are dropped.
-- **Classification:** tiling + indexing (lines 20 and 32).
-- **Tests:** 12 targeted, at N = 1, 127, 129, 255, 257 and 1000, plus 1 floor test with large values. On the A100,
-  all 12 targeted tests fail (run 24032011).
-- **VOLTA:** sizes N = 256, 584, 200 and 100. VOLTA proves the kernel wrong at N = 200 and 584. At the default
-  N = 256, a multiple of 128, it says "equivalent", which is why configuration B misses this bug.
+Example: `softmax_txl_bug_tail`. The bug changes two loop counts from `iters` (= ceil(N / 128)) to `n // BLOCK`,
+so the max and sum loops skip the last N % 128 elements.
+- **IR change:** the two loops' `For.end`, changed only at traced sizes that are not multiples of 128.
+- **Classification:** tiling + numerical (the loops are a max and a sum reduction).
+- **Tests:** sizes around the tile (1, 127, 129, 255, 257, 1000, …) plus value-range tests. On the A100 they fail
+  with wrong and non-finite outputs (job 24062207).
+- **VOLTA:** sizes N = 256, 584, 200 and 100. VOLTA proves the kernel wrong at N = 584 and 200. At the default
+  N = 256, a multiple of 128, it says "equivalent", which is why configuration B misses this bug. N = 100 is
+  UNSUPPORTED.
 
 The unit tests are in `tests/validation/test_changeaware.py` (text / AST path, generator),
 `tests/validation/test_changeaware_ir.py` (IR path; skipped without `tvm_tirx`) and `tests/task/test_outlier.py`.
@@ -228,58 +232,72 @@ sanitizer feedback that the CAKE paper also uses. It runs first in configuration
 - **Legacy CUDA** candidates get one info finding: they are not part of A/B/C.
 - **Results on the A100**: see §4 "Compiler-checks gate".
 
-### Groundwork beyond Tasks 1–2 (for Tasks 3–5)
-- **VOLTA validator** (`akc/validation/volta/`) with actionable hints.
-- **Configurations A0/A/B/C** (`akc/validation/pipeline.py`).
-- **Feedback text** for the agent (`akc/feedback/render.py`).
-- **Speed objective** (`akc/perf/`).
-- **Bug-set evaluation** (`akc/evaluation/`).
-- **GLM-5.3 pilot loop** (`akc/agent/pilot.py`).
-- **Injected bugs** (off-by-one, missing barrier, tail/tiling, numerical): 11 in tirx-lite
-  (`workloads/*/tirx/bugs/`: softmax 4, LayerNorm 4, GEMM 3) and the 11 legacy CUDA originals (`workloads/*/cuda/bugs/`).
+### Task 3: VOLTA on the compiled tirx-lite kernels
+`VoltaValidator` (`akc/validation/volta/`) traces the candidate and the workload's tirx-lite reference at each VOLTA
+size, rewrites the CUDA that TIRx generates so VOLTA can read it (`volta/tirx.py`), runs `volta compare` (and
+`volta analyze` for out-of-bounds accesses past the candidate's own shared memory), and turns each verdict into a
+finding with a hint for the agent (`volta/hints.py`). Details: `notes/volta_scope.md`.
+- **All three kernels are analyzable:** softmax 69 of 69 runs decided (23 kernels × 3 sizes), LayerNorm 18 of 18,
+  GEMM 25 of 25 (`results/eval/volta_tirx*.json`). Verdicts match the CUDA counterparts.
+- **Sizes:** B uses the workload's default size; C uses the change-aware sizes (`changeaware.plan().volta`): the
+  default, a "deep" size that runs unrolled loops, and sizes that put a tile boundary inside thread block 0.
+- **Rewrites:** three are exact (`expf` → `__symexpf`, a counted barrier → `bar.sync 0`, compare-select → `max.f32`);
+  two are modelling choices: `ex2.approx(t)` is read as exp(t / log2 e), and a constant of magnitude ≥ 2^127
+  (-3.4e38 as the identity of a max) becomes -inf.
+- **Limits:** real-number arithmetic; thread block 0 only, so a candidate whose block 0 covers a different part of
+  the output than the reference's (e.g. GEMM with another tile size) is undecided; exact sizes only; no
+  data-dependent control flow, partial-CTA barriers, async copies, or transcendental functions other than exp.
+
+### Task 4: agent feedback and repair loop (2026-11-17)
+`akc/agent/loop.py` (`akc agent`) connects the model, the validation configurations and the feedback
+(details: `docs/architecture.md`, "The agent loop"):
+- **The loop.** Each iteration: model → tirx-lite module → `run_pipeline(config)` → `perf.measure` (only if it
+  passed) → `render_observation` → next prompt. The same checks run every iteration.
+- **Stopping.** At most 10 iterations. The loop stops at the first candidate that passes the configuration's
+  checks; with `--optimize` it keeps improving speed until the cap and returns the fastest correct version.
+- **Parent policy.** The parent is the last accepted candidate.
+- **Seed kernel.** `--seed F`: a given kernel (e.g. an injected bug) is iteration 0, so repair can be measured.
+- **Budget.** A coin cap per run (`--max-coins`, worst case checked before each call). `--dry-run` sends nothing.
+- **Prompt.** Built from the manifest, so it works for all three workloads (`prompts.py`). The context is rebuilt
+  each turn (task + previous draft + its observation + best correct version) instead of growing a chat.
+- **Logging.** Every iteration is written to `results/agent/<timestamp>_<workload>_<config>/` (`trajectory.py`).
+- **Tests.** Unit tests: `tests/agent/test_loop.py` (fake model and validators, 10 tests).
+
+**Integration check on the A100** (job 24078880, 3 min). It used the real pipeline and speed measurement with a
+scripted model (no coins): the seed is an injected bug, and the model's one reply is the workload's tirx reference.
+
+| workload / config | seed (iteration 0) | caught by | it1 | speed of it1 |
+|---|---|---|---|---|
+| softmax / C | `softmax_txl_bug_tail` | change-aware tests (fixed tests passed): NaN/Inf at N = 1, mismatch at N = 1000, with the related IR change lines | passed C | 0.0318 ms, 1.03× PyTorch |
+| LayerNorm / B | `layernorm_txl_bug_nosync` | gate (racecheck), with the generated-CUDA lines | passed B | 0.296 ms, 0.13× |
+| GEMM / A | `gemm_txl_bug_nosync` | gate (racecheck) | passed A | 1.09 ms, 0.12× |
+
+All three runs stopped with `passed` after one model turn. Validation took 9–50 s per iteration and speed
+measurement ~6 s. No run with the real model yet: it needs Lumen coins (a GLM tirx run cost 0.07–0.17 coins in
+the pilot).
 
 ### Open items
-- **VOLTA in configuration C gets no change-aware shapes for tirx-lite.** `changeaware.plan()` returns
-  `volta_shapes(...) if lang == "cuda" else []` (since the restructure), so the pipeline hands VOLTA an empty list
-  and it falls back to the default shape: for tirx, VOLTA-C = VOLTA-B. Found in the D2 evaluation (job 24061793);
-  not fixed in D2. The likely fix is `volta_shapes(workload, cats, tiles)` for both languages, then re-running
-  `akc eval-bugs --lang tirx`.
-- **VOLTA on tirx-lite (Task 3): works for softmax; the rest is open.** `VoltaValidator` traces a tirx-lite candidate
-  and `softmax_txl_ref` at each VOLTA size, rewrites TIRx's generated CUDA so that VOLTA can read it, and runs
-  `volta compare` (`akc/validation/volta/tirx.py`; details in `notes/volta_scope.md`).
-  - **What works:**
-    - All 23 tirx kernels we tried are decided at N = 256, 584 and 200: 69 of 69 runs, coverage 100%. They are the
-      reference, 4 injected bugs, 4 GLM kernels, and 14 mutants that the tests missed.
-    - Verdicts match the CUDA counterparts.
-    - VOLTA catches 8 of the 14 missed mutants, including all 5 races.
-  - **Not exact:** two of the five rewrites are modelling choices:
-    - `ex2.approx(t)` is read as exp(t / log2 e);
-    - constants of magnitude 2^127 or more (-3.4e38, -FLT_MAX as the identity of a max) become -inf.
-  - **Not covered:**
-    - data-dependent control flow;
-    - partial-CTA barriers and async copies;
-    - transcendental functions other than exp;
-    - code paths that only run above the VOLTA sizes.
-  - **Not re-run:** the tirx numbers for `eval-bugs` and mutant detection in §4 predate this change. B and C now
-    include VOLTA for tirx.
-- **tirx-lite LayerNorm and GEMM (Task 1, 2026-11-17)** are now the mutation benchmark's `fresh` set (D2, below).
-  Classification on the CPU: 73/73 semantic edits get a right category, 0/12 no-op edits are labelled
-  (`results/eval/mutants_rules_ir_fresh.json`). Detection on the GPU (`--set fresh --detect`) has not been run.
-  `akc check` and `akc volta` take `--lang tirx`.
-- **Detection is measured on our own bugs only.**
-  - The 11/11 bug detection uses bugs written by the same person as the classifier.
-  - The classifier itself is now measured on mechanically generated edits, including edits of GLM-written kernels
-    (§4).
-  - Detection on those generated edits is measured too: tests A 61% → C 77% on the tuning set, 67% → 79% held
-    out. Most remaining misses are races (VOLTA's job) or edits that change nothing (§4).
-  - Still missing:
-    - a detection re-run with the new outlier input family (§2 Task 2). It targets the 8 CUDA edits whose max
-      reduction skips half the warp: they give NaN only on rows with one large value. It has not been run on the
-      GPU yet;
-    - the LLM option, measured with real calls.
-- **GPU tests are weak at races.** `layernorm_bug_nosync` is caught only by VOLTA.
-- **Our GEMM leaves the most room for the agent.** It reaches 0.28× PyTorch, and TF32 tensor cores cannot be used
-  because they fail the fp32 tolerance.
+- **Repair success (Task 4/5) is not measured yet.** The detection, coverage and overhead numbers in §4 come from
+  injected bugs and generated edits; the repair loop has run only with a scripted model (Task 4 above) and the
+  earlier GLM pilot.
+- **One real miss in the final evaluation.** `layernorm_txl_ref` with `x[r, 0]` → `x[r, 0 + 1]` reads one element
+  past `x` on the last row when N = 1 (outputs stay within tolerance). The gate would catch it if its shapes
+  included N = 1 (they are T+1 and 1000). Not changed: it was found on the fresh set.
+- **VOLTA:**
+  - the ≥ 2^127 constant rewrite is applied unconditionally; it is exact only when the constant is a max / min
+    identity (a kernel computing `x + 3.4e38` would be modelled wrongly);
+  - `softmax_txl_bug_tail` at N = 100 is UNSUPPORTED;
+  - tile changes in GEMM are undecided (block 0 covers another region).
+- **Held-out is partly inspected.** The size-regime rule and one IR-pairing fix came from looking at held-out misses,
+  so the held-out set is not fully held out. The fresh set (tirx LayerNorm / GEMM) had nothing tuned on it; the one
+  harness fix found there (misaligned pointers, §4) only removes false catches.
+- **Generated edits are single, local changes.** Real agent revisions are often 10–50-line rewrites; the classifier
+  then labels most categories, so the tests are broad rather than targeted.
+- **Cost of the IR analysis:** about 8 s per revision, mostly the tvm import in a fresh child process; a persistent
+  worker would remove most of it.
+- **LLM second opinion** for the classifier: not yet tried with real calls.
+- **GEMM leaves the most room for the agent.** `gemm_txl_opt` reaches 0.29× PyTorch (FP32 SIMT, no tensor cores:
+  TF32 fails the fp32 tolerance).
 
 ---
 
@@ -316,7 +334,7 @@ feature reports "not set up" instead of failing.
 
 | add-on | what to add |
 |---|---|
-| VOLTA | a CUDA reference kernel (`references.cuda`) and a `volta` block (default / deep shape, size cap) in the manifest. The VOLTA memory layout is derived from the `OpSpec`; the output array takes its name from the manifest `signature` |
+| VOLTA | a reference kernel in the candidate's language (`references.tirx`; legacy: `references.cuda`) and a `volta` block (default / deep shape, size cap) in the manifest. The VOLTA memory layout is derived from the `OpSpec`; the output array takes its name from the manifest `signature` |
 | speed | `perf.shape` in the manifest, plus `flops`, `bytes` and `torch_impl` in the `OpSpec` |
 | shape domain | `domain` in the manifest: `{shape key: [lo, hi]}` (inclusive) |
 | tirx-lite | a `tirx` block in the manifest and a tirx reference kernel |
@@ -363,8 +381,8 @@ from akc.validation.pipeline import run_pipeline
 from akc.perf import measure
 from akc.feedback.render import render_observation
 
-parent = Candidate.from_file("softmax", "workloads/softmax/cuda/softmax_opt.cu", entry="softmax_opt")
-cand = Candidate.from_file("softmax", "my_softmax.cu", parent=parent, label="r2")
+parent = Candidate.from_file("softmax", "workloads/softmax/tirx/softmax_txl_ref.py")   # .py -> tirx-lite
+cand = Candidate.from_file("softmax", "my_softmax.py", parent=parent, label="r2")
 res = run_pipeline(cand, "C", ValidationContext(device="auto"))
 perf = measure(cand) if res.passed else None          # speed only for correct kernels (needs a GPU)
 print(render_observation(res.reports, perf))
@@ -379,8 +397,9 @@ print(render_observation(res.reports, perf))
 | `akc bench --workload W [--lang tirx] [--feedback]` | time, ×PyTorch, % of peak, practical floor | GPU |
 | `akc volta --workload W [--lang cuda\|tirx]` | VOLTA on every candidate variant, checked against the manifest's expectations | CPU |
 | `akc eval-bugs [--lang tirx] [--device gpu] [--configs A0,A,B,C]` | configurations A0/A/B/C on the injected bugs, through `run_pipeline` (run_all), caught / seconds per validator | GPU for the tests and the sanitizer |
-| `akc mutants [--set bases\|heldout\|fresh\|all] [--lang tirx] [--llm-classify] [--detect --device gpu [--volta]]` | mutation benchmark: is each generated edit classified right? (with `--detect`: caught by A0 / A / (B) / C?) | CPU; GPU with `--detect` |
+| `akc mutants [--set bases\|heldout\|fresh\|all] [--lang tirx] [--llm-classify] [--detect --device gpu [--volta [--volta-workers N]]]` | mutation benchmark: is each generated edit classified right? (with `--detect`: caught by A0 / A / (B) / C?). `--volta-workers`: VOLTA in N parallel CPU processes while the GPU validators run serially (`evaluation/volta_pool.py`) | CPU; GPU with `--detect` |
 | `akc tirx-gpu` | tirx-lite kernels on the GPU (correctness + speed) | GPU |
+| `akc agent --workload W [--config C] [--seed F] [--optimize] [--max-iters 10] [--max-coins 2] [--dry-run]` | the repair loop (Task 4): model → configuration → feedback, every iteration logged under `results/agent/` | Lumen key (coins); CPU or GPU for validation, GPU for speed |
 | `akc pilot`, `akc lumen models\|usage\|chat` | GLM pilot loop / Lumen client | Lumen key |
 | `sbatch scripts/slurm/smoke.sbatch` | full check on an A100 (~10 min): unit tests, A/B/C, speed, observations | Slurm (`bidr-delta-gpu`, `gpuA100x4-interactive`) |
 
@@ -393,73 +412,140 @@ Run with `python -m unittest discover -s tests`.
 
 | file | tests | covers |
 |---|---|---|
-| `tests/validation/test_interface.py` | 15 | the contract types; pipelines A/B/C (B misses / C catches the tail bug, compile errors stop the pipeline); parent policy; `akc hottest`; a tirx bug caught on the CPU (NumSim) |
-| `tests/validation/test_runners.py` | 22 | input distributions; PyTorch references; output checks (mismatch, unwritten, canary, NaN); tolerances, including the LayerNorm offset false-alarm regression; GPU runs of references, optimized kernels and bugs |
-| `tests/validation/test_volta.py` | 21 | VOLTA verdicts (EQUIV, NOT_EQUIV, RACE, unsupported, timeout); status mapping; memory layouts; the VOLTA PTX build (`__symexpf`, no `.loc`) |
-| `tests/validation/test_changeaware.py` | 37 | diff (incl. reformat / rename = no change), classifier (incl. loop steps, while bounds, float vs. index arithmetic, warp shuffles), generator (incl. floor tests and size-regime thresholds), VOLTA shapes, the LLM option with a fake client |
-| `tests/task/test_workload.py` | 5 | optional manifest / OpSpec parts, derived launch, derived VOLTA layout = the old hand-written one |
-| `tests/perf/test_perf.py` | 15 | roofline arithmetic, speed feedback text, measurement (2 GPU tests) |
+| `tests/validation/test_interface.py` | 15 | the contract types; pipelines (B misses / C catches the tail bug, compile errors stop the pipeline); parent policy; `akc hottest`; a tirx bug caught on the CPU (NumSim) |
+| `tests/validation/test_compiler_checks.py` | 28 | the gate: sanitizer log parser on saved logs; TIRx helper reports mapped to kernel lines; findings and feedback text; gate shapes; pipeline order, stop rules, `run_all`, cache and `skip`; static checks on the tirx refs / opts / bugs and an IR-contract violation; 3 GPU tests |
+| `tests/validation/test_changeaware_ir.py` | 13 | IR change analysis: offbyone → indexing, tail only at non-multiples of 128, nosync → one sync hunk "×14" (and C's VOLTA shapes for tirx), nomax → numerical, rename → no hunks, AST fallback, indexing → tiling |
+| `tests/validation/test_changeaware.py` | 45 | diff (reformat / rename = no change), the text classifier, the generator (floor tests, size regimes, shape domain, no misaligned pointers for tirx-lite), VOLTA shapes, the LLM option with a fake client |
+| `tests/validation/test_volta.py` | 40 | VOLTA verdicts and status mapping; memory layouts; the PTX build; the tirx-lite path (rewrites, entry parsing, `analyze` for out-of-bounds) |
+| `tests/validation/test_tirx_kernels.py` | 13 | tirx-lite LayerNorm / GEMM: trace and compile, NumSim, VOLTA verdicts on refs / opts / bugs, GPU runs |
+| `tests/validation/test_runners.py` | 22 | input distributions; PyTorch references; output checks (mismatch, unwritten, canary, NaN); tolerances; GPU runs |
+| `tests/task/test_workload.py` | 12 | manifests, the declared shape domain (`in_domain`, `clip`), derived launch and VOLTA layout |
+| `tests/task/test_outlier.py` | 7 | outlier inputs: every residue mod P, alternating row scales, the magnitude ladder, never the floor distribution |
+| `tests/perf/test_perf.py` | 16 | roofline arithmetic, speed feedback text, the benchmark shape, measurement (2 GPU tests) |
 | `tests/llm/test_lumen.py` | 8 | the Lumen client against a fake server (no coins) |
-| `tests/evaluation/test_bugset.py` | 3 | which parent the bug-set evaluation uses (CUDA: the optimized kernel; tirx: the reference); every configuration goes through `run_pipeline` with `run_all` and per-validator numbers |
-| `tests/evaluation/test_mutants.py` | 7 | the mutation generator (incl. which edits cannot change outputs), the fresh set loads, extended tirx operators only where asked, no edits of a float's exponent, plus a regression guard on the classifier |
-| `tests/validation/test_changeaware_ir.py` | 13 | IR change analysis: offbyone → indexing at L51, tail only at non-multiples of 128, nosync → one sync hunk "×14", nomax → numerical, re-trace / rename → no hunks, a float16 mutant that does not trace → AST fallback, swapped operands and another buffer detected, indexing → tiling, same categories → same tests (8 need `tvm_tirx`) |
-| `tests/task/test_outlier.py` | 7 | outlier inputs: every residue mod P, alternating row scales, the magnitude ladder, deterministic, never the floor distribution, the generator's `outlier@T` |
-| `tests/validation/test_compiler_checks.py` | 28 | the gate (D2): sanitizer log parser on saved logs (and every trial log); TIRx helper reports mapped to kernel lines; report / NumSim / static results → finding kinds; feedback text; gate shapes; pipeline order, stop rules, `run_all`, cache and `skip` with fake validators; A0 = the old A; static checks pass on the 5 tirx refs / opts and 11 bugs and fail on an IR-contract violation at its line (with and without `check_ir`); 3 GPU tests (nosync → race, gemm guard → out_of_bounds, references clean) |
-| **total** | **129** | Login node (2026-11-16): **129 run, all pass, 6 skipped** (GPU-only). A100 (job 24048511, before the last 3 tests were added): 126 run, all pass, 2 skipped |
-
-Login node, 2026-11-17, after the IR change analysis (D3); other files' counts have grown since the table: 196 run, all pass, 8 skipped (GPU-only, or `tvm_tirx` / VOLTA missing).
-
-Login node, 2026-11-17, after D2: 228 run, all pass, 11 skipped (GPU-only, or a tool missing). A100 (jobs 24061708
-and 24061793): `test_compiler_checks`, `test_interface` and `test_bugset` 46 run, all pass, 1 skipped; the 3 GPU
-gate tests pass again after the memcheck change.
+| `tests/evaluation/test_bugset.py` | 3 | the bug-set evaluation's parent choice; every configuration goes through `run_pipeline` |
+| `tests/evaluation/test_mutants.py` | 7 | the mutation generator, the fresh set, no edits of a float's exponent, a classifier regression guard |
+| `tests/evaluation/test_volta_pool.py` | 5 | parallel VOLTA for the evaluation: merged report = serial report, cache routing, shape superset, one real run |
+| `tests/agent/test_loop.py` | 10 | the repair loop with a fake model and validators (§2 Task 4) |
+| **total** | **244** | Login node, 2026-11-17: **244 run, all pass, 11 skipped** (GPU-only, or a tool missing). A100 (jobs 24061708 / 24061793): the gate, interface and bug-set tests, 46 run, all pass |
 
 ### Experiments (A100-SXM4-40GB; GPU runs logged in `notes/gpu_results.md`)
 **Setup from scratch:** a fresh clone, `setup_env.sh --tests`, took 8 min 52 s, and all tests passed (86 tests at the time).
 
-**VOLTA feasibility (CPU).** 32/32 verdicts matched expectations on softmax, GEMM and LayerNorm:
-- optimized kernels: EQUIV;
-- missing barriers: RACE;
-- off-by-one: NOT_EQUIV;
-- numerical bugs: EQUIV, a known blind spot of real-number semantics.
+#### Main experiment: configurations A0 / A / B / C on tirx-lite (Task 5)
+2026-11-17, jobs 24062207, 24062451, 24064163 and 24078424 (2 h 10 min of A100 time in all).
 
-**Bug detection, configurations A/B/C** (measured before D2, so "A" here is today's A0, fixed tests only; the D2
-re-run on tirx is under "Compiler-checks gate" below):
+**Setup.**
+- Every candidate runs through `run_pipeline`, exactly as in the agent loop, with `run_all` so that every
+  validator's catches can be counted. The parent is the correct version the candidate was made from.
+- A candidate is **caught** by a configuration if any of its validators reports an error.
+- Candidates:
+  - the 11 injected tirx-lite bugs;
+  - generated single edits (`akc mutants --detect --volta`) of three sets of correct kernels:
+    - **tuning set:** `softmax_txl_ref`; the classifier rules were revised while looking at it;
+    - **held out:** 4 GLM-written tirx softmax kernels, only partly held out (see Open items);
+    - **fresh:** `layernorm_txl_{ref,opt}` and `gemm_txl_{ref,opt}`; nothing was tuned on them.
+- Edits that the generator marks as unable to change any output are not counted. No-op edits (renames) measure
+  false alarms.
+- VOLTA ran in parallel CPU worker processes (`--volta-workers`) while the GPU validators ran one at a time.
+  The held-out and fresh sets ran as two streams on one GPU, so their timings are not used below.
 
-| bug set | A: fixed tests | B: + VOLTA | C: + VOLTA + change-aware |
-|---|---|---|---|
-| 11 injected CUDA bugs (softmax, LayerNorm, GEMM) | 4/11 | 5/11 | **11/11** |
-| 4 injected tirx-lite bugs (softmax) | 1/4 | 1/4 (VOLTA n/a for tirx) | **4/4** |
+**Detection** (caught / candidates):
 
-The two mechanisms complement each other:
-- only VOLTA caught `layernorm_bug_nosync`, a race the GPU tests miss;
-- only the change-aware tests caught the two numerical bugs, which VOLTA cannot see (real numbers);
-- VOLTA caught the tail and guard bugs only at the change-aware shapes.
-
-**Change classifier, mutation benchmark** (`akc mutants`, CPU).
-- **How the edits are made.** Fixed mutation operators generate single edits, each with a set of acceptable
-  categories:
-  - comparison flips, +1 in a subscript, changed constants, `#define` tile sizes;
-  - a deleted barrier, changed warp shuffles;
-  - changed float arithmetic, max ↔ min, changed initial values;
-  - negated conditions, halved shared memory, float → double;
-  - two no-op edits: rename and reformat.
-- **On which kernels.** Our 3 optimized kernels, 4 GLM-written CUDA softmax kernels and the tirx-lite reference.
-  The rules were revised while looking at these, so their "after" numbers are training-set numbers.
-- **The honest estimate** is the **held-out** row: 8 GLM-written kernels (4 CUDA, 4 tirx-lite) that were never
-  looked at while revising.
-
-| kernels | classifier | right category | no category | no-op edits labeled |
+| candidates | A0: fixed tests | A: + gate | B: + VOLTA | C: + change-aware tests |
 |---|---|---|---|---|
-| tuning set | before (2026-11-15 rules) | 132/198 (67%) | 60 | 25/31 |
-| tuning set | after | 198/198 | 0 | 0/31 |
-| **held out** | before | 117/189 (62%) | 70 | 16/28 |
-| **held out** | after | **189/189** | **0** | **0/28** |
+| 11 injected bugs | 3 | 6 | 6 | **11** |
+| tuning set, 21 edits | 15 | 20 | 20 | **21** |
+| held out, 70 edits | 52 | 56 | 62 | **65** |
+| fresh, 73 edits | 52 | 62 | 66 | **66** |
+| all 164 edits | 119 (73%) | 138 (84%) | 148 (90%) | **152 (93%)** |
+| false alarms on 27 no-op edits | 0 | 0 | 0 | 0 |
 
-The edits are single, local changes. Real agent revisions are often 10–50-line rewrites; the rules then label most
-categories, so the tests are broad rather than targeted. Results: `results/eval/mutants_rules_{before,after}_*.json`.
+**What each step adds:**
+- **The gate (A0 → A)**, 3 bugs and 19 edits:
+  - races: racecheck finds `layernorm_txl_bug_nosync`, which every GPU test misses, and 6 edits (2 deleted
+    barriers, 4 `<` → `<=` flips, some of which also read out of bounds);
+  - out-of-bounds and uninitialized reads whose outputs still look right: memcheck and initcheck, mostly `<` → `<=`
+    flips in guards and loop bounds, plus a halved block size.
+- **VOLTA at the default size (A → B)**, 0 bugs and 10 edits:
+  - 7 are `if (lane == 0)` / `if (tid == 0)` negations. Every thread then writes the same value to the same
+    address. That is a race by the memory model, but the outputs never change, and racecheck does not flag it;
+  - 2 halve a shared array, so accesses go past the shared memory: outputs happen to stay right;
+  - 1 is a value bug (`+` → `-` in `layernorm_txl_opt`).
+- **Change-aware tests, with VOLTA at their sizes (B → C)**, 5 bugs and 4 edits:
+  - the bugs are the 3 tail bugs (VOLTA also catches them, at the change-aware sizes), `nomax` and `onepass`;
+  - the edits are float-only failures: max → min, a max initialized to 0 instead of -FLT_MAX (twice), and a warp max
+    that skips half the lanes. All of them give inf / NaN on large or outlier inputs, which VOLTA's real-number model
+    cannot see.
+- **The two mechanisms are complementary.** On the injected bugs, change-aware tests catch all 11 and VOLTA-C
+  catches 9 (all but the two numerical bugs). On the edits, VOLTA alone catches 9 and the change-aware tests alone
+  catch 4.
 
-**IR vs AST classifier on the tirx-lite rows** (`akc mutants --classifier ir|ast`, CPU, 2026-11-17; 106 tirx edits:
-24 on the reference, 82 on the 4 held-out GLM tirx kernels):
+**What C misses (12 edits).** 11 of them cannot change any output:
+- 9 change a block size, tile size or unroll factor in a kernel that derives everything else from it. VOLTA proves
+  the 5 GLM ones equivalent. It cannot decide the 4 GEMM ones, because block 0 then covers another part of the
+  output;
+- 2 pad the GEMM shared tiles with 1.0 instead of 0.0. The padding is always multiplied by the other operand's zero
+  padding. VOLTA proves both equivalent.
+
+The 12th is a real bug: an out-of-bounds read at N = 1 whose outputs stay within tolerance (see Open items). So C
+catches 152 of the 153 edits that change behaviour.
+
+**Verification coverage** (VOLTA decided / VOLTA ran):
+- injected bugs: B 11/11, C 10/11 (softmax tail at N = 100 is UNSUPPORTED);
+- edits: 114/132 (86%) in both B and C. VOLTA does not run on edits that fail to compile.
+- Undecided cases: tile changes in GEMM, and VOLTA-unsupported constructs.
+
+**Overhead** (seconds of validation per candidate, from the single-stream runs; each validator's own time):
+
+| candidates | A0 | A | B | C |
+|---|---|---|---|---|
+| 11 injected bugs (mean) | 9.3 | 19.5 | 22.4 | 49.1 |
+| 24 tuning-set edits (mean) | 8.7 | 18.6 | 22.4 | 50.2 |
+
+Per validator (median):
+- gate 10–11 s;
+- fixed tests 9 s;
+- change-aware tests 19–21 s, including about 8 s of IR analysis;
+- VOLTA about 3 s at the default size and 9–13 s at the change-aware sizes.
+
+**A test-harness bug the run found (fixed).**
+- The change-aware "memory" tests passed tensors misaligned by one element. A TIRx-compiled function checks every
+  argument's alignment and refuses such a call (`ValueError: Misaligned Tensor data on argument #0`, also on the
+  correct reference; job 24078424). So every edit labelled "memory" was "caught".
+- 7 equivalent edits were counted as caught by C this way.
+- The generator no longer makes misaligned tests for tirx-lite. The 27 edits labelled "memory" were re-run; exactly
+  those 7 changed. The table above is after the fix.
+- Before the fix: `results/eval/mutants_detect_tirx_{heldout,fresh}_before_misalign_fix.json`.
+
+Results: `results/eval/bugset_tirx_gpu_20261117-053113.json`, `results/eval/mutants_detect_tirx_{bases,heldout,fresh}.json`.
+
+#### Compiler-checks gate (D2) on tirx-lite
+A100, job 24061793 (`scripts/experiments/gate_tirx.py`, `results/eval/gate_tirx.json`). "Caught" means the tool
+reported a problem in our kernel. This was the first time compute-sanitizer ran on TIRx-generated code.
+
+| kernels | memcheck | racecheck | initcheck | synccheck | gate (any) |
+|---|---|---|---|---|---|
+| 5 tirx refs / opts (false alarms) | 0/5 | 0/5 | 0/5 | 0/5 | **0/5** |
+| 4 GLM tirx kernels (false alarms) | 0/4 | 0/4 | 0/4 | 0/4 | **0/4** |
+| 11 injected tirx bugs | 3/11 | 3/11 | 0/11 | 0/11 | **6/11** |
+| 8 tirx edits VOLTA calls RACE / OUT_OF_BOUNDS | 2/8 | 3/8 | 2/8 | 0/8 | **4/8** |
+| 6 tirx edits VOLTA calls EQUIV | 1/6 | 0/6 | 0/6 | 0/6 | 1/6 |
+
+- **Injected bugs.** racecheck catches the 3 nosync bugs. memcheck catches the 2 off-by-ones and the gemm guard.
+  The 5 value bugs need the tests or VOLTA.
+- **Beyond VOLTA.** `glm_txl_C_r2` with `[r, col]` → `[r, col + 1]` reads one element past `x` on GLM's large-row
+  path (N = 12285, a gate shape from the size-regime rule). VOLTA said EQUIV: it checks only N ≤ 584.
+- **Locations.** Every report points at a kernel-body line of the generated CUDA (both accesses of a race), after
+  mapping TIRx's inlined helpers back to their call sites.
+- **Cost per revision** (median of 34): **10.9 s** (max 12.7 s).
+  - Static checks take 7.8 s: tvm import 1.7 s, two sm_80 compiles 2.8 s.
+  - The 4 tools take 2.1 s in parallel (4.5–4.7 s one after another, with the same verdicts).
+- **CPU-only path** (NumSim): the same race and out-of-bounds verdicts on GEMM, 12 s per kernel.
+
+#### Change classifier: IR vs AST on the tirx-lite edits
+`akc mutants --classifier ir|ast`, CPU. 106 tirx edits: 24 on the reference, 82 on the 4 held-out GLM tirx kernels.
+The fresh set (85 edits) was classified with the IR only: 73/73 right category, 0/12 no-op edits labelled.
 
 | kernels | classifier | right category | wrong | no category | no-op edits labelled | AST fallback | `ir_blind` |
 |---|---|---|---|---|---|---|---|
@@ -468,149 +554,79 @@ categories, so the tests are broad rather than targeted. Results: `results/eval/
 | 4 GLM tirx (held out) | AST | 70/70 | 0 | 0 | 0/12 | – | – |
 | 4 GLM tirx (held out) | IR | 70/70 | 0 | 0 | 0/12 | 8 | 0 |
 
-- Agreement: every edit has the same verdict in both (91 hit/hit, 15 clean/clean).
-- The category sets differ on 36 of 106 edits, the first category on 16. IR adds categories more often than it
+- **Agreement.** Every edit gets the same verdict from both classifiers.
+- **Category sets** differ on 36 of 106 edits, the first category on 16. The IR adds categories more often than it
   drops them, mostly numerical from the reduction rule. Examples:
   - a guard or loop bound inside a max / sum loop is indexing (or tiling) + numerical;
-  - a shuffle offset `16 → 8` in a warp max is sync + numerical (AST: indexing);
-  - BLOCK 128 → 64 is tiling + indexing + memory + numerical (AST: tiling).
-- Cost of the broader labels: 1409 generated tests vs 1027 with the AST (+37%).
-- The 10 AST fallbacks are all `float32 → float16` edits that TIRx refuses to trace.
-- Analysis time: 1.1–1.4 s per edit when one child traces all edits of a base. A single revision costs about
-  7.7 s (softmax reference vs a bug, 5 shapes), mostly the tvm import; the AST path takes 0.01 s.
-- Not fully held out:
-  - before one fix the IR scored 69/70 held out;
-  - the fix pairs a deleted and an added statement from the same source line. It came from that miss:
-    `red_max[w]` → `[w + 1]` in an unrolled loop showed up as "first iteration deleted, extra iteration added".
-- Results: `results/eval/mutants_rules_ir_{bases,heldout}.json`.
+  - a shuffle offset `16 → 8` in a warp max is sync + numerical (AST: indexing).
+- **Cost of the broader labels:** 1409 generated tests vs 1027 with the AST (+37%).
+- **Fallbacks:** the AST fallbacks are `float32 → float16` edits that TIRx refuses to trace.
+- **Analysis time:** about 7.7 s per revision on the IR path, mostly the tvm import; the AST path takes 0.01 s.
+- **Not fully held out:** before one pairing fix, the IR scored 69/70 on the held-out set.
 
-**Detection on the mutants, A vs C** (`akc mutants --detect --per-op 2`, A100, jobs 24051467 / 24052255; C here is
-fixed + change-aware tests, without VOLTA).
-- Only base kernels that pass on their own are used. 3 of the 8 held-out GLM drafts already fail the fixed tests,
-  so 5 remain.
-- Edits that cannot change any output (an array declared 1 larger, float → double) are not counted.
-- No-op edits (rename, reformat) raised no false alarm in A or C.
+Results: `results/eval/mutants_rules_ir_{bases,heldout,fresh}.json`.
 
-| kernels | edits | A: fixed tests | C: + change-aware tests | false alarms on no-op edits |
-|---|---|---|---|---|
-| tuning set (8 kernels) | 136 | 83 (61%) | **105 (77%)** | 0/23 |
-| held out (5 correct GLM kernels) | 67 | 45 (67%) | **53 (79%)** | 0/11 |
+#### Speed
+rows = 4096, N = 1024; GEMM 1024³; median of 50 launches, L2 flushed.
 
-What C's tests still miss (45 edits), checked with VOLTA where possible (job 24052791, CUDA only):
-- **Races and out-of-bounds shared memory, 14 CUDA edits.** VOLTA catches all 14: deleted barriers,
-  `BLOCK / 2` → `BLOCK / 1`, halved shared arrays, and `if (lane == 0)` negated. In the last case every lane
-  writes the same value to the same address: VOLTA reports a race, but the outputs do not change. With VOLTA,
-  configuration C catches 119 of the 136 tuning-set edits.
-- **Equal in exact math, NaN in float: 8 CUDA edits that neither tests nor VOLTA catch (open item).**
-  - In each, the warp max reduction starts its shuffle loop at offset 8 instead of 16, so the row max covers only
-    16 of the 32 lanes.
-  - Softmax gives the same result for any subtracted value, so over the reals the output is unchanged. VOLTA
-    proves 6 of these equivalent. 1 is in `glm_A_r1`, where VOLTA cannot decide. On 1 in `glm_B1_r1`, VOLTA
-    reports the base kernel's own race.
-  - In float32, if the true max sits in an unseen lane and is more than ~88 above the partial max, exp overflows.
-    A CPU model of the edit returns NaN for a row of zeros with a single 100.
-  - C classifies these edits as indexing. It gives them normal-valued boundary shapes plus one 2-row `large` floor
-    test, and none of those rows has such an outlier.
-  - This is the real-number blind spot that the tests are meant to cover. The fix is the `outlier` input family
-    (§2 Task 2): one large value per row, at every position modulo the tile across rows. The IR classifier also
-    labels a changed shuffle in a reduction as numerical, so these edits now get it. Not re-run on the GPU yet.
-- **No change in this kernel: 9 CUDA edits.**
-  - VOLTA proves 5 equivalent: xor → down shuffles where only lane 0's value is used, and an extra GEMM K-tile
-    whose guarded loads give zeros.
-  - 4 more are equivalent by reading the code:
-    - 3 are in `glm_A_r1`, where VOLTA cannot decide because its `-FLT_MAX` overflows VOLTA's rationals;
-    - 1 is a second-stage reduce over 4 values that starts at offset 8, in `glm_B1_r1`.
-- **tirx-lite, 14 edits (VOLTA does not run on tirx yet).**
-  - 5 are equivalent: block size changes in kernels that derive everything from the block size.
-  - 4 are the same-value races above; 1 is a real race (`tid < s` → `tid <= s` in a tree reduction).
-  - 2 read one element past the row inside a max pass. Outputs change only when the next row starts with a value
-    far above this row's max: every exp then underflows and the result is 0/0. The `outlier` family targets this
-    case: adjacent rows are scaled 1 and 1e3. Not re-run yet.
-  - 2 change outputs by less than softmax's tolerance (rtol 1e-4):
-    - `[r, col]` → `[r, col + 1]` in a sum over 12 285 elements;
-    - a float16 sum accumulator.
-
-The GPU runs also found three problems in the benchmark and the generator; all are fixed:
-- **A kernel that never stops.** `off > 0` → `off >= 0` hung the runner for 900 s, twice. Now there is a 180 s
-  limit, and C is not re-run when A already failed.
-- **Broken base kernels counted.** 3 held-out GLM kernels are wrong by themselves, so all their mutants counted
-  as "caught". They are now excluded.
-- **A path no test reached.** GLM's large-row code path (N > 8192 in CUDA, n > 12284 in tirx) was never run. This
-  led to the size-regime tests (§2): 2 edits there are now caught.
-
-  That fix came from looking at held-out misses, so the held-out detection numbers are no longer fully held out.
-
-Results: `results/eval/mutants_detect_{bases,heldout}.json` (the first run, before the fixes:
-`..._v1.json`) and `results/eval/mutants_volta_misses.json`.
-
-**Compiler-checks gate (D2) on tirx-lite, A100** (`scripts/experiments/gate_tirx.py`, job 24061793;
-`results/eval/gate_tirx.json`; caught = a report of the tool on our kernel). The first time compute-sanitizer runs on
-TIRx-generated code:
-
-| kernels | memcheck | racecheck | initcheck | synccheck | gate (any) |
-|---|---|---|---|---|---|
-| 5 tirx refs / opts (false alarms) | 0/5 | 0/5 | 0/5 | 0/5 | **0/5** |
-| 4 GLM tirx kernels (false alarms) | 0/4 | 0/4 | 0/4 | 0/4 | **0/4** |
-| 11 injected tirx bugs | 3/11 | 3/11 | 0/11 | 0/11 | **6/11** |
-| 8 tirx mutants VOLTA calls RACE / OUT_OF_BOUNDS | 2/8 | 3/8 | 2/8 | 0/8 | **4/8** |
-| 6 tirx mutants VOLTA calls EQUIV | 1/6 | 0/6 | 0/6 | 0/6 | 1/6 |
-
-- **Injected bugs:** racecheck catches the 3 nosync bugs, including `layernorm_txl_bug_nosync`, which every GPU test
-  misses; memcheck catches the 2 off-by-ones and the gemm guard. The 5 value bugs (3 tails, nomax, onepass) need
-  the tests or VOLTA.
-- **Mutants:** the 4 caught are `tid < s` → `tid <= s` (race + uninitialized shared read), BLOCK 128 → 64
-  (uninitialized shared read) and 2 GLM `<` → `<=` edits (out-of-bounds read + race). The 4 missed are all
-  `if (lane == 0)` negations: every lane writes the same value, so the outputs never change (same as in the CUDA
-  trial).
-- **Beyond VOLTA:** `glm_txl_C_r2` with `[r, col]` → `[r, col + 1]` reads one element past `x` on GLM's large-row
-  path (N = 12285, a gate shape from the size-regime rule). VOLTA said EQUIV: it checks CTA 0 at N ≤ 584 only.
-- **Locations:** every report points at a line in the kernel body of the generated CUDA (both accesses of a race),
-  after mapping TIRx's inlined helpers back to their call sites.
-- **Cost per revision** (median of 34): **10.9 s** (max 12.7 s). Static checks 7.8 s (one child: tvm import 1.7 s,
-  two sm_80 compiles 2.8 s), nvcc 0.7 s, the 4 tools in parallel 2.1 s (one after another: 4.5–4.7 s, same
-  verdicts). Each tool takes 1.5–2.7 s.
-- **CPU-only path** (NumSim, smoke job 24061664): gemm nosync → race at the Python lines of both accesses, gemm guard
-  → out_of_bounds, gemm opt clean; 12 s per kernel once NumSim's engine is built (the first synccheck built it:
-  44 s).
-
-**Configurations A0 / A / B / C on the 11 injected tirx bugs** (`akc eval-bugs --lang tirx --device gpu`, job
-24061793, `results/eval/bugset_tirx_gpu_20261117-045938.json`):
-
-| | A0: fixed tests | A: + gate | B: + VOLTA | C: + change-aware tests |
-|---|---|---|---|---|
-| detected | 3/11 | 6/11 | 6/11 | **11/11** |
-| validation seconds per bug | 8.6 | 18.6 | 21.4 | 41.8 |
-
-- The gate adds layernorm nosync, gemm guard and softmax offbyone to the fixed tests.
-- B adds nothing over A on this set: VOLTA at the default shape finds only bugs the gate already found.
-- Caveat: for tirx, VOLTA in C runs at B's default shape (`changeaware.plan()` suggests VOLTA shapes only for
-  CUDA); see Open items.
-
-**GLM-5.3 as the kernel writer (pilot).** It wrote correct softmax kernels in CUDA (4/4 runs) and in tirx-lite
-(4/4) within 3 rounds. It also produced two real, non-injected bugs:
-- a shared-memory race: caught only by VOLTA; every GPU test passed;
-- a dropped term in an unrolled loop that runs only for N > 384: caught only by the GPU tests at large N. After this
-  we added a "deep" VOLTA shape.
-
-**Speed.** rows=4096, N=1024; GEMM 1024³; median of 50 launches, L2 flushed.
-
-| kernel | time | × PyTorch | % of peak |
+| kernel (tirx-lite) | time | × PyTorch | throughput |
 |---|---|---|---|
-| softmax_opt (CUDA) | 0.038 ms | 0.96× | 57% bandwidth |
-| softmax_txl_ref (tirx-lite) | 0.033 ms | 1.08× | 65% bandwidth |
-| best GLM softmax (CUDA) | 0.034 ms | 1.07× | 64% bandwidth |
-| layernorm_opt | 0.038 ms | 1.12× | 57% bandwidth |
-| gemm_opt | 0.61 ms | 0.28× | 18% FP32 (PyTorch: 64%) |
+| softmax_txl_ref | 0.033 ms | 1.08× | 65% of peak bandwidth |
+| layernorm_txl_opt | 0.035 ms | 1.07× | 62% of peak bandwidth |
+| gemm_txl_opt | 0.47 ms | 0.29× | 4.6 TFLOP/s, 23% of FP32 peak (PyTorch: 64%) |
+| layernorm_txl_ref / gemm_txl_ref (simple references) | 0.30 / 1.09 ms | 0.13× / 0.12× | |
 
 A device copy of the same bytes reaches about 66–68% of the datasheet bandwidth. So softmax and LayerNorm are near
 the practical limit, and GEMM is where an optimizing agent can gain the most.
 
-**Problems the GPU runs found, all fixed and re-verified:**
-- **A false alarm.** The change-aware LayerNorm "offset" test (mean 1e4) rejected the correct `layernorm_opt`:
-  rounding the row mean to float32 is unavoidable. Fixed with a condition-aware tolerance; real numerical bugs are
-  still caught.
-- **A crash.** `eval-bugs --lang tirx` crashed. Fixed.
-- **Duplicate feedback lines.** Fixed.
+#### GLM-5.3 as the kernel writer (pilot)
+It wrote correct softmax kernels in tirx-lite (4/4 runs) and in CUDA (4/4) within 3 rounds. It also produced two
+real, non-injected bugs:
+- a shared-memory race: caught only by VOLTA; every GPU test passed;
+- a dropped term in an unrolled loop that runs only for N > 384: caught only by the GPU tests at large N. After this
+  we added a "deep" VOLTA size.
+
+#### Problems the GPU runs found (all fixed and re-verified)
+- **A false alarm.** The LayerNorm "offset" test (mean 1e4) rejected the correct `layernorm_opt`: rounding the row
+  mean to float32 is unavoidable. Fixed with a condition-aware tolerance.
+- **A kernel that never stops.** `off > 0` → `off >= 0` hung the runner for 900 s. Now there is a 180 s limit.
+- **Broken base kernels counted.** 3 held-out GLM CUDA kernels are wrong by themselves, so all their edits counted as
+  "caught". Such bases are now excluded.
+- **A path no test reached.** GLM's large-row code path (N > 8192 in CUDA, n > 12284 in tirx) was never run. This
+  led to the size-regime tests (§2).
+- **memcheck hung** with `--destroy-on-device-error kernel` after reporting an out-of-bounds read. It now uses
+  `context`.
+- **Misaligned-pointer tests on tirx-lite** (above).
+
+#### Legacy: hand-written CUDA results
+These came before the switch to tirx-lite as the only agent language. They are kept for reference and are not
+part of configurations A0/A/B/C. Here "A" is today's A0 (fixed tests only), and "C" is fixed + change-aware tests.
+- **VOLTA feasibility (CPU).** 32/32 verdicts matched expectations on the CUDA softmax, GEMM and LayerNorm:
+  - optimized kernels: EQUIV;
+  - missing barriers: RACE;
+  - off-by-one: NOT_EQUIV;
+  - numerical bugs: EQUIV, the known blind spot.
+- **11 injected CUDA bugs:** A 4/11, B 5/11, C 11/11.
+- **Classifier on 387 CUDA + tirx edits** (`results/eval/mutants_rules_{before,after}_*.json`):
+  - before the rule revision: 67% right on the tuning set, 62% held out;
+  - after: 198/198 and 189/189, with 0 no-op edits labelled.
+- **Detection on the edits** (A100, jobs 24051467 / 24052255 / 24052791; `results/eval/mutants_detect_{bases,heldout}.json`):
+  - tuning set: A 83/136, C 105/136;
+  - held out: A 45/67, C 53/67;
+  - no false alarms.
+
+  Of C's 45 misses:
+  - 14 CUDA races / shared out-of-bounds, all caught by VOLTA;
+  - 8 float-only bugs: a warp max that skips half the lanes. These motivated the outlier input family;
+  - 9 equivalent edits;
+  - 14 tirx edits (VOLTA did not run on tirx then).
+
+  Details: `notes/build_log.md` §8c–8e.
+- **Speed:**
+  - softmax_opt 0.038 ms (0.96×);
+  - best GLM CUDA softmax 0.034 ms (1.07×);
+  - layernorm_opt 0.038 ms (1.12×);
+  - gemm_opt 0.61 ms (0.28×).
 
 ### Where results are
 | results | location |
@@ -619,6 +635,7 @@ the practical limit, and GEMM is where an optimizing agent can gain the most.
 | bug-set results | `results/eval/` |
 | speed | `results/perf/` |
 | VOLTA runs | `results/volta/` |
+| agent runs (Task 4) | `results/agent/` |
 | GLM pilot | `results/pilot/` |
 | change-aware test lists | `results/change_aware/` |
 

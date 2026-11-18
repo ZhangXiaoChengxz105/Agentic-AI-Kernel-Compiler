@@ -12,6 +12,8 @@
   mutants    mutation benchmark: is each generated edit classified right (CPU), caught by A / C (GPU)?
              (--classifier ir|ast: tirx-lite rows use the IR change analysis or the Python-AST rules)
   tirx-gpu   tirx-lite kernels on the GPU (correctness + speed)
+  agent      the agent repair loop (Task 4): model -> configuration A0/A/B/C -> feedback, <= 10 iterations
+             (spends Lumen coins; --dry-run sends nothing)
   pilot      GLM pilot loop (spends Lumen coins)
   lumen      Lumen client: models | usage | chat
 Run `akc <command> -h` for the options of a command.
@@ -189,6 +191,8 @@ def main(argv: list[str] | None = None) -> int:
         from .evaluation.mutants import main as m
     elif cmd == "tirx-gpu":
         from .evaluation.gpu_tirx import main as m
+    elif cmd == "agent":
+        from .agent.loop import main as m
     elif cmd == "pilot":
         from .agent.pilot import main as m
     elif cmd == "lumen":

@@ -1,11 +1,10 @@
-"""The agent: model + context + loop + trajectory (Task 4 builds the full loop here).
+"""The agent: model + context + loop + trajectory (Task 4).
 
-    pilot.py       working prototype: prompt -> GLM -> code -> validator -> rendered feedback, <= N rounds,
-                   correctness only (results in notes/glm_pilot.md)
-Planned (see docs/architecture.md):
-    prompts/       system prompts, task templates per language, constraints and known pitfalls
-    context.py     what the model sees each turn (task + best code so far + compact feedback + perf numbers)
-    loop.py        controller: generate -> validation.run_pipeline(config) -> feedback.render -> revise;
-                   max 10 iterations; keep the fastest candidate that passes; parent = last accepted candidate
-    trajectory.py  per-iteration record (prompt, reply, code, reports, timings, coins) for evaluation
+    prompts.py     system prompt and the tirx-lite task prompt for any workload (from its manifest), pitfalls
+    context.py     what the model sees each turn (task + previous draft + its observation + best code so far)
+    loop.py        controller: generate -> validation.run_pipeline(config) -> feedback.render_observation -> revise;
+                   max 10 iterations; stop at the first pass (or keep the fastest with --optimize);
+                   parent = last accepted candidate; `akc agent`
+    trajectory.py  per-iteration record (prompt, reply, code, reports, perf, timings, coins) for evaluation
+    pilot.py       the earlier prototype (softmax only, correctness only; results in notes/glm_pilot.md)
 """

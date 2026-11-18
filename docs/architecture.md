@@ -27,12 +27,12 @@ verification and change-aware testing (proposal sections 1 and 2).
 |---|---|---|
 | `task/` | the problem | `workload.py` (manifest loader), `reference.py` (PyTorch golden + launch/args per op), `inputs.py` (value distributions), `testcase.py` |
 | `llm/` | the model | `lumen.py`: OpenAI-compatible client, budget guard, retries, JSONL call log |
-| `agent/` | the agent itself | `pilot.py` (working prototype). Task 4 adds `prompts/`, `context.py`, `loop.py`, `trajectory.py` |
+| `agent/` | the agent itself | `loop.py` (the repair loop, Task 4), `prompts.py`, `context.py`, `trajectory.py`; `pilot.py` (earlier prototype) |
 | `backend/` | executes actions | `ptx.py` (CUDA → PTX, VOLTA/GPU modes), `launch.py` (driver-API launch), `bench.py`, `tirx.py` (safety scan, load, sm_80 compile) |
 | `validation/` | the critics | `interface.py`, `pipeline.py`, `compiler_checks/`, `fixed_tests/`, `volta/`, `changeaware/`, `runners/` |
 | `perf/` | the objective (speed) | `measure.py` (GPU timing in a child process), `report.py` (`PerfReport`, roofline `analyze`), `hardware.py` (GPU peaks) |
 | `feedback/` | observations | `render.py`: findings → concise text with hints, examples, related change lines; `render_perf` (speed), `render_observation` (both) |
-| `evaluation/` | experiments | `bugset.py` (A/B/C on injected bugs), `volta_matrix.py`, `gpu_tirx.py` |
+| `evaluation/` | experiments | `bugset.py` (A0/A/B/C on injected bugs), `mutants.py` (mutation benchmark; `--detect`), `volta_pool.py` (VOLTA in parallel CPU workers for the evaluation; merged reports = the serial validator's), `volta_matrix.py`, `gpu_tirx.py` |
 
 Agent "tools" (functions the model may call itself, e.g. "compile this draft") are optional and would live in
 `agent/tools.py`; they are different from `backend/`, which is infrastructure used by validators and the loop.
@@ -147,8 +147,37 @@ Memory-bound op (0.62 FLOP/byte, below the GPU's ridge of 12.5): effective bandw
 A plain device copy of the same 33.6 MB takes ... ms: that is the practical floor, ...x faster than this kernel.
 Best correct version so far: r1 at 0.0343 ms, 1.08x PyTorch; this one is 1.19x its time.
 ```
-The agent loop (Task 4) keeps the fastest candidate that passed validation and returns it at the end.
+The agent loop (Task 4) keeps the fastest candidate that passed validation and returns it at the end (see below).
 CLI: `akc bench --workload W [--lang tirx] [--feedback]`, `akc validate ... --perf` (validation, then speed).
+
+## The agent loop (`agent/`, Task 4)
+`run_agent(workload, config, llm=client, max_iters=10, optimize=False, seed=None, ...) -> AgentResult`
+(`akc agent --workload W --config C [--seed F] [--optimize] [--dry-run]`). The agent writes tirx-lite.
+```
+[seed kernel -> iteration 0, no model call]          optional: e.g. an injected bug, to measure repair
+for it = 1 .. max_iters (10):
+    messages = context.build_messages(...)           system + task, then: progress table, previous draft + its
+                                                     observation, best correct version so far, instruction
+    reply = llm.chat(messages)                       coin cap per run (worst case checked before each call)
+    cand  = Candidate(code, parent = last accepted)  first candidate: compared with the workload reference
+    res   = run_pipeline(cand, config)               the same checks every iteration
+    perf  = perf.measure(cand) if res.passed
+    observation = render_observation(res.reports, perf, best perf)
+    trajectory.record(step)                          every iteration, as it happens
+    stop if res.passed (or, with optimize, continue for speed until the cap)
+```
+- `prompts.py`: the task prompt is built from the manifest (description, `signature.tirx`, `tirx.factory_args` /
+  `tensors`, shape contract, OpSpec tolerance), plus the tirx-lite README, two examples and a pitfalls list. The
+  reference kernels are never shown.
+- `context.py`: the context is rebuilt every turn, not grown as a chat (GLM has no prompt-cache discount). Only
+  the latest draft and the best correct version are resent.
+- Stop reasons: `passed`, `max_iters`, `budget`, `llm_error`, `validation_error` (a validator crashed), `dry_run`.
+- Best candidate: the fastest measured one that passed; without a GPU, the first that passed.
+- `trajectory.py` writes `results/agent/<timestamp>_<workload>_<config>/`: `run.json`, `trajectory.jsonl` (one line
+  per iteration: verdict, failing validators, error kinds, per-validator seconds, perf, tokens, coins, timings),
+  per iteration `it<k>_prompt.json`, `it<k>_reply.md`, `it<k>.py`, `it<k>_validation.json`,
+  `it<k>_observation.txt`, then `best.py` and `summary.json` (passed, stop reason, first-pass iteration, coins,
+  validation / model seconds).
 
 ## Workloads (`workloads/<op>/`)
 Data, not code: `manifest.json` + `cuda/` (+ `tirx/`) kernels and `bugs/`. Manifest keys:
@@ -176,7 +205,7 @@ Kernel conventions: `extern "C" __global__`, write `exp` as `EXP(x)` (`workloads
 
 ## Command line (`akc …`, after `source env.sh`)
 `validate` (pipeline on one kernel; `--perf` adds speed) · `hottest` (change-aware report for a revision) · `check` / `bench` (GPU) ·
-`volta` · `eval-bugs` · `mutants` (classifier / detection benchmark) · `tirx-gpu` · `pilot` · `lumen`. Slurm wrappers: `scripts/slurm/`.
+`volta` · `eval-bugs` · `mutants` (classifier / detection benchmark) · `tirx-gpu` · `agent` · `pilot` · `lumen`. Slurm wrappers: `scripts/slurm/`.
 
 ## Where each task works
 | task | modules |
@@ -193,12 +222,12 @@ Kernel conventions: `extern "C" __global__`, write `exp` as `EXP(x)` (`workloads
 - GPU tests are weak at races (VOLTA is the main race check); NumSim is slow per new shape.
 - The injected bugs and the classifier were written by the same person. The classifier is also measured on
   generated edits (`akc mutants`, including held-out GLM kernels: 189/189).
-- Detection of those edits (A100): fixed tests 61% → fixed + change-aware 77% (tuning set), 67% → 79% (held out).
-  Of the 31 remaining CUDA misses:
-  - 14 are races or out-of-bounds shared access, and VOLTA catches all of them;
-  - 9 change nothing;
-  - 8 make the max reduction skip half the warp. These are equal over the reals, but give NaN in float32 on a
-    row with one large value. The `outlier@P` inputs (D3) have such rows, and a changed shuffle in a reduction is
-    now classified numerical too. Detection has not been re-run on the GPU.
+- Detection on tirx-lite (A100, 2026-11-17; README §4): 164 generated edits, A0 73% → A 84% → B 90% → C 93%;
+  11 injected bugs 3 → 6 → 6 → 11; no false alarms on 27 no-op edits. 11 of C's 12 misses cannot change outputs.
+  (Legacy CUDA edits: fixed tests 61% → fixed + change-aware 77% on the tuning set.)
+- VOLTA decides about 86% of the tirx-lite edits it runs on; a candidate whose block 0 covers another region than the
+  reference's (another GEMM tile size) is undecided.
+- A TIRx-compiled function refuses misaligned tensors, so the change-aware generator makes misaligned-pointer tests
+  for legacy CUDA only.
 - Size regimes: `extract_thresholds` only sees comparisons with compile-time constants; a threshold computed at
   run time (e.g. from `cudaDeviceProp`) is not found.
