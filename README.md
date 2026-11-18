@@ -425,9 +425,10 @@ Run with `python -m unittest discover -s tests`.
 | `tests/llm/test_lumen.py` | 8 | the Lumen client against a fake server (no coins) |
 | `tests/evaluation/test_bugset.py` | 3 | the bug-set evaluation's parent choice; every configuration goes through `run_pipeline` |
 | `tests/evaluation/test_mutants.py` | 7 | the mutation generator, the fresh set, no edits of a float's exponent, a classifier regression guard |
+| `tests/evaluation/test_hard_edits.py` | 3 | the 34 hard edits: re-selected from the full run (A 19, B 29, C 33), the 11 no-change edits never caught, the generator still produces every key |
 | `tests/evaluation/test_volta_pool.py` | 5 | parallel VOLTA for the evaluation: merged report = serial report, cache routing, shape superset, one real run |
 | `tests/agent/test_loop.py` | 10 | the repair loop with a fake model and validators (§2 Task 4) |
-| **total** | **244** | Login node, 2026-11-17: **244 run, all pass, 11 skipped** (GPU-only, or a tool missing). A100 (jobs 24061708 / 24061793): the gate, interface and bug-set tests, 46 run, all pass |
+| **total** | **247** | Login node, 2026-11-18: **247 run, all pass, 11 skipped** (GPU-only, or a tool missing). A100 (jobs 24061708 / 24061793): the gate, interface and bug-set tests, 46 run, all pass |
 
 ### Experiments (A100-SXM4-40GB; GPU runs logged in `notes/gpu_results.md`)
 **Setup from scratch:** a fresh clone, `setup_env.sh --tests`, took 8 min 52 s, and all tests passed (86 tests at the time).
@@ -439,14 +440,19 @@ Run with `python -m unittest discover -s tests`.
 - Every candidate runs through `run_pipeline`, exactly as in the agent loop, with `run_all` so that every
   validator's catches can be counted. The parent is the correct version the candidate was made from.
 - A candidate is **caught** by a configuration if any of its validators reports an error.
-- Candidates:
+- Candidates (the detection workload; every one is listed and explained in `notes/detection_workload.md`):
   - the 11 injected tirx-lite bugs;
-  - generated single edits (`akc mutants --detect --volta`) of three sets of correct kernels:
+  - the **34 hard edits**: generated single edits (`akc mutants --detect --volta`) that change the kernel's
+    behaviour and that plain fixed tests miss, from three sets of correct kernels:
     - **tuning set:** `softmax_txl_ref`; the classifier rules were revised while looking at it;
     - **held out:** 4 GLM-written tirx softmax kernels, only partly held out (see Open items);
-    - **fresh:** `layernorm_txl_{ref,opt}` and `gemm_txl_{ref,opt}`; nothing was tuned on them.
-- Edits that the generator marks as unable to change any output are not counted. No-op edits (renames) measure
-  false alarms.
+    - **fresh:** `layernorm_txl_{ref,opt}` and `gemm_txl_{ref,opt}`; nothing was tuned on them;
+  - 27 no-op edits (renames), to count false alarms.
+- **How the 34 were chosen; the archive.** This run used all 164 generated edits. 119 of them are caught by plain
+  fixed tests in every configuration (36 do not compile, 83 give visibly wrong output), so they cannot separate A, B
+  and C. 11 cannot change any output (listed below). These 130 are archived: `akc mutants --detect` now skips them
+  unless `--archived` is given (`akc/evaluation/hard_edits.py`). `python -m akc.evaluation.hard_edits` rebuilds
+  `results/eval/hard_edits.json` from this run.
 - VOLTA ran in parallel CPU worker processes (`--volta-workers`) while the GPU validators ran one at a time.
   The held-out and fresh sets ran as two streams on one GPU, so their timings are not used below.
 
@@ -455,46 +461,48 @@ Run with `python -m unittest discover -s tests`.
 | candidates | A0: fixed tests | A: + gate | B: + VOLTA | C: + change-aware tests |
 |---|---|---|---|---|
 | 11 injected bugs | 3 | 6 | 6 | **11** |
-| tuning set, 21 edits | 15 | 20 | 20 | **21** |
-| held out, 70 edits | 52 | 56 | 62 | **65** |
-| fresh, 73 edits | 52 | 62 | 66 | **66** |
-| all 164 edits | 119 (73%) | 138 (84%) | 148 (90%) | **152 (93%)** |
+| hard edits, tuning set (6) | 0 | 5 | 5 | **6** |
+| hard edits, held out (13) | 0 | 4 | 10 | **13** |
+| hard edits, fresh (15) | 0 | 10 | 14 | **14** |
+| **all 34 hard edits** | 0 | 19 | 29 | **33** |
 | false alarms on 27 no-op edits | 0 | 0 | 0 | 0 |
 
+A0 catches none of the hard edits by construction.
+
 **What each step adds:**
-- **The gate (A0 → A)**, 3 bugs and 19 edits:
+- **The gate (A0 → A)**, 3 bugs and 19 hard edits:
   - races: racecheck finds `layernorm_txl_bug_nosync`, which every GPU test misses, and 6 edits (2 deleted
     barriers, 4 `<` → `<=` flips, some of which also read out of bounds);
   - out-of-bounds and uninitialized reads whose outputs still look right: memcheck and initcheck, mostly `<` → `<=`
     flips in guards and loop bounds, plus a halved block size.
-- **VOLTA at the default size (A → B)**, 0 bugs and 10 edits:
+- **VOLTA at the default size (A → B)**, 0 bugs and 10 hard edits:
   - 7 are `if (lane == 0)` / `if (tid == 0)` negations. Every thread then writes the same value to the same
     address. That is a race by the memory model, but the outputs never change, and racecheck does not flag it;
   - 2 halve a shared array, so accesses go past the shared memory: outputs happen to stay right;
   - 1 is a value bug (`+` → `-` in `layernorm_txl_opt`).
-- **Change-aware tests, with VOLTA at their sizes (B → C)**, 5 bugs and 4 edits:
+- **Change-aware tests, with VOLTA at their sizes (B → C)**, 5 bugs and 4 hard edits:
   - the bugs are the 3 tail bugs (VOLTA also catches them, at the change-aware sizes), `nomax` and `onepass`;
   - the edits are float-only failures: max → min, a max initialized to 0 instead of -FLT_MAX (twice), and a warp max
     that skips half the lanes. All of them give inf / NaN on large or outlier inputs, which VOLTA's real-number model
     cannot see.
 - **The two mechanisms are complementary.** On the injected bugs, change-aware tests catch all 11 and VOLTA-C
-  catches 9 (all but the two numerical bugs). On the edits, VOLTA alone catches 9 and the change-aware tests alone
-  catch 4.
+  catches 9 (all but the two numerical bugs). On the hard edits, VOLTA alone catches 9 and the change-aware tests
+  alone catch 4.
 
-**What C misses (12 edits).** 11 of them cannot change any output:
+**What C misses: 1 hard edit**, an out-of-bounds read at N = 1 whose outputs stay within tolerance (see Open items).
+
+**The 11 archived edits that cannot change any output** (no configuration flags them, as expected):
 - 9 change a block size, tile size or unroll factor in a kernel that derives everything else from it. VOLTA proves
   the 5 GLM ones equivalent. It cannot decide the 4 GEMM ones, because block 0 then covers another part of the
-  output;
+  output; we judged them harmless by reading the code;
 - 2 pad the GEMM shared tiles with 1.0 instead of 0.0. The padding is always multiplied by the other operand's zero
   padding. VOLTA proves both equivalent.
 
-The 12th is a real bug: an out-of-bounds read at N = 1 whose outputs stay within tolerance (see Open items). So C
-catches 152 of the 153 edits that change behaviour.
-
 **Verification coverage** (VOLTA decided / VOLTA ran):
 - injected bugs: B 11/11, C 10/11 (softmax tail at N = 100 is UNSUPPORTED);
-- edits: 114/132 (86%) in both B and C. VOLTA does not run on edits that fail to compile.
-- Undecided cases: tile changes in GEMM, and VOLTA-unsupported constructs.
+- hard edits: 34/34 in both B and C;
+- all 164 generated edits of the full run: 114/132 (86%) in both B and C. VOLTA does not run on edits that fail to
+  compile. The undecided ones (tile changes in GEMM, VOLTA-unsupported constructs) are all archived edits.
 
 **Overhead** (seconds of validation per candidate, from the single-stream runs; each validator's own time):
 
@@ -518,7 +526,9 @@ Per validator (median):
   those 7 changed. The table above is after the fix.
 - Before the fix: `results/eval/mutants_detect_tirx_{heldout,fresh}_before_misalign_fix.json`.
 
-Results: `results/eval/bugset_tirx_gpu_20261117-053113.json`, `results/eval/mutants_detect_tirx_{bases,heldout,fresh}.json`.
+Results: `results/eval/bugset_tirx_gpu_20261117-053113.json` (injected bugs), `results/eval/hard_edits.json` (the
+34 hard edits), `results/eval/mutants_detect_tirx_{bases,heldout,fresh}.json` (the full run, including the archived
+edits).
 
 #### Compiler-checks gate (D2) on tirx-lite
 A100, job 24061793 (`scripts/experiments/gate_tirx.py`, `results/eval/gate_tirx.json`). "Caught" means the tool

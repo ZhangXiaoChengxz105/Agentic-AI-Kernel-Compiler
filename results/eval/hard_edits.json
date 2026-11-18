@@ -1,0 +1,1297 @@
+{
+ "source": [
+  "results/eval/mutants_detect_tirx_bases.json",
+  "results/eval/mutants_detect_tirx_heldout.json",
+  "results/eval/mutants_detect_tirx_fresh.json"
+ ],
+ "rule": "generated edits not caught by A0 (plain fixed tests), minus NO_CHANGE",
+ "counts": {
+  "edits_in_full_run": 164,
+  "caught_by_A0": 119,
+  "no_change": 11,
+  "hard": 34,
+  "no_op_controls": 27
+ },
+ "caught": {
+  "A0": 0,
+  "A": 19,
+  "B": 29,
+  "C": 33
+ },
+ "false_alarms": {
+  "A0": 0,
+  "A": 0,
+  "B": 0,
+  "C": 0
+ },
+ "rows": [
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "op": "cmp",
+   "line": 30,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "race",
+      "uninitialized"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "race",
+      "uninitialized"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "race",
+      "uninitialized"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "op": "cmp",
+   "line": 43,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "nonfinite"
+     ]
+    }
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "op": "cmp",
+   "line": 51,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "mismatch"
+     ],
+     "volta": [
+      "not_equivalent"
+     ]
+    }
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "op": "const",
+   "line": 8,
+   "desc": "128 -> 64",
+   "categories": [
+    "indexing",
+    "tiling",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "uninitialized"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "uninitialized"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "uninitialized"
+     ],
+     "changeaware": [
+      "nonfinite"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "op": "nosync",
+   "line": 37,
+   "desc": "barrier deleted",
+   "categories": [
+    "sync"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "race"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "race"
+     ],
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "race"
+     ],
+     "changeaware": [
+      "mismatch"
+     ],
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "softmax_txl_ref",
+   "set": "bases",
+   "workload": "softmax",
+   "op": "math",
+   "line": 46,
+   "desc": "txl.max -> txl.min",
+   "categories": [
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": false,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {},
+    "C": {
+     "changeaware": [
+      "nonfinite"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "cmp",
+   "line": 95,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "nonfinite"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "init",
+   "line": 4,
+   "desc": "-3.4028234663852886e38 -> 0.0",
+   "categories": [
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": false,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {},
+    "C": {
+     "changeaware": [
+      "nonfinite"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_C_r2",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "negate",
+   "line": 70,
+   "desc": "if (lane == 0) negated",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "cmp",
+   "line": 148,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "nonfinite"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D1_r2",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "negate",
+   "line": 63,
+   "desc": "if (lane == 0) negated",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "cmp",
+   "line": 151,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds",
+      "race"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds",
+      "race"
+     ],
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds",
+      "race"
+     ],
+     "changeaware": [
+      "nonfinite"
+     ],
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "negate",
+   "line": 127,
+   "desc": "if (lane == 0) negated",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D2_r1",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "negate",
+   "line": 138,
+   "desc": "if (lane == 0) negated",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "cmp",
+   "line": 97,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds",
+      "race"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds",
+      "race"
+     ],
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds",
+      "race"
+     ],
+     "changeaware": [
+      "nonfinite"
+     ],
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "const",
+   "line": 65,
+   "desc": "16 -> 8",
+   "categories": [
+    "sync",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": false,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {},
+    "C": {
+     "changeaware": [
+      "nonfinite"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "init",
+   "line": 12,
+   "desc": "-3.4028234663852886e38 -> 0.0",
+   "categories": [
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": false,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {},
+    "C": {
+     "changeaware": [
+      "nonfinite"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "negate",
+   "line": 109,
+   "desc": "if (lane == 0) negated",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "glm_txl_D3_r1",
+   "set": "heldout",
+   "workload": "softmax",
+   "op": "negate",
+   "line": 141,
+   "desc": "if (lane == 0) negated",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "op": "cmp",
+   "line": 36,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "race",
+      "uninitialized"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "race",
+      "uninitialized"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "race",
+      "uninitialized"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "op": "cmp",
+   "line": 50,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "mismatch"
+     ],
+     "volta": [
+      "not_equivalent"
+     ]
+    }
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "op": "cmp",
+   "line": 60,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "mismatch"
+     ],
+     "volta": [
+      "not_equivalent"
+     ]
+    }
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "op": "const",
+   "line": 11,
+   "desc": "128 -> 64",
+   "categories": [
+    "indexing",
+    "tiling",
+    "numerical",
+    "memory"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "uninitialized"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "uninitialized"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "uninitialized"
+     ],
+     "changeaware": [
+      "nonfinite"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "op": "nosync",
+   "line": 43,
+   "desc": "barrier deleted",
+   "categories": [
+    "sync"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "race"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "race"
+     ],
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "race"
+     ],
+     "changeaware": [
+      "mismatch"
+     ],
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "op": "aop",
+   "line": 64,
+   "desc": "+ -> -",
+   "categories": [
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "not_equivalent"
+     ]
+    },
+    "C": {
+     "changeaware": [
+      "nonfinite"
+     ],
+     "volta": [
+      "not_equivalent"
+     ]
+    }
+   }
+  },
+  {
+   "base": "layernorm_txl_opt",
+   "set": "fresh",
+   "workload": "layernorm",
+   "op": "smem",
+   "line": 25,
+   "desc": "shared size BLOCK -> BLOCK // 2",
+   "categories": [
+    "tiling"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "op": "cmp",
+   "line": 27,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "out_of_bounds"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "gemm_txl_ref",
+   "set": "fresh",
+   "workload": "gemm",
+   "op": "cmp",
+   "line": 28,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "out_of_bounds"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "op": "idx1",
+   "line": 36,
+   "desc": "[r, 0] -> [r, 0 + 1]",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": false,
+    "C": false
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {},
+    "C": {}
+   }
+  },
+  {
+   "base": "layernorm_txl_ref",
+   "set": "fresh",
+   "workload": "layernorm",
+   "op": "negate",
+   "line": 35,
+   "desc": "if (tid == 0) negated",
+   "categories": [
+    "indexing",
+    "numerical"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "race"
+     ]
+    },
+    "C": {
+     "volta": [
+      "race"
+     ]
+    }
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "op": "cmp",
+   "line": 39,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "op": "cmp",
+   "line": 44,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "nonfinite"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "op": "cmp",
+   "line": 54,
+   "desc": "< -> <=",
+   "categories": [
+    "indexing"
+   ],
+   "caught": {
+    "A0": false,
+    "A": true,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "B": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "compiler_checks": [
+      "out_of_bounds"
+     ],
+     "changeaware": [
+      "out_of_bounds"
+     ],
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  },
+  {
+   "base": "gemm_txl_opt",
+   "set": "fresh",
+   "workload": "gemm",
+   "op": "smem",
+   "line": 31,
+   "desc": "shared size TILE -> TILE // 2",
+   "categories": [
+    "tiling"
+   ],
+   "caught": {
+    "A0": false,
+    "A": false,
+    "B": true,
+    "C": true
+   },
+   "kinds": {
+    "A0": {},
+    "A": {},
+    "B": {
+     "volta": [
+      "out_of_bounds"
+     ]
+    },
+    "C": {
+     "volta": [
+      "out_of_bounds"
+     ]
+    }
+   }
+  }
+ ]
+}

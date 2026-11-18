@@ -32,7 +32,7 @@ verification and change-aware testing (proposal sections 1 and 2).
 | `validation/` | the critics | `interface.py`, `pipeline.py`, `compiler_checks/`, `fixed_tests/`, `volta/`, `changeaware/`, `runners/` |
 | `perf/` | the objective (speed) | `measure.py` (GPU timing in a child process), `report.py` (`PerfReport`, roofline `analyze`), `hardware.py` (GPU peaks) |
 | `feedback/` | observations | `render.py`: findings → concise text with hints, examples, related change lines; `render_perf` (speed), `render_observation` (both) |
-| `evaluation/` | experiments | `bugset.py` (A0/A/B/C on injected bugs), `mutants.py` (mutation benchmark; `--detect`), `volta_pool.py` (VOLTA in parallel CPU workers for the evaluation; merged reports = the serial validator's), `volta_matrix.py`, `gpu_tirx.py` |
+| `evaluation/` | experiments | `bugset.py` (A0/A/B/C on injected bugs), `mutants.py` (mutation benchmark; `--detect` runs the detection workload), `hard_edits.py` (the 34 hard edits; the archive), `volta_pool.py` (VOLTA in parallel CPU workers for the evaluation; merged reports = the serial validator's), `volta_matrix.py`, `gpu_tirx.py` |
 
 Agent "tools" (functions the model may call itself, e.g. "compile this draft") are optional and would live in
 `agent/tools.py`; they are different from `backend/`, which is infrastructure used by validators and the loop.
@@ -222,11 +222,13 @@ Kernel conventions: `extern "C" __global__`, write `exp` as `EXP(x)` (`workloads
 - GPU tests are weak at races (VOLTA is the main race check); NumSim is slow per new shape.
 - The injected bugs and the classifier were written by the same person. The classifier is also measured on
   generated edits (`akc mutants`, including held-out GLM kernels: 189/189).
-- Detection on tirx-lite (A100, 2026-11-17; README §4): 164 generated edits, A0 73% → A 84% → B 90% → C 93%;
-  11 injected bugs 3 → 6 → 6 → 11; no false alarms on 27 no-op edits. 11 of C's 12 misses cannot change outputs.
+- Detection on tirx-lite (A100, 2026-11-17; README §4): 11 injected bugs A0 3 → A 6 → B 6 → C 11; 34 hard edits
+  (generated edits that change behaviour and that plain fixed tests miss) A 19 → B 29 → C 33; no false alarms on 27
+  no-op edits. C's one miss is an out-of-bounds read at N = 1. The other generated edits are archived
+  (`evaluation/hard_edits.py`; `akc mutants --detect` skips them unless `--archived`).
   (Legacy CUDA edits: fixed tests 61% → fixed + change-aware 77% on the tuning set.)
-- VOLTA decides about 86% of the tirx-lite edits it runs on; a candidate whose block 0 covers another region than the
-  reference's (another GEMM tile size) is undecided.
+- VOLTA decides all 34 hard edits and about 86% of all tirx-lite edits it runs on; a candidate whose block 0 covers
+  another region than the reference's (another GEMM tile size) is undecided.
 - A TIRx-compiled function refuses misaligned tensors, so the change-aware generator makes misaligned-pointer tests
   for legacy CUDA only.
 - Size regimes: `extract_thresholds` only sees comparisons with compile-time constants; a threshold computed at

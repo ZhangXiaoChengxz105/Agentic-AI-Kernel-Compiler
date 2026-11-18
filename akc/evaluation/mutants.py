@@ -39,8 +39,12 @@ CLI:  akc mutants [--set bases|heldout|fresh|all] [--lang all|cuda|tirx] [--llm-
           ir (default): tirx-lite rows use the IR change analysis (changeaware.irdiff / classify_ir; CUDA rows keep
           the text classifier); ast: tirx-lite rows use the Python-AST classifier as before. --compare-with prints
           an agreement matrix (verdict here vs verdict there, matched by base / operator / line / edit).
-      akc mutants --set all --per-op 1 --detect --device gpu [--volta]      (GPU: caught by A0 / A / (B) / C?)
-      e.g. sbatch --time=00:55:00 scripts/slurm/gpu_job.sbatch akc mutants --set all --per-op 1 --detect --device gpu
+      akc mutants --set all --detect --device gpu [--volta] [--archived]    (GPU: caught by A0 / A / (B) / C?)
+          By default --detect runs only the detection workload: the 34 hard edits and the tirx-lite no-op edits
+          (akc/evaluation/hard_edits.py). The other edits are archived: those plain fixed tests catch, those that
+          cannot change outputs, and the legacy CUDA edits. --archived runs them too (the 2026-11-17 full run).
+          Without --detect (classifier check, CPU) every edit is still used.
+      e.g. sbatch --time=00:55:00 scripts/slurm/gpu_job.sbatch akc mutants --set all --detect --device gpu --volta
 """
 from __future__ import annotations
 
@@ -461,6 +465,10 @@ def main(argv: list[str] | None = None) -> int:
                          "GPU validators run serially (0: VOLTA runs inline)")
     ap.add_argument("--classifier", default="ir", choices=["ir", "ast"],
                     help="tirx-lite rows: IR change analysis (default) or the Python-AST classifier")
+    ap.add_argument("--archived", action="store_true",
+                    help="with --detect: also run the archived edits (the ones plain fixed tests catch, the ones that "
+                         "cannot change outputs, legacy CUDA). Default: only the 34 hard edits + the tirx-lite no-op "
+                         "edits (akc/evaluation/hard_edits.py)")
     ap.add_argument("--compare-with", default=None, help="another mutants JSON: print an agreement matrix")
     ap.add_argument("--out", default=None)
     a = ap.parse_args(argv)
@@ -469,6 +477,7 @@ def main(argv: list[str] | None = None) -> int:
         from ..validation.changeaware.llm_classify import LlmClassifier
         llm = LlmClassifier(**({"model": a.llm_model} if a.llm_model else {}))
     rows, t0 = [], time.perf_counter()
+    n_archived = 0
     pool = None
     if a.detect and a.volta and a.volta_workers > 0:
         from .volta_pool import VoltaPool
@@ -480,6 +489,7 @@ def main(argv: list[str] | None = None) -> int:
                                                    "set": a.set, "lang": a.lang, "detect_configs": (
                                                        ["A0", "A", "B", "C"] if a.volta else ["A0", "A", "C"])
                                                    if a.detect else None, "volta_workers": a.volta_workers,
+                                                   "archived": a.archived if a.detect else None,
                                                    "complete": done}, indent=1))
     for label, workload, rel in SETS[a.set]:
         if a.only and label not in a.only.split(","):
@@ -491,10 +501,17 @@ def main(argv: list[str] | None = None) -> int:
         src, lang = path.read_text(), ("tirx" if path.suffix == ".py" else "cuda")
         if a.lang != "all" and lang != a.lang:
             continue
+        muts = mutants(src, lang, a.per_op, extended=label in FRESH_LABELS)
+        if a.detect and not a.archived:                  # the detection workload: hard edits + no-op controls
+            from .hard_edits import in_workload
+            kept = [m for m in muts if in_workload(label, lang, m)]
+            n_archived += len(muts) - len(kept)
+            muts = kept
+            if not muts:
+                continue
         ok, why = _base_ok(workload, label, src, lang, a.device) if a.detect else (True, "")
         if not ok:
             print(f"  {label}: the base kernel itself fails ({why}); its mutants are classified but not run", flush=True)
-        muts = mutants(src, lang, a.per_op, extended=label in FRESH_LABELS)
         if lang == "tirx" and a.classifier == "ir":          # trace all mutants of this base in one child process
             from ..validation.changeaware import ir_worker
             ir_worker.prefetch(workload, [(src, m.src, ir_worker.trace_shapes(workload, src, m.src)) for m in muts
@@ -517,6 +534,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"  {label}: done ({len(rows)} mutants so far, {time.perf_counter() - t0:.0f}s)", flush=True)
     if pool is not None:
         pool.shutdown()
+    if n_archived:
+        print(f"{n_archived} archived edits not run (see akc/evaluation/hard_edits.py; --archived runs them)")
     _report(rows, a.llm_classify)
     save(True)
     print(f"saved {out}")

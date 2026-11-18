@@ -50,7 +50,7 @@ have not yet run this loop with the real LLM.
 it and re-ran the affected edits. Repair success and final kernel performance need real-LLM runs and are not
 measured yet.
 
-All components have unit tests (244, all passing).
+All components have unit tests (247, all passing).
 
 **3 Testing and Preliminary Results**
 
